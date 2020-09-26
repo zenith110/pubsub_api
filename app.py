@@ -2,12 +2,12 @@ from flask import Flask, render_template, request, redirect
 import requests
 import psycopg2
 import json
-app = Flask(__name__, static_url_path='/static')  
-@app.route("/", methods =["POST", "GET"])
-def index():
-        if request.method == "GET":
+app = Flask(__name__, static_url_path='/static')
+@app.route("/subs/", methods =["POST", "GET"])
+def sub():
+    if request.method == "GET":
             subname = request.args.get("name")
-            
+            subname = subname.replace(" ", "-").lower().replace("'", "")
             with open("settings/dblogin.json", "r") as loop:
                 data = json.load(loop)
             
@@ -54,7 +54,14 @@ def index():
             
             sub_info = json.dumps(data, indent = 2)
     
-        return sub_info
+            return sub_info
+@app.route("/", methods =["POST", "GET"])
+def index():
+        return render_template("index.html")
+        
+        
+    
+
     
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=80)
