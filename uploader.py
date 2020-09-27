@@ -28,7 +28,7 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
                                     database = data["Login"]["Database"])
 
             cur = connection.cursor()
-
+            
             # Inserts the data into each column
             cur.execute('INSERT INTO ' + data["Login"]["Table"] + '(pubsub_name, dates, on_sale, price, image) VALUES (%s, %s, %s, %s, %s)', (sub_name, dates, on_sale, price, image))
             
