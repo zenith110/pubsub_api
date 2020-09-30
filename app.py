@@ -25,7 +25,7 @@ def random_sub():
                                         port = data["Login"]["Port"],
                                         database = data["Login"]["Database"])          
     cur = connection.cursor()
-    command = "SELECT * FROM {table} ORDER BY dates DESC LIMIT 1"
+    command = "SELECT * from {table} ORDER BY random()"
     query = cur.execute(command.format(table = data["Login"]["Table"]))
      # Fetches us all the rows so we can grab data from each
     records = cur.fetchall()
