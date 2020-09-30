@@ -15,8 +15,8 @@ def all_names():
     # Create a default JSON structure
     data["All_subs".lower()].append(
     {
-        "sub_name_1": "boar-head-jerk-turkey",
-        "sub_name_2": "chicken-tenders"
+        {"sub_name": "boar-head-jerk-turkey"},
+        {"sub_name_2": "chicken-tenders"}
     })
 
     sub_info = json.dumps(data, indent = 2)
