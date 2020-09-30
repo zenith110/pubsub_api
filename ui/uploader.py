@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'uploader.ui',
 # licensing of 'uploader.ui' applies.
 #
-# Created: Fri Sep 25 16:37:12 2020
+# Created: Wed Sep 30 12:09:32 2020
 #      by: pyside2-uic  running on PySide2 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ class Ui_MainWindow(object):
         self.on_sale.setGeometry(QtCore.QRect(270, 20, 113, 20))
         self.on_sale.setObjectName("on_sale")
         self.upload = QtWidgets.QPushButton(self.centralwidget)
-        self.upload.setGeometry(QtCore.QRect(140, 90, 75, 23))
+        self.upload.setGeometry(QtCore.QRect(50, 90, 75, 23))
         self.upload.setObjectName("upload")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(0, 0, 47, 13))
@@ -49,6 +49,9 @@ class Ui_MainWindow(object):
         self.label_5 = QtWidgets.QLabel(self.centralwidget)
         self.label_5.setGeometry(QtCore.QRect(130, 50, 47, 13))
         self.label_5.setObjectName("label_5")
+        self.delete_2 = QtWidgets.QPushButton(self.centralwidget)
+        self.delete_2.setGeometry(QtCore.QRect(150, 90, 75, 23))
+        self.delete_2.setObjectName("delete_2")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 387, 21))
@@ -69,4 +72,5 @@ class Ui_MainWindow(object):
         self.label_3.setText(QtWidgets.QApplication.translate("MainWindow", "onsale", None, -1))
         self.label_4.setText(QtWidgets.QApplication.translate("MainWindow", "price", None, -1))
         self.label_5.setText(QtWidgets.QApplication.translate("MainWindow", "Image", None, -1))
+        self.delete_2.setText(QtWidgets.QApplication.translate("MainWindow", "Delete", None, -1))
 

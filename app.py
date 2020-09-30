@@ -3,6 +3,9 @@ import requests
 import psycopg2
 import json
 app = Flask(__name__, static_url_path='/static')
+@app.route("/allsubs/", methods =["POST", "GET"])
+def all_names():
+    return "boar head jerk turkey and gouda\nchicken tenders"
 @app.route("/subs/", methods =["POST", "GET"])    
 def sub():
     if request.method == "GET":
