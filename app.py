@@ -11,6 +11,10 @@ def all_names():
 
     connection = connectIt()   
     cur = connection.cursor()
+
+    query = "SELECT pubsub_name FROM {table} ORDER BY pubsub"
+    cur.execute(query.format(table = data["Login"]["Table"]))
+    
     records = cur.fetchall()
 
     data = {}
@@ -23,7 +27,7 @@ def all_names():
         records.
         data["All_subs".lower()].append(
         {
-            {"name": sub}
+            {"name": sub} #this may need to be sub[0] not sure
         })
         
     return jsonify(data["All_subs".lower()])
