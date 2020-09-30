@@ -1,27 +1,33 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 from flask.json import jsonify
 import requests
 import psycopg2
 import json
+
 app = Flask(__name__, static_url_path='/static')
+
 @app.route("/allsubs/", methods =["POST", "GET"])
 def all_names():
-     # Creates a dictionary
+
+    connection = connectIt()   
+    cur = connection.cursor()
+    records = cur.fetchall()
+
     data = {}
 
     # Creates a primary catagory
     data["All_subs".lower()] = []
 
     # Create a default JSON structure
-    data["All_subs".lower()].append(
-    {
-        {"sub_name": "boar-head-jerk-turkey"},
-        {"sub_name_2": "chicken-tenders"}
-    })
-
-    sub_info = json.dumps(data, indent = 2)
+    for sub in records:
+        records.
+        data["All_subs".lower()].append(
+        {
+            {"name": sub}
+        })
         
-    return sub_info
+    return jsonify(data["All_subs".lower()])
+
 @app.route("/subs/", methods =["POST", "GET"])    
 def sub():
     if request.method == "GET":
@@ -38,11 +44,7 @@ def random_sub():
                     data = json.load(loop)
 
     # Establish a connection using the dblogin.json
-    connection = psycopg2.connect(user = data["Login"]["Username"],
-                                        password = data["Login"]["Password"],
-                                        host = data["Login"]["Host"],
-                                        port = data["Login"]["Port"],
-                                        database = data["Login"]["Database"])          
+    connection = connectIt()
     cur = connection.cursor()
     command = "SELECT * from {table} ORDER BY random()"
     query = cur.execute(command.format(table = data["Login"]["Table"]))
@@ -70,20 +72,15 @@ def random_sub():
         "price": price,
         "image": image
     })
-                
-                
-    sub_info = json.dumps(data, indent = 2)
         
-    return sub_info
+    return jsonify(sub_info)
+
+
 def sub_runner(subname):
     with open("settings/dblogin.json", "r") as loop:
                     data = json.load(loop)
     #Establish a connection using the dblogin.json
-    connection = psycopg2.connect(user = data["Login"]["Username"],
-                                        password = data["Login"]["Password"],
-                                        host = data["Login"]["Host"],
-                                        port = data["Login"]["Port"],
-                                        database = data["Login"]["Database"])          
+    connection = connectIt()   
     cur = connection.cursor()
     # Checks to see if the name exist in the record, then grabs a random row from that column limiting it to one.
     try:
@@ -127,7 +124,12 @@ def index():
         return render_template("index.html")
         
         
-    
+def connectIt():
+    return psycopg2.connect(user = data["Login"]["Username"],
+                                        password = data["Login"]["Password"],
+                                        host = data["Login"]["Host"],
+                                        port = data["Login"]["Port"],
+                                        database = data["Login"]["Database"]) 
 
     
 if __name__ == '__main__':
