@@ -6,8 +6,22 @@ import json
 app = Flask(__name__, static_url_path='/static')
 @app.route("/allsubs/", methods =["POST", "GET"])
 def all_names():
-    sub_names = "boar head jerk turkey and gouda\nchicken tenders"
-    return jsonify(sub_names)
+     # Creates a dictionary
+    data = {}
+
+    # Creates a primary catagory
+    data["All_subs".lower()] = []
+
+    # Create a default JSON structure
+    data["All_subs".lower()].append(
+    {
+        "sub_name_1": "boar-head-jerk-turkey",
+        "sub_name_2": "chicken-tenders"
+    })
+
+    sub_info = json.dumps(data, indent = 2)
+        
+    return sub_info
 @app.route("/subs/", methods =["POST", "GET"])    
 def sub():
     if request.method == "GET":
