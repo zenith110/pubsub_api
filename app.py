@@ -7,7 +7,7 @@ app = Flask(__name__, static_url_path='/static')
 @app.route("/allsubs/", methods =["POST", "GET"])
 def all_names():
     sub_names = "boar head jerk turkey and gouda\nchicken tenders"
-    jsonify(sub_names)
+    return jsonify(sub_names)
 @app.route("/subs/", methods =["POST", "GET"])    
 def sub():
     if request.method == "GET":
