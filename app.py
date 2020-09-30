@@ -3,7 +3,11 @@ from flask.json import jsonify
 import requests
 import psycopg2
 import json
+<<<<<<< HEAD
 
+=======
+import connect_db
+>>>>>>> b90c39e261fb0a0760e6d526824987ef682ffb08
 app = Flask(__name__, static_url_path='/static')
 
 @app.route("/allsubs/", methods =["POST", "GET"])
@@ -40,6 +44,7 @@ def sub():
                 return sub
 
 def random_sub():
+<<<<<<< HEAD
     with open("settings/dblogin.json", "r") as loop:
                     data = json.load(loop)
 
@@ -117,6 +122,13 @@ def sub_runner(subname):
     sub_info = json.dumps(data, indent = 2)
         
     return sub_info
+=======
+    sub = connect_db.connect_random()     
+    return sub
+def sub_runner(subname):
+    sub = connect_db.connect(subname)         
+    return sub
+>>>>>>> b90c39e261fb0a0760e6d526824987ef682ffb08
                 
                
 @app.route("/", methods =["POST", "GET"])
