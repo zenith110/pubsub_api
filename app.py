@@ -1,11 +1,13 @@
 from flask import Flask, render_template, request, redirect
+from flask.json import jsonify
 import requests
 import psycopg2
 import json
 app = Flask(__name__, static_url_path='/static')
 @app.route("/allsubs/", methods =["POST", "GET"])
 def all_names():
-    return "boar head jerk turkey and gouda\nchicken tenders"
+    sub_names = "boar head jerk turkey and gouda\nchicken tenders"
+    jsonify(sub_names)
 @app.route("/subs/", methods =["POST", "GET"])    
 def sub():
     if request.method == "GET":
