@@ -24,7 +24,7 @@ def all_names():
 
     # Create a default JSON structure
     for sub in records:
-        data["All_subs".lower()].append({"name": sub}) #this may need to be sub[0] not sure)
+        data["All_subs".lower()].append({"name": sub[0]}) 
         
     return jsonify(data["All_subs".lower()])
 
@@ -72,8 +72,7 @@ def random_sub():
     })
                 
                 
-    sub_info = json.dumps(data, indent = 2)
-        
+    sub_info = json.dumps(data[subname.lower()], indent = 2)
     return sub_info
 
 def sub_runner(subname):
@@ -109,10 +108,8 @@ def sub_runner(subname):
         "price": price,
         "image": image
     })
-                
-                
-    sub_info = json.dumps(data, indent = 2)
-        
+                    
+    sub_info = json.dumps(data[subname.lower()], indent = 2)
     return sub_info
                 
                
