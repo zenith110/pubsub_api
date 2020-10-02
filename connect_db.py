@@ -6,6 +6,7 @@ Allows us to query specific commands
 def get_table():
     with open("settings/dblogin.json", "r") as loop:
                         data = json.load(loop)
+                        
     return data["Login"]["Table"]
 def query_call(cur, query):
     with open("settings/dblogin.json", "r") as loop:
