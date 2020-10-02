@@ -3,15 +3,19 @@ import json
 """
 Allows us to query specific commands
 """
+def close(connection):
+    #Push the data onto the database
+    connection.commit()
+                
+    print("Data now deleted, close if done!")
+    # Close the database
+    connection.close()
 def get_table():
     with open("settings/dblogin.json", "r") as loop:
                         data = json.load(loop)
                         
     return data["Login"]["Table"]
-def query_call(cur, query):
-    with open("settings/dblogin.json", "r") as loop:
-                        data = json.load(loop)
-    cur.execute(query)
+
     
 def connect():
     with open("settings/dblogin.json", "r") as loop:

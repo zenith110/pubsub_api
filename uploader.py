@@ -28,12 +28,7 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
         print("Deleting data on " + sub_name + "!")
         cur.execute("DELETE FROM " + connect_db.get_table() + " WHERE pubsub_name LIKE '%" + sub_name + "%'")
         
-        #Push the data onto the database
-        connection.commit()
-                
-        print("Data now deleted, close if done!")
-        #Close the database
-        connection.close()
+        connect_db.close(connection)
 
     # Updates and inserts automatically
     def add_entry(self):
@@ -62,12 +57,7 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
                 cur.execute('INSERT INTO ' + connect_db.get_table() + '(pubsub_name, dates, on_sale, price, image) VALUES (%s, %s, %s, %s, %s)', (sub_name, dates, on_sale, price, image))
                 
                 
-            #Push the data onto the database
-            connection.commit()
-                
-            print("Data now pushed, close if done!")
-            # Close the database
-            connection.close()
+            connect_db.close(connection)
                 
 
 if __name__ == "__main__":
