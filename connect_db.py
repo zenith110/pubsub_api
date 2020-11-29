@@ -10,6 +10,7 @@ def close(connection):
     print("Data now deleted, close if done!")
     # Close the database
     connection.close()
+    
 def get_table():
     with open("settings/dblogin.json", "r") as loop:
                         data = json.load(loop)
