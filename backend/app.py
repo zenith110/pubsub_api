@@ -5,7 +5,43 @@ import psycopg2
 import json
 import connect_db
 app = Flask(__name__, static_url_path='/static')
+@app.route("/onsale/", methods = ["POST", "GET"])
+def onsale_data():
+    connection = connect_db.connect()   
+    cur = connection.cursor()
 
+    query = "SELECT * FROM {table}"
+    cur.execute(query.format(table = connect_db.get_table()))
+    sub_name = []
+    last_on_sale = []
+    on_sale = []
+    price = []
+    image = []
+    records = cur.fetchall()
+    for i in range(len(records)):
+        sub_name.append(records[i][0])
+        last_on_sale.append(records[i][1])
+        on_sale.append(records[i][2])
+        price.append(records[i][3])
+        image.append(records[i][4])
+    print(sub_name)
+    data = {}
+    print(last_on_sale)
+
+    # Creates a primary catagory
+    data["All_subs".lower()] = []
+
+    # Create a default JSON structure
+    for i in range(len(records)):
+        data["All_subs".lower()].append({
+            "name": sub_name[i],
+            "on_sale": on_sale[i],
+            "image": image[i],
+            "last_on_sale": last_on_sale[i],
+            "price": price[i]
+            }) 
+        
+    return jsonify(data["All_subs".lower()])
 @app.route("/allsubs/", methods =["POST", "GET"])
 def all_names():
 
