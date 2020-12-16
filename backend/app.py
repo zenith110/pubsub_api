@@ -4,12 +4,20 @@ import requests
 import psycopg2
 import json
 import connect_db
+from flask_cors import CORS
+from services import mailchimp
 app = Flask(__name__, static_url_path='/static')
+CORS(app)
+@app.route("/email/", methods=["POST"])
+def email():
+    content = request.json
+    email = content["email"]
+    first_name = content["name"]
+    mailchimp.register_data(email, first_name)
 @app.route("/onsale/", methods = ["POST", "GET"])
 def onsale_data():
     connection = connect_db.connect()   
     cur = connection.cursor()
-
     query = "SELECT * FROM {table}"
     cur.execute(query.format(table = connect_db.get_table()))
     sub_name = []
@@ -24,9 +32,9 @@ def onsale_data():
         on_sale.append(records[i][2])
         price.append(records[i][3])
         image.append(records[i][4])
-    print(sub_name)
+    
     data = {}
-    print(last_on_sale)
+    
 
     # Creates a primary catagory
     data["All_subs".lower()] = []

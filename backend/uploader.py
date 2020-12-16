@@ -51,11 +51,15 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
                 print("There exist a version of " + sub_name + " now updating!")
                 update_string = "Update {table} SET on_sale = '{on_sale}', dates = '{dates}' where pubsub_name = '{sub}'"
                 update_query = (cur.execute(update_string.format(table = connect_db.get_table(), on_sale = on_sale, dates = dates, sub = sub_name)))
+                # Sends an email out if a sub is now on sale
+                if(on_sale == "True"):
+                    print("hi")
             else:
                 print("This sub doesn't exist, now adding!")
                 # Inserts the data into each column
                 cur.execute('INSERT INTO ' + connect_db.get_table() + '(pubsub_name, dates, on_sale, price, image) VALUES (%s, %s, %s, %s, %s)', (sub_name, dates, on_sale, price, image))
-                
+                if(on_sale == "True"):
+                    print("hi")
                 
             connect_db.close(connection)
                 

@@ -1,23 +1,22 @@
-import logo from './logo.svg';
 import './App.css';
-
+import SubCard from "./Components/SubCard.js"
+import Carousel from 'react-elastic-carousel';
+import React, { Component } from 'react';
+import Email from "./Components/Email.js";
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <p>Current Subs</p>
+    <Carousel>
+    <SubCard position={0}></SubCard>
+    <SubCard position={1}></SubCard>
+    <SubCard position={2}></SubCard>
+    <SubCard position={3}></SubCard>
+    <SubCard position={4}></SubCard>
+    <SubCard position={5}></SubCard>
+    </Carousel>
+    <Email></Email>
+    
     </div>
   );
 }
