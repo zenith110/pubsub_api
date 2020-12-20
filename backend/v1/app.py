@@ -6,13 +6,29 @@ import json
 import connect_db
 from flask_cors import CORS
 from services import mailchimp
+import re
 app = Flask(__name__, static_url_path='/static')
 CORS(app)
+@app.route("/totalcount/", methods = ["POST", "GET"])
+def num():
+    connection = connect_db.connect()   
+    cur = connection.cursor()
+    query = "SELECT COUNT(*) FROM {table}"
+    cur.execute(query.format(table = connect_db.get_table()))
+    count = cur.fetchone()
+    count = str(count)
+    # Remove the tuple aspect of the number
+    count = count.replace("(", "").replace(",", "").replace(")", "")
+    return count
+
 @app.route("/email/", methods=["POST"])
 def email():
     content = request.json
+    # Parses the JSON data to be dumped into a mailchimp list
     email = content["email"]
     first_name = content["name"]
+    
+    # Sends off data to add to list
     mailchimp.register_data(email, first_name)
 @app.route("/onsale/", methods = ["POST", "GET"])
 def onsale_data():
@@ -35,7 +51,6 @@ def onsale_data():
     
     data = {}
     
-
     # Creates a primary catagory
     data["All_subs".lower()] = []
 

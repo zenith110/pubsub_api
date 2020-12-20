@@ -6,6 +6,7 @@ import requests
 from PySide2 import QtWidgets, QtCore, QtGui
 from ui import uploader
 import connect_db
+from services import mailchimp
 class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
     def __init__(self):
         super(uploader, self).__init__()
@@ -36,6 +37,7 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
             dates = self.date.text()
             on_sale = self.on_sale.text()
             sub_name = sub_name.replace(" ", "-").lower()
+            original = self.sub_name.text().lower()
             price = self.price.text()
             image = self.image.text()
 
@@ -53,13 +55,13 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
                 update_query = (cur.execute(update_string.format(table = connect_db.get_table(), on_sale = on_sale, dates = dates, sub = sub_name)))
                 # Sends an email out if a sub is now on sale
                 if(on_sale == "True"):
-                    print("hi")
+                    mailchimp.send_email(original, dates, image)
             else:
                 print("This sub doesn't exist, now adding!")
                 # Inserts the data into each column
                 cur.execute('INSERT INTO ' + connect_db.get_table() + '(pubsub_name, dates, on_sale, price, image) VALUES (%s, %s, %s, %s, %s)', (sub_name, dates, on_sale, price, image))
                 if(on_sale == "True"):
-                    print("hi")
+                    mailchimp.send_email(original, dates, image)
                 
             connect_db.close(connection)
                 
