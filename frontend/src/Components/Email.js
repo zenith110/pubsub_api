@@ -1,5 +1,8 @@
 import React, {Component} from "react";
 import Modal from "react-modal";
+import { Container, Row, Col } from 'react-bootstrap';
+import './Email.css'
+
 class Email extends Component {
   constructor(props) {
     super(props);
@@ -36,17 +39,24 @@ class Email extends Component {
 
   render() {
     return (
-      <div className="newsletter-container">
-        <br />
-        <h1>
-          Join our newsletter!
-        </h1>
-        <h4>
-          Get notified whenever there's a pubsub sale!
-        </h4>
-          <center>
+      <Container className="newsletter-container">
+
+        <Row>
+          <Col className="newsletter-title">
+
+            <h1>
+              Get Notified <h2>for Pub-Sub Sales!</h2>
+            </h1>
+
+          </Col>
+          <Col className="newsletter-input">
+
+            <h2 className="newsletter-input-title">
+              Sign up for notifications today!
+            </h2>
+       
           <form className="form-group" onSubmit={this.handleSubmit}>
-            <div style={{ width: "80%" }} >
+            <div className="form-input" >
               <input
                 type="email"
                 className="form-control"
@@ -56,7 +66,7 @@ class Email extends Component {
               />
             </div>
             <br />
-            <div style={{ width: "80%" }} >
+            <div className="form-input" >
               <input
                 type="text"
                 className="form-control"
@@ -73,8 +83,11 @@ class Email extends Component {
               </button>
             </div>
           </form>
-       </center>
-      </div>
+          </Col>
+
+        </Row>
+
+      </Container>
     );
   }
 }
