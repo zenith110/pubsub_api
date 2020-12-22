@@ -1,15 +1,17 @@
 import React, {Component} from "react";
-import Modal from "react-modal";
-import { Container, Row, Col } from 'react-bootstrap';
-import './Email.css'
 
-class Email extends Component {
+import {Modal, Container, Row, Col, Button } from 'react-bootstrap';
+import './EmailModal.css'
+
+class EmailModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
       email: "",
       name: "",
+
     };
+    
   }
 
   handleInputChange = (e) => {
@@ -37,22 +39,17 @@ class Email extends Component {
       .then((json) => console.log(json));
   };
 
+
   render() {
     return (
       <Container className="newsletter-container">
 
         <Row>
-          <Col className="newsletter-title">
 
-            <h1>
-              Get Notified <h2>for Pub-Sub Sales!</h2>
-            </h1>
-
-          </Col>
           <Col className="newsletter-input">
 
             <h2 className="newsletter-input-title">
-              Sign up for notifications today!
+              Sign up for Email notifications today!
             </h2>
        
           <form className="form-group" onSubmit={this.handleSubmit}>
@@ -88,9 +85,11 @@ class Email extends Component {
         </Row>
 
       </Container>
+ 
+     
     );
   }
 }
 
-export default Email;
+export default EmailModal;
 

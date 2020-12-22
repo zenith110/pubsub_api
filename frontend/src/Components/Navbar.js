@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from "react";
-
+import {Nav, Container, Row, Col} from 'react-bootstrap';
+import "./Navbar.css"
 function Navbar() 
 {
     return(
-        <div>
-            <h1>
-                hey
-            </h1>
-        </div>
+       <div>
+       <Container fluid className="navbar">
+           <Row>
+               <Col>
+               <h1>Pub Sub Tracker v.2</h1>
+
+               </Col>
+           </Row>
+
+       </Container>
+       </div>
     )
 
 }

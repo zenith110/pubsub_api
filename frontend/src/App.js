@@ -2,7 +2,10 @@ import './App.css';
 import SubCard from "./Components/SubCard.js"
 import Carousel from 'react-elastic-carousel';
 import React, { Component } from 'react';
-import Email from "./Components/Email.js";
+import EmailModal from "./Components/EmailModal.js";
+import EmailModalButton from "./Components/EmailModalButton.js";
+import NotifcationsBox from "./Components/NotificationsBox.js"
+
 import Navbar from "./Components/Navbar.js"
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -19,7 +22,9 @@ function App() {
     <SubCard position={4}></SubCard>
     <SubCard position={5}></SubCard>
     </Carousel>
-    <Email></Email>
+
+    <NotifcationsBox/>
+
     
     </div>
   );

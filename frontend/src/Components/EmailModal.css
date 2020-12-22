@@ -1,6 +1,5 @@
 .newsletter-container {
-  background-color: #2fa364;
-  width: 1000px;
+  background-color: #34af6b;
 
   border-radius: 3px;
 }
@@ -81,4 +80,5 @@ h2.newsletter-input-title {
 .form-control:focus {
   border-color: rgb(0, 0, 0);
   border-width: 3px;
+  outline: none;
 }

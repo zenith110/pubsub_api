@@ -1,0 +1,16 @@
+.email-btn {
+  background-color: rgb(61, 146, 72);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.email-btn:hover {
+  background-color: rgb(77, 185, 92);
+}
+
+h3 {
+  font-family: "Poppins", sans-serif;
+}
