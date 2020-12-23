@@ -59,7 +59,12 @@ export default function EmailModalButton()
 
           <Tab eventKey="phone" title="Phone">
               <Modal.Body>
-                <EmailModal/>
+                <div>
+                  <h3>Enter phone number</h3>
+                  <input >
+                  </input>
+                  <button className="sub-btn">Subscribe</button>
+                </div>
               </Modal.Body>
 
           </Tab>

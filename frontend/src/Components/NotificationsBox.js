@@ -15,12 +15,11 @@ export default function NotificationsBox()
                 </Col>
 
             </Row>
-            <Row>
-                <Col>
+            <Row  className="justify-content-md-center">
+                <Col md="auto">
                 <EmailModalButton/>
                 </Col>
-                <Col>
-                </Col>
+
             </Row>
 
         </Container>

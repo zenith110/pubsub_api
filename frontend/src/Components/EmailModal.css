@@ -1,5 +1,6 @@
 .newsletter-container {
   background-color: #34af6b;
+  box-shadow: 3px 2px 10px #00000077;
 
   border-radius: 3px;
 }

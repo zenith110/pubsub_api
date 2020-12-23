@@ -16,5 +16,6 @@ h3 {
 }
 
 .tabs {
-  background-color: rgb(103, 221, 162);
+  background-color: rgb(255, 255, 255);
+  color: black !important;
 }
