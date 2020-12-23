@@ -5,6 +5,7 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.473);
 }
 
 .email-btn:hover {

@@ -8,7 +8,7 @@ function Navbar()
        <Container fluid className="navbar">
            <Row>
                <Col>
-               <h1>Pub Sub Tracker v.2</h1>
+               <h1>Pub Sub Tracker</h1>
 
                </Col>
            </Row>
