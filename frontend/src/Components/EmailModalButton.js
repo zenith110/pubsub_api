@@ -1,6 +1,6 @@
 import React, {Component, useState} from "react";
 import EmailModal from './EmailModal.js'
-import {Modal, Container, Row, Col, Button} from 'react-bootstrap';
+import {Modal, Container, Row, Col, Button, Tabs, Tab} from 'react-bootstrap';
 import { MailIcon } from 'react-mail-icon'
 
 import './EmailModalButton.css'
@@ -43,10 +43,30 @@ export default function EmailModalButton()
       </Button>
 
  
-
+        
         <Modal show={show} onHide={handleClose} animation={true} centered>
 
-        <Modal.Body><EmailModal/></Modal.Body>
+        <Tabs defaultActiveKey="email" className="tabs">
+
+          <Tab eventKey="email" title="Email">
+               
+            <Modal.Body>
+
+                <EmailModal/>
+            </Modal.Body>
+
+          </Tab>
+
+          <Tab eventKey="phone" title="Phone">
+              <Modal.Body>
+                <EmailModal/>
+              </Modal.Body>
+
+          </Tab>
+
+
+
+      </Tabs>
         <Modal.Footer>
           <Button className="sub-btn" variant="secondary" onClick={handleClose}>
             Close
