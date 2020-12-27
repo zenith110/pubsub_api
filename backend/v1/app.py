@@ -38,7 +38,7 @@ def phone_add():
 def num():
     connection = connect_db.connect()   
     cur = connection.cursor()
-    query = "SELECT COUNT(*) FROM {table}"
+    query = "SELECT COUNT(*) FROM {table} where pubsub_name is NOT NULL"
     cur.execute(query.format(table = connect_db.get_table()))
     count = cur.fetchone()
     count = str(count)
@@ -62,7 +62,7 @@ def email():
 def onsale_data():
     connection = connect_db.connect()   
     cur = connection.cursor()
-    query = "SELECT * FROM {table}"
+    query = "SELECT pubsub_name, dates, on_sale, price, image FROM {table} where pubsub_name is NOT NULL"
     cur.execute(query.format(table = connect_db.get_table()))
     sub_name = []
     last_on_sale = []
@@ -76,7 +76,7 @@ def onsale_data():
         on_sale.append(records[i][2])
         price.append(records[i][3])
         image.append(records[i][4])
-    
+    sub_name = [x for x in sub_name if x is not None]
     data = {}
     
     # Creates a primary catagory
