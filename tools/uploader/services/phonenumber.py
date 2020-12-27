@@ -1,7 +1,33 @@
-def sms(connect_db):
-    connection = connect_db.connect()   
+import json
+from twilio.rest import Client
+
+
+def sms(connect_db, sub_name, date):
+    # Opens up the twillo cred file
+    with open("services/twillo.json", "r") as cred:
+        data = json.load(cred)
+
+    # Parses the json for the needed information
+    account = data["ACCOUNT_SID"]
+    token = data["AUTH_TOKEN"]
+    # Connects the client so we can send messages
+    client = Client(account, token)
+    # Establishes connection and does database things
+    connection = connect_db.connect()
     cur = connection.cursor()
+    # Queries only for non null phone numbers
     query = "SELECT phone_number FROM {table} WHERE phone_number is not null"
-    cur.execute(query.format(table = connect_db.get_table()))
-    records = cur.fetchall()    
-    print(records)
+    cur.execute(query.format(table=connect_db.get_table()))
+    # Grabs data from query
+    records = cur.fetchall()
+    # Loops through the tuple to afix the phone number to message recipent
+    for index, numbers in enumerate(records):
+        for phone_number in range(0, len(records)):
+            message = client.messages.create(
+                to="+1" + str(numbers[phone_number]),
+                from_="+18705379503",
+                body="Hello there from pubsub-api.dev! Reaching out to you that "
+                + sub_name
+                + " is on sale from "
+                + date,
+            )

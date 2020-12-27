@@ -10,6 +10,7 @@
 
 from PySide2 import QtCore, QtGui, QtWidgets
 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -65,12 +66,27 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtWidgets.QApplication.translate("MainWindow", "MainWindow", None, -1))
-        self.upload.setText(QtWidgets.QApplication.translate("MainWindow", "Upload", None, -1))
-        self.label.setText(QtWidgets.QApplication.translate("MainWindow", "subname", None, -1))
-        self.label_2.setText(QtWidgets.QApplication.translate("MainWindow", "dates", None, -1))
-        self.label_3.setText(QtWidgets.QApplication.translate("MainWindow", "onsale", None, -1))
-        self.label_4.setText(QtWidgets.QApplication.translate("MainWindow", "price", None, -1))
-        self.label_5.setText(QtWidgets.QApplication.translate("MainWindow", "Image", None, -1))
-        self.delete_2.setText(QtWidgets.QApplication.translate("MainWindow", "Delete", None, -1))
-
+        MainWindow.setWindowTitle(
+            QtWidgets.QApplication.translate("MainWindow", "MainWindow", None, -1)
+        )
+        self.upload.setText(
+            QtWidgets.QApplication.translate("MainWindow", "Upload", None, -1)
+        )
+        self.label.setText(
+            QtWidgets.QApplication.translate("MainWindow", "subname", None, -1)
+        )
+        self.label_2.setText(
+            QtWidgets.QApplication.translate("MainWindow", "dates", None, -1)
+        )
+        self.label_3.setText(
+            QtWidgets.QApplication.translate("MainWindow", "onsale", None, -1)
+        )
+        self.label_4.setText(
+            QtWidgets.QApplication.translate("MainWindow", "price", None, -1)
+        )
+        self.label_5.setText(
+            QtWidgets.QApplication.translate("MainWindow", "Image", None, -1)
+        )
+        self.delete_2.setText(
+            QtWidgets.QApplication.translate("MainWindow", "Delete", None, -1)
+        )
