@@ -7,13 +7,14 @@ from PySide2 import QtWidgets, QtCore, QtGui
 from ui import uploader
 import connect_db
 from services import mailchimp
+from services import phonenumber
 class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
     def __init__(self):
         super(uploader, self).__init__()
         self.setupUi(self)
         self.upload.clicked.connect(self.add_entry)
         self.delete_2.clicked.connect(self.delete_entry)
-
+        phonenumber.sms(connect_db)
     
     def delete_entry(self):
         sub_name = self.sub_name.text()

@@ -9,6 +9,31 @@ from services import mailchimp
 import re
 app = Flask(__name__, static_url_path='/static')
 CORS(app)
+# Route to add phone numbers
+@app.route("/phone/", methods = ["POST", "GET"])
+def phone_add():
+    content = request.json
+    phone_number = content["phoneNumber"]
+    # Loops through the entire string character by character, and only grabs the numbers
+    # # Ignores the numbers or special characters
+    getVals = list([val for val in phone_number if val.isnumeric()]) 
+    # Joins back the list into a string to print at the end 
+    phone_number = "".join(getVals)
+    connection = connect_db.connect()   
+    cur = connection.cursor()
+    # Checks to see if that row exist
+    exist_query = "select exists(select 1 from {table} where phone_number ='{phone}' limit 1)"
+    exist_check = cur.execute(exist_query.format(table = connect_db.get_table(), phone = phone_number))
+    count = cur.fetchone()[0]
+    if(count == True):
+        print("Phone number within database, skipping!")
+    else:
+        print("Inserting " + phone_number + " into the db!")
+        cur.execute('INSERT INTO ' + connect_db.get_table() + '(phone_number) VALUES (' + phone_number + ')')
+        connect_db.close(connection)
+    return "Phone data now complete!"
+    
+# Gets the current sub count
 @app.route("/totalcount/", methods = ["POST", "GET"])
 def num():
     connection = connect_db.connect()   
@@ -24,12 +49,15 @@ def num():
 @app.route("/email/", methods=["POST"])
 def email():
     content = request.json
+    
     # Parses the JSON data to be dumped into a mailchimp list
     email = content["email"]
     first_name = content["name"]
-    
+
     # Sends off data to add to list
     mailchimp.register_data(email, first_name)
+
+
 @app.route("/onsale/", methods = ["POST", "GET"])
 def onsale_data():
     connection = connect_db.connect()   

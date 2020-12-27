@@ -1,16 +1,11 @@
 import './App.css';
 import SubCard from "./Components/SubCard.js"
 import Carousel from 'react-elastic-carousel';
-<<<<<<< HEAD
 import React, { Component, useState, useEffect} from 'react';
-import Email from "./Components/Email.js";
-=======
-import React, { Component } from 'react';
 import EmailModal from "./Components/EmailModal.js";
 import EmailModalButton from "./Components/EmailModalButton.js";
 import NotifcationsBox from "./Components/NotificationsBox.js"
 
->>>>>>> bec408bbcdbb1bd25ff35da6c17f0ef9554c4aaf
 import Navbar from "./Components/Navbar.js"
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -39,14 +34,10 @@ function App() {
     <Carousel>
     {SubCardArr}
     </Carousel>
-<<<<<<< HEAD
-    <Email></Email>
-=======
 
     <NotifcationsBox/>
 
     
->>>>>>> bec408bbcdbb1bd25ff35da6c17f0ef9554c4aaf
     </div>
   );
 }
