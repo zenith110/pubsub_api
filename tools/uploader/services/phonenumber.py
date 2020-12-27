@@ -22,9 +22,8 @@ def sms(connect_db, sub_name, date):
     records = cur.fetchall()
     # Loops through the tuple to afix the phone number to message recipent
     for index, numbers in enumerate(records):
-        for phone_number in range(0, len(records)):
-            message = client.messages.create(
-                to="+1" + str(numbers[phone_number]),
+        message = client.messages.create(
+                to="+1" + str(numbers[index]),
                 from_="+18705379503",
                 body="Hello there from pubsub-api.dev! Reaching out to you that "
                 + sub_name

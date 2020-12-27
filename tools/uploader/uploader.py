@@ -16,7 +16,6 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
         self.setupUi(self)
         self.upload.clicked.connect(self.add_entry)
         self.delete_2.clicked.connect(self.delete_entry)
-        phonenumber.sms(connect_db, "test", "01-22")
 
     def delete_entry(self):
         sub_name = self.sub_name.text()
