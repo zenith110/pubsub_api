@@ -16,7 +16,7 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
         self.setupUi(self)
         self.upload.clicked.connect(self.add_entry)
         self.delete_2.clicked.connect(self.delete_entry)
-
+        
     def delete_entry(self):
         sub_name = self.sub_name.text()
         dates = self.date.text()

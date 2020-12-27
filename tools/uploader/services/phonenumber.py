@@ -10,6 +10,7 @@ def sms(connect_db, sub_name, date):
     # Parses the json for the needed information
     account = data["ACCOUNT_SID"]
     token = data["AUTH_TOKEN"]
+    serive_sid = data["SERVICE_SID"]
     # Connects the client so we can send messages
     client = Client(account, token)
     # Establishes connection and does database things
@@ -22,11 +23,12 @@ def sms(connect_db, sub_name, date):
     records = cur.fetchall()
     # Loops through the tuple to afix the phone number to message recipent
     for index, numbers in enumerate(records):
-        message = client.messages.create(
-                to="+1" + str(numbers[index]),
-                from_="+18705379503",
-                body="Hello there from pubsub-api.dev! Reaching out to you that "
-                + sub_name
-                + " is on sale from "
-                + date,
-            )
+        phone_number = "+1" + str(numbers[index])
+        notification = client.notify.services(serive_sid).notifications.create(
+            # We recommend using a GUID or other anonymized identifier for Identity
+            to_binding='{"binding_type":"sms", "address":"' + phone_number + '"}',
+            body="Hello there from pubsub-api.dev! Reaching out to you that "
+            + sub_name
+            + " is on sale from "
+            + date,
+        )
