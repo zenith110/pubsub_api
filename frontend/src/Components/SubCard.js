@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Button from 'react-bootstrap/Button';
+import {Button, Card, Badge} from 'react-bootstrap';
 class Sub{
   constructor(){
     this.name = [];
@@ -33,21 +33,35 @@ function SubCard({position}) {
     sub.last_on_sale = subData.map(pubsub => pubsub.last_on_sale)
     if(sub.on_sale[position] === "False"){
       sub.status = "Not on sale"
+      sub.buttontype = "danger"
     }else if(sub.on_sale[position] === "True"){
       sub.status = "Sale"
-      sub.buttontype = "danger"
+      sub.buttontype = "success"
     }
   return (
           <div>
-            <button onClick={() => setModalIsOpen(true)}>
-            <img src={sub.image[position]}></img>
-            <p>
-            {
-              sub.name[position]
-            }
-            </p>
-            <button varient = {sub.buttontype}>{sub.status}</button>
-            </button>
+
+
+            <Card>
+              
+              <Card.Body>
+                <Card.Title>{sub.name[position]}</Card.Title>
+                <Card.Img src = {sub.image[position]} />
+                <Card.Text>
+                  <Badge pill variant = {sub.buttontype} >
+                      {sub.status}
+                  </Badge>
+                  <Button onClick={() => setModalIsOpen(true)}>
+                      More Info
+                  </Button>
+
+                </Card.Text>
+              </Card.Body>
+             
+            </Card>
+            
+            
+            
             <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)}
             style={
               {
@@ -57,14 +71,14 @@ function SubCard({position}) {
               }
             }>
             <center>
-            <img src={sub.image[position]}></img>
-            <p>Sub name: {sub.name[position]}</p>
-            <p>Last time on sale: {sub.last_on_sale[position]}</p>
-            <p>Price during sale: {sub.price[position]}</p>
-            <p>Status: {sub.status}</p>
-            <p>How to access {sub.name[position]} json:</p>
-            <p>https://pubsub-api.dev/subs/?name={sub.original_name[position]}</p>
-            <button onClick={() => setModalIsOpen(false)}>Close</button>
+              <img src={sub.image[position]}></img>
+              <p>Sub name: {sub.name[position]}</p>
+              <p>Last time on sale: {sub.last_on_sale[position]}</p>
+              <p>Price during sale: {sub.price[position]}</p>
+              <p>Status: {sub.status}</p>
+              <p>How to access {sub.name[position]} json:</p>
+              <p>https://pubsub-api.dev/subs/?name={sub.original_name[position]}</p>
+              <button onClick={() => setModalIsOpen(false)}>Close</button>
             </center>
             </Modal>
           </div>

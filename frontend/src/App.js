@@ -1,5 +1,6 @@
 import './App.css';
 import SubCard from "./Components/SubCard.js"
+import Grid from "./Components/Grid.js"
 import Carousel from 'react-elastic-carousel';
 import React, { Component, useState, useEffect} from 'react';
 import EmailModal from "./Components/EmailModal.js";
@@ -31,9 +32,7 @@ function App() {
     <div className="App">
     <Navbar></Navbar>
     <p>Current Subs</p>
-    <Carousel>
-    {SubCardArr}
-    </Carousel>
+    <Grid/>
 
     <NotifcationsBox/>
 
