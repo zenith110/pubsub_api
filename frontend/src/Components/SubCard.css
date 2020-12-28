@@ -1,0 +1,23 @@
+.sub-card {
+  background-color: rgb(255, 255, 255) !important;
+  margin-top: 70px;
+  border-color: #34af6b;
+  border-width: 4px;
+  box-shadow: 3px 2px 10px #3b3d3c88;
+}
+
+.sub-card-title {
+  text-transform: capitalize;
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+}
+
+.sub-card-img {
+  object-fit: scale-down;
+  height: 400px;
+  width: 350px;
+}
+
+.badge {
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+}

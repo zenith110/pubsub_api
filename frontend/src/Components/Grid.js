@@ -15,7 +15,7 @@ function Grid() {
     var i;
     // Creates an array of subcard components
     for(i = 0; i < subCount; i++){
-      SubCardArr.push(<SubCard position={i}></SubCard>)
+      SubCardArr.push(<SubCard className="sub-card" position={i}></SubCard>)
     }
     // Sends a post request for our number of subs
     useEffect(()=>{
@@ -34,7 +34,7 @@ function Grid() {
     }
     return (
       <div>
-         <CardDeck>
+         <CardDeck className="grid-deck">
              {SubCardArr}
              
          </CardDeck>

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Button, Card, Badge} from 'react-bootstrap';
+import {Button, Card, Badge, Container, Row, Col} from 'react-bootstrap';
+import './SubCard.css'
+
 class Sub{
   constructor(){
     this.name = [];
@@ -32,7 +34,7 @@ function SubCard({position}) {
     sub.price = subData.map(pubsub => pubsub.price)
     sub.last_on_sale = subData.map(pubsub => pubsub.last_on_sale)
     if(sub.on_sale[position] === "False"){
-      sub.status = "Not on sale"
+      sub.status = "Not On sale"
       sub.buttontype = "danger"
     }else if(sub.on_sale[position] === "True"){
       sub.status = "Sale"
@@ -42,19 +44,31 @@ function SubCard({position}) {
           <div>
 
 
-            <Card>
+            <Card className="sub-card">
+            <Card.Img className="sub-card-img" variant="top" src = {sub.image[position]} />
               
               <Card.Body>
-                <Card.Title>{sub.name[position]}</Card.Title>
-                <Card.Img src = {sub.image[position]} />
+                <Card.Title className="sub-card-title">{sub.name[position]}</Card.Title>
+                
                 <Card.Text>
-                  <Badge pill variant = {sub.buttontype} >
+                  <Container>
+                    <Row>
+                      <Col>
+                      <Badge className="badge" pill variant = {sub.buttontype} >
+                      <h4>
                       {sub.status}
+                        </h4>
                   </Badge>
-                  <Button onClick={() => setModalIsOpen(true)}>
+                      </Col>
+                      <Col>
+                      <Button className="more-info-btn" onClick={() => setModalIsOpen(true)}>
                       More Info
                   </Button>
-
+</Col>
+                    </Row>
+                  </Container>
+                
+           
                 </Card.Text>
               </Card.Body>
              

@@ -43,23 +43,29 @@ function App() {
 
         </Row>
         <Row>
-            <Col>
+            <Col >
               <Button>All</Button>
               <Button>Sale</Button>
               <Button>Not On Sale</Button>
             </Col>
           </Row>
 
-        <Row>
+        <Row >
 
        
-          <Col>    <Grid/></Col>
+          <Col className="grid">    <Grid/></Col>
+        </Row>
+        <Row>
+          <Col>
+          <NotifcationsBox/>
+
+          </Col>
+
         </Row>
       
  
 
 
-    <NotifcationsBox/>
 
     
 
