@@ -37,7 +37,7 @@ function SubCard({position}) {
       sub.status = "Not On sale"
       sub.buttontype = "danger"
     }else if(sub.on_sale[position] === "True"){
-      sub.status = "Sale"
+      sub.status = "On Sale"
       sub.buttontype = "success"
     }
   return (
@@ -51,20 +51,20 @@ function SubCard({position}) {
                 <Card.Title className="sub-card-title">{sub.name[position]}</Card.Title>
                 
                 <Card.Text>
-                  <Container>
-                    <Row>
-                      <Col>
-                      <Badge className="badge" pill variant = {sub.buttontype} >
-                      <h4>
-                      {sub.status}
-                        </h4>
-                  </Badge>
+                  <Container fluid>
+                    <Row className="card-details">
+                      <Col sm={4} >
+                          <Badge className="badge" pill variant = {sub.buttontype} >
+                             <h4>
+                              {sub.status}
+                             </h4>
+                          </Badge>
                       </Col>
-                      <Col>
-                      <Button className="more-info-btn" onClick={() => setModalIsOpen(true)}>
-                      More Info
-                  </Button>
-</Col>
+                      <Col sm={{ span: 4, offset: 4 }}>
+                        <Button size = "lg" className="more-info-btn" onClick={() => setModalIsOpen(true)}>
+                          Info
+                        </Button>
+                      </Col>
                     </Row>
                   </Container>
                 

@@ -35,7 +35,7 @@ function App() {
       <Container fluid>
         <Row>
           <Col>
-          <h2>
+          <h2 style={{'fontFamily': 'Poppins'}}>
             Current Subs
           </h2>
           <br/>
@@ -62,11 +62,6 @@ function App() {
           </Col>
 
         </Row>
-      
- 
-
-
-
     
 
       </Container>

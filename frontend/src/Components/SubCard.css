@@ -21,3 +21,24 @@
 .badge {
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
 }
+
+.more-info-btn {
+  background-color: #ffffff;
+  border-radius: 12px;
+  color: black;
+  border-color: rgb(34, 33, 33);
+  border-width: 3px;
+}
+
+.more-info-btn:hover {
+  background-color: rgba(43, 41, 41, 0.788);
+  color: white;
+  border-color: rgb(43, 41, 41);
+}
+
+.card-details {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: row;
+}
