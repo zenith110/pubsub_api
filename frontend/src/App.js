@@ -9,6 +9,7 @@ import NotifcationsBox from "./Components/NotificationsBox.js"
 
 import Navbar from "./Components/Navbar.js"
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Container, Row, Col, CardDeck, Card, Button} from 'react-bootstrap';
 
 function App() {
   // Assigns state to count so we can add new subs
@@ -30,13 +31,40 @@ function App() {
 
   return (
     <div className="App">
-    <Navbar></Navbar>
-    <p>Current Subs</p>
-    <Grid/>
+      <Navbar></Navbar>
+      <Container fluid>
+        <Row>
+          <Col>
+          <h2>
+            Current Subs
+          </h2>
+          <br/>
+          </Col>
+
+        </Row>
+        <Row>
+            <Col>
+              <Button>All</Button>
+              <Button>Sale</Button>
+              <Button>Not On Sale</Button>
+            </Col>
+          </Row>
+
+        <Row>
+
+       
+          <Col>    <Grid/></Col>
+        </Row>
+      
+ 
+
 
     <NotifcationsBox/>
 
     
+
+      </Container>
+
     </div>
   );
 }
