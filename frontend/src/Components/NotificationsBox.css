@@ -1,5 +1,8 @@
 .notifications-container {
   background-color: rgb(112, 219, 112);
-  height: 320px;
-  width: 600px;
+  height: 350px;
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }

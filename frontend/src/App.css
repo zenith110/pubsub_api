@@ -13,3 +13,14 @@
   color: black !important;
   margin-right: 20px !important;
 }
+
+.newsletter-margin {
+  margin: 200px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  margin-left: 100px;
+}

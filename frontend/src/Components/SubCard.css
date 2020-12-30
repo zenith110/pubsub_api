@@ -4,6 +4,7 @@
   border-color: #34af6b;
   border-width: 4px;
   box-shadow: 3px 2px 10px #3b3d3c88;
+  width: 400px;
 }
 
 .sub-card-title {
@@ -15,9 +16,8 @@
 }
 
 .sub-card-img {
-  object-fit: scale-down;
+  object-fit: cover;
   height: 400px;
-  width: 350px;
 }
 
 .badge {

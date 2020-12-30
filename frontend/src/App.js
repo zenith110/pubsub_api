@@ -34,7 +34,7 @@ function App() {
       <Navbar></Navbar>
       <Container fluid>
         <Row>
-          <Col>
+          <Col className="header">
           <h2 style={{'fontFamily': 'Poppins'}}>
             Current Subs
           </h2>
@@ -43,7 +43,7 @@ function App() {
 
         </Row>
         <Row>
-            <Col >
+            <Col className="header">
               <Button className="filter-btn" >All</Button>
               <Button className="filter-btn">On Sale</Button>
               <Button className="filter-btn">Not On Sale</Button>
@@ -55,9 +55,9 @@ function App() {
        
           <Col className="grid">    <Grid/></Col>
         </Row>
-        <Row>
+        <Row  className="newsletter-margin">
           <Col>
-          <NotifcationsBox/>
+            <NotifcationsBox/>
 
           </Col>
 
