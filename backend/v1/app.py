@@ -77,19 +77,21 @@ def onsale_data():
         price.append(records[i][3])
         image.append(records[i][4])
     sub_name = [x for x in sub_name if x is not None]
+    original_name = [w.replace("-", " ") for w in sub_name]
     data = {}
-    
+
     # Creates a primary catagory
     data["All_subs".lower()] = []
 
     # Create a default JSON structure
     for i in range(len(records)):
         data["All_subs".lower()].append({
-            "name": sub_name[i],
+            "name": original_name[i],
             "on_sale": on_sale[i],
             "image": image[i],
             "last_on_sale": last_on_sale[i],
-            "price": price[i]
+            "price": price[i],
+            "query_name": sub_name[i]
             }) 
         
     return jsonify(data["All_subs".lower()])

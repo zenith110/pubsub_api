@@ -74,7 +74,7 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
             )
             # Sends an email out if a sub is now on sale
             if on_sale == "True":
-                mailchimp.send_email(original, dates, image)
+                mailchimp.send_email(original, dates)
                 phonenumber.sms(connect_db, original, dates)
         else:
             print("This sub doesn't exist, now adding!")
@@ -86,7 +86,7 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
                 (sub_name, dates, on_sale, price, image),
             )
             if on_sale == "True":
-                mailchimp.send_email(original, dates, image)
+                mailchimp.send_email(original, dates)
                 phonenumber.sms(connect_db, original, dates)
 
         connect_db.close(connection)
