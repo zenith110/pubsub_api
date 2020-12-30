@@ -4,3 +4,12 @@
   justify-content: center;
   background-color: rgba(255, 255, 255, 0.568);
 }
+
+.filter-btn {
+  background-color: white !important;
+  border-width: 3px !important;
+  border-radius: 20px !important;
+  border-color: #34af6b !important;
+  color: black !important;
+  margin-right: 20px !important;
+}

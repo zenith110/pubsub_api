@@ -34,7 +34,7 @@ function SubCard({position}) {
     sub.price = subData.map(pubsub => pubsub.price)
     sub.last_on_sale = subData.map(pubsub => pubsub.last_on_sale)
     if(sub.on_sale[position] === "False"){
-      sub.status = "Not On sale"
+      sub.status = "Not On Sale"
       sub.buttontype = "danger"
     }else if(sub.on_sale[position] === "True"){
       sub.status = "On Sale"

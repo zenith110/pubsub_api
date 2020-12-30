@@ -9,7 +9,7 @@ import NotifcationsBox from "./Components/NotificationsBox.js"
 
 import Navbar from "./Components/Navbar.js"
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col, CardDeck, Card, Button} from 'react-bootstrap';
+import { Container, Row, Col, CardDeck, Card, Button, ToggleButton} from 'react-bootstrap';
 
 function App() {
   // Assigns state to count so we can add new subs
@@ -44,9 +44,9 @@ function App() {
         </Row>
         <Row>
             <Col >
-              <Button>All</Button>
-              <Button>Sale</Button>
-              <Button>Not On Sale</Button>
+              <Button className="filter-btn" >All</Button>
+              <Button className="filter-btn">On Sale</Button>
+              <Button className="filter-btn">Not On Sale</Button>
             </Col>
           </Row>
 
