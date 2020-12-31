@@ -15,12 +15,14 @@
 }
 
 .newsletter-margin {
-  margin: 200px;
+  margin-top: 200px;
+  margin-bottom: 200px;
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: left;
-  margin-left: 100px;
+  margin-left: 120px;
+  margin-top: 30px;
 }

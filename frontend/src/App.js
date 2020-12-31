@@ -35,7 +35,7 @@ function App() {
       <Container fluid>
         <Row>
           <Col className="header">
-          <h2 style={{'fontFamily': 'Poppins'}}>
+          <h2 style={{'fontFamily': 'Poppins', 'font-size': '40px'}}>
             Current Subs
           </h2>
           <br/>
@@ -65,6 +65,7 @@ function App() {
     
 
       </Container>
+      
 
     </div>
   );
