@@ -1,0 +1,20 @@
+.filter-btn {
+  background-color: white !important;
+  border-width: 3px !important;
+  border-radius: 20px !important;
+  border-color: #34af6b !important;
+  color: black !important;
+  margin-right: 20px !important;
+  font-weight: 600;
+}
+
+.filter-btn:hover {
+  background-color: #34af6b5d !important;
+}
+
+.filter-btn:focus {
+  background-color: #34af6bb7 !important;
+  outline: none;
+  box-shadow: none;
+  color: white !important;
+}

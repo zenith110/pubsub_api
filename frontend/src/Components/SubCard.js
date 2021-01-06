@@ -17,7 +17,9 @@ class Sub{
   }
 }
 Modal.setAppElement("#root")
-function SubCard({position}) {
+const SubCard = ({position}, params) => {
+
+    let SubArr = []
     let[subData, setSub] = useState([])
     const [modalIsOpen, setModalIsOpen] = useState(false)
     let sub = new Sub();
@@ -36,10 +38,15 @@ function SubCard({position}) {
     if(sub.on_sale[position] === "False"){
       sub.status = "Not On Sale"
       sub.buttontype = "danger"
+      //params.setSale = false
+   
     }else if(sub.on_sale[position] === "True"){
       sub.status = "On Sale"
       sub.buttontype = "success"
+      
     }
+
+    
   return (
           <div>
 

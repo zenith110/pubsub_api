@@ -7,15 +7,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, CardDeck, Card} from 'react-bootstrap';
 
 
-function Grid() {
+function Grid({filter}) {
     // Assigns state to count so we can add new subs
-    let[subCount, setSubCount] = useState([])
-  
+    const [subCount, setSubCount] = useState([])
+    const [sale, setSale] = useState(false)
+
+    
+    console.log(filter)
     let SubCardArr = [];
     var i;
     // Creates an array of subcard components
     for(i = 0; i < subCount; i++){
-      SubCardArr.push(<SubCard className="sub-card" position={i}></SubCard>)
+      SubCardArr.push(<SubCard className="sub-card" position={i} setSale={setSale}></SubCard>)
     }
     // Sends a post request for our number of subs
     useEffect(()=>{
@@ -26,17 +29,11 @@ function Grid() {
     }, [])
   
     // Will render grid 
-    const renderGrid = () =>
-    {
-        return (<Col>
-        <SubCard/>
-        </Col>)
-    }
+
     return (
       <div>
          <CardDeck className="grid-deck">
-             {SubCardArr}
-             
+             {SubCardArr} 
          </CardDeck>
 
    
