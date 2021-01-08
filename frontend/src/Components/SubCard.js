@@ -29,6 +29,9 @@ const SubCard = ({position}, params) => {
         .then((data) => setSub(data))
         .catch((error) => console.log(error))
       }, [])
+
+
+ 
     sub.query_name =  subData.map(pubsub => pubsub.query_name)
     sub.original_name = subData.map(pubsub => pubsub.name)
     sub.image = subData.map(pubsub => pubsub.image)
@@ -38,7 +41,7 @@ const SubCard = ({position}, params) => {
     if(sub.on_sale[position] === "False"){
       sub.status = "Not On Sale"
       sub.buttontype = "danger"
-      //params.setSale = false
+      params.setSale = false
    
     }else if(sub.on_sale[position] === "True"){
       sub.status = "On Sale"
@@ -107,3 +110,22 @@ const SubCard = ({position}, params) => {
 }
 
 export default SubCard;
+
+/*
+const SubGrid = ({SubCard}) =>
+{
+   if (subData.length < 0)
+    {let subCount = subData.length;}
+
+  let SubCardArr = [];
+  var i;
+     // Creates an array of subcard components
+  for(i = 0; i < subCount; i++){
+    SubCardArr.push(<SubCard className="sub-card" position={i}></SubCard>)
+  }
+
+  return (
+    <CardDeck>{SubCardArr}</CardDeck>
+  )
+}
+*/
