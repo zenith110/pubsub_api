@@ -12,7 +12,7 @@ function Grid({filter}) {
     const [subCount, setSubCount] = useState([])
     const [sale, setSale] = useState(false)
 
-    
+    console.log("Filtering \n")
     console.log(filter)
     let SubCardArr = [];
     var i;

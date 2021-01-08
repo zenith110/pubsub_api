@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "client": "cd frontend && npm start",
-    "server": "cd backend/v1/ && set FLASK_APP=app.py && flask run",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "server_v1": "cd backend/v1/src/ && set FLASK_APP=app.py && flask run",
+    "v1": "concurrently \"npm run server_v1\" \"npm run client\""
   },
   "repository": {
     "type": "git",

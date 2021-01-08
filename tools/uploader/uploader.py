@@ -1,6 +1,5 @@
 import psycopg2
 import json
-import pandas as pd
 import os
 import requests
 from PySide2 import QtWidgets, QtCore, QtGui
