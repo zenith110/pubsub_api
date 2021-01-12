@@ -8,27 +8,36 @@ import {Button} from 'react-bootstrap';
 
 const FilterButtons = (props) => {
 
+    useEffect(() =>
+    {
+      
+
+    })
+
     const handleButtons = (e) =>
     {
       if (e.target.value === "All")
       {
          //Show all subs
 
-        props.setFilter("All")
+        props.setOption("All")
+        return true
       }
      
       else if (e.target.value === "Sale")
       {
           //Show sale sub(s)
 
-        props.setFilter("Sale")
+        props.setOption("Sale")
+        return true
       }
     
       else if (e.target.value == "NotSale")
       {
         //Show not sale items
 
-        props.setFilter("NotSale")
+        props.setOption("NotSale")
+        return true
       }
       
     }

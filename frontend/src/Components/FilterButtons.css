@@ -18,3 +18,10 @@
   box-shadow: none;
   color: white !important;
 }
+
+.filter-btn:active {
+  background-color: #34af6bb7 !important;
+  outline: none;
+  box-shadow: none;
+  color: white !important;
+}
