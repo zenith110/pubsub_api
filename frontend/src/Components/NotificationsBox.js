@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import {Nav, Container, Row, Col} from 'react-bootstrap';
 import "./NotificationsBox.css"
 import EmailModalButton from "./EmailModalButton.js"
+
 export default function NotificationsBox() 
 {
     return(
@@ -12,6 +13,7 @@ export default function NotificationsBox()
                     <h1 style={{'text-align': 'center'}}>
                          Want to get notified?
                     </h1>
+                    <h4>Sign up for SMS or Email notifications for your favorite sub</h4>
                 </Col>
 
             </Row>
@@ -21,6 +23,9 @@ export default function NotificationsBox()
                 </Col>
 
             </Row>
+            
+
+           
 
         </Container>
     );

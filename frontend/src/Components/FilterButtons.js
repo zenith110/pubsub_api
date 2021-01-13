@@ -45,7 +45,7 @@ const FilterButtons = (props) => {
     return (
       <div>
 
-              <Button value="All" className="filter-btn" onClick={handleButtons}>All</Button>
+              <Button value="All" className="filter-btn" onClick={handleButtons} >All</Button>
               <Button value="Sale" className="filter-btn" onClick={handleButtons}>On Sale</Button>
               <Button value="NotSale" className="filter-btn" onClick={handleButtons}>Not On Sale</Button>
 

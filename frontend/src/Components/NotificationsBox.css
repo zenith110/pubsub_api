@@ -8,3 +8,10 @@
 
   border-radius: 12px;
 }
+
+.notifications-container h4 {
+  font-family: "Poppins" sans-serif;
+  font-style: oblique;
+  color: white;
+  font-weight: 600;
+}

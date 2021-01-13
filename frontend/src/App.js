@@ -1,5 +1,7 @@
 import './App.css';
+
 import SubCardv2 from "./Components/SubCardv2.js"
+
 import Grid from "./Components/Grid.js"
 import Carousel from 'react-elastic-carousel';
 import React, { Component, useState, useEffect} from 'react';
@@ -14,7 +16,7 @@ import { Container, Row, Col, CardDeck, Card, Button, ToggleButton} from 'react-
 
 function App() {
   // Assigns state to count so we can add new subs
-  const[option, setOption] = useState("")
+  const[option, setOption] = useState("All")
 
 
 

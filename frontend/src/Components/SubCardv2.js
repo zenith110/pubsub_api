@@ -1,22 +1,16 @@
 import React, { useState, useEffect } from "react";
-import Modal from "react-modal";
+//import Modal from "react-modal";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Button, Card, Badge, Container, Row, Col, CardDeck} from 'react-bootstrap';
+import {Button, Card, Badge, Container, Row, Col, CardDeck, Modal} from 'react-bootstrap';
 import './SubCardv2.css'
 
-
-Modal.setAppElement("#root")
-const SubCardv2 = ( {option},props) => {
+const SubCardv2 = ( {option}) => {
 
     let [subData, setSub] = useState([])
     const [modalIsOpen, setModalIsOpen] = useState(false)
-    
     let subsLength = subData.length
 
-    console.log(subsLength)
-
-    console.log(subData)
-
+    // fetching pubsub data
     useEffect(()=>{
         fetch('http://localhost:5000/onsale/')
         .then ((response) => response.json())
@@ -32,6 +26,7 @@ const SubCardv2 = ( {option},props) => {
               <CardDeck className="grid-deck" >
 
               {
+                // filters pubsub cards bases on filterbuttons
                 subData.filter(data => 
                     {
                         if (option == 'All')
@@ -53,7 +48,7 @@ const SubCardv2 = ( {option},props) => {
                 
                 
                     
-                    
+                    //maps the filtered array to card component
                     ).map(pubsub => {
 
                     return(
@@ -91,14 +86,8 @@ const SubCardv2 = ( {option},props) => {
                         
                         
                         
-                        <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)}
-                        style={
-                          {
-                            overlay: {
-                              backgroundColor: "gray"
-                            }
-                          }
-                        }>
+                        <Modal key={pubsub} show={modalIsOpen} onHide={() => setModalIsOpen(false)} centered
+                      >
                         <center>
                           <img src={pubsub.image}></img>
                           <p>Sub name: {pubsub.name}</p>
