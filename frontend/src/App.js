@@ -34,7 +34,7 @@ function App() {
 
         </Row>
         <Row>
-            <Col className="header">
+            <Col className="header grid">
               <FilterButtons setOption={setOption}/>
 
             </Col>
