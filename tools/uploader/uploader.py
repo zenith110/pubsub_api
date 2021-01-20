@@ -62,13 +62,14 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
         # If our data returns true, update the status and dates
         if count == True:
             print("There exist a version of " + sub_name + " now updating!")
-            update_string = "Update {table} SET on_sale = '{on_sale}', dates = '{dates}' where pubsub_name = '{sub}'"
+            update_string = "Update {table} SET on_sale = '{on_sale}', dates = '{dates}', price = '{price}', where pubsub_name = '{sub}'"
             update_query = cur.execute(
                 update_string.format(
                     table=connect_db.get_table(),
                     on_sale=on_sale,
                     dates=dates,
                     sub=sub_name,
+                    price = price,
                 )
             )
             # Sends an email out if a sub is now on sale

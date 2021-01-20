@@ -10,7 +10,7 @@ def close(connection):
     # Push the data onto the database
     connection.commit()
 
-    print("Data now deleted, close if done!")
+    print("Closing connection to the database!")
     # Close the database
     connection.close()
 
