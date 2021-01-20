@@ -17,8 +17,7 @@ const SubCardv2 = ( {option}) => {
       setModalIsOpen(true);
       setSubIndex(e.target.id);
       setCurSub(e.target.value)
-      //console.log(subData)
-      console.log("Cur Sub" + e.target.value)
+
     }
     const handleClose = () => setModalIsOpen(false)
 
@@ -32,19 +31,28 @@ const SubCardv2 = ( {option}) => {
       }, [])
 
     
-
+      
       // Modal function returning data by using handleOpen()
+      // Why does this look complicated?
+      //
+      // Answer:
+      // I am mapping all the buttons on each sub card to the correct modal.
+      // This was the only way to work around a react bug that does not allow for modals to be called
+      // over and over again when rendering each individual sub card
       const CustomModal = () =>
       {
         
         return (
 
-          <Modal show={modalIsOpen} onHide={handleClose} centered id={subIndex} animation={false} size="sm">
+          <Modal className= "sub-modal" show={modalIsOpen} onHide={handleClose} centered id={subIndex} animation={false} size="md">
 
           
-            <Modal.Header>
-                          <Modal.Title>
-                              {subData.filter(sub => {
+            <Modal.Header >
+                          <Modal.Title >
+                            <div className="modal-title">
+
+                            <h2>
+                            {subData.filter(sub => {
                                 if(sub.name == curSub)
                                 {
                                   return sub
@@ -53,11 +61,17 @@ const SubCardv2 = ( {option}) => {
                                 }
                               ).map(sub => {return sub.name})
                               }
+
+                            </h2>
+                              
+                            </div>
+                            
+                            
                           </Modal.Title>
 
                         </Modal.Header>
-                        <Modal.Body>
-                             <img src={subData.filter(sub => {
+                        <Modal.Body className="modal-image-container">
+                             <img className="modal-image" src={subData.filter(sub => {
                                 if(sub.name == curSub)
                                 {
                                   return sub
@@ -70,10 +84,27 @@ const SubCardv2 = ( {option}) => {
                           </Modal.Body>
                           <Modal.Footer>
                             <h3>
-                              {"$" + subData[subIndex].price}
+                              $
+                            {subData.filter(sub => {
+                                if(sub.name == curSub)
+                                {
+                                  return sub
+                                } 
+                                
+                                }
+                              ).map(sub => {return sub.price})
+                              }
                             </h3>
                             <h2>
-                              {subData[subIndex].on_sale}
+                            {subData.filter(sub => {
+                                if(sub.name == curSub)
+                                {
+                                  return sub
+                                } 
+                                
+                                }
+                              ).map(sub => {return sub.on_sale=== "True" ? "Sale": "Not On Sale"})
+                              }
                             </h2>
                             <Button onClick={handleClose}>Close</Button>
             </Modal.Footer>
