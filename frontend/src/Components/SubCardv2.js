@@ -30,6 +30,8 @@ const SubCardv2 = ( {option}) => {
 
       }, [])
 
+      console.log(subData)
+
     
       
       // Modal function returning data by using handleOpen()
@@ -63,6 +65,8 @@ const SubCardv2 = ( {option}) => {
                               }
 
                             </h2>
+
+                            
                               
                             </div>
                             
@@ -105,6 +109,19 @@ const SubCardv2 = ( {option}) => {
                                 }
                               ).map(sub => {return sub.on_sale=== "True" ? "Sale": "Not On Sale"})
                               }
+                            </h2>
+                            <h2>
+                              Last on Sale:
+                              {subData.filter(sub => {
+                                if(sub.name == curSub)
+                                {
+                                  return sub
+                                } 
+                                
+                                }
+                              ).map(sub => {return sub.last_on_sale})
+                              }
+
                             </h2>
                             <Button onClick={handleClose}>Close</Button>
             </Modal.Footer>
