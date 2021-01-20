@@ -2,15 +2,21 @@ version: "3.9"
 services:
   backend:
     build: ./backend/v1
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
     ports:
     - 5000:80
   frontend:
     build: ./frontend/
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
     stdin_open: true 
     volumes:
       - '/app/node_modules'
     ports:
-      - 5001:3000
+      - 5005:3000
+    depends_on: 
+    - backend
     
     
   
