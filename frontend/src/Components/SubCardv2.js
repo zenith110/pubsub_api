@@ -84,7 +84,7 @@ const SubCardv2 = ( {option}) => {
                           </Modal.Body>
                           <Modal.Footer>
                             <h3>
-                              $
+                              
                             {subData.filter(sub => {
                                 if(sub.name == curSub)
                                 {

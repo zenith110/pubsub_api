@@ -19,7 +19,9 @@
 .sub-card-img {
   object-fit: cover;
   height: 400px;
-  border-radius: 18px;
+
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
 }
 
 .badge {
