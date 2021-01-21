@@ -87,7 +87,10 @@ const SubCardv2 = ( {option}) => {
 
                           </Modal.Body>
                           <Modal.Footer>
-                            <h3>
+                            <Container className="modal-details-container">
+                              <Row>
+                                <Col>
+                                <h3 style={{fontWeight: 600}}>
                               
                             {subData.filter(sub => {
                                 if(sub.name == curSub)
@@ -96,10 +99,14 @@ const SubCardv2 = ( {option}) => {
                                 } 
                                 
                                 }
-                              ).map(sub => {return sub.price})
+                              ).map(sub => {return sub.price })
                               }
                             </h3>
-                            <h2>
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col>
+                                
                             {subData.filter(sub => {
                                 if(sub.name == curSub)
                                 {
@@ -107,10 +114,14 @@ const SubCardv2 = ( {option}) => {
                                 } 
                                 
                                 }
-                              ).map(sub => {return sub.on_sale=== "True" ? "Sale": "Not On Sale"})
+                              ).map(sub => {return sub.on_sale=== "True" ? <h2 style={{color: 'green'}}>Sale</h2>: <h2 style={{color: 'red'}}>Not On Sale</h2>})
                               }
-                            </h2>
-                            <h2>
+                            
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col>
+                                <h2>
                               Last on Sale:
                               {subData.filter(sub => {
                                 if(sub.name == curSub)
@@ -123,7 +134,19 @@ const SubCardv2 = ( {option}) => {
                               }
 
                             </h2>
-                            <Button onClick={handleClose}>Close</Button>
+                                </Col>
+                              </Row>
+
+                              <Row>
+                                <Col>
+                                <Button onClick={handleClose}>Close</Button>
+                                </Col>
+                              </Row>
+                            </Container>
+                            
+                           
+                            
+                           
             </Modal.Footer>
         
           </Modal>
@@ -216,6 +239,9 @@ const SubCardv2 = ( {option}) => {
                 }
                 )
 
+              }
+              {
+                subData.length === 0 ? <h1>Nothing here</h1> : ""
               }
 
               </CardDeck>

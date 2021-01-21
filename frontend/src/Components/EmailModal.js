@@ -1,9 +1,14 @@
-import React, {Component} from "react";
+import React, {Component, useState} from "react";
 
 import {Modal, Container, Row, Col, Button } from 'react-bootstrap';
+import CheckBox from "./CheckBox"
 import './EmailModal.css'
 
-class EmailModal extends Component {
+const EmailModal = () =>{
+  const [email, setEmail] = useState("")
+  const [name, setName] = useState("")
+
+  /*
   constructor(props) {
     super(props);
     this.state = {
@@ -13,17 +18,20 @@ class EmailModal extends Component {
     };
     
   }
+  */
 
-  handleInputChange = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value,
-    });
+  const handleInputChange = (e) => {
+    
+    if(e.target.name == 'email')
+      setEmail(e.target.value)
+    else if (e.target.name == 'name')
+      setName(e.target.value)
+
   };
 
-  handleSubmit = (e) => {
-    e.preventDefault();
 
-    const { email, name } = this.state;
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
     const info = {
       email,
@@ -40,26 +48,28 @@ class EmailModal extends Component {
   };
 
 
-  render() {
+  
     return (
-      <Container className="newsletter-container">
+      <div>
+      <form className="form-group" onSubmit={handleSubmit}>
+        <Container className="newsletter-container">
 
-        <Row>
+          <Row>
 
-          <Col className="newsletter-input">
+            <Col className="newsletter-input">
 
             <h2 className="newsletter-input-title">
               Sign up for Email notifications today!
             </h2>
        
-          <form className="form-group" onSubmit={this.handleSubmit}>
+          
             <div className="form-input" >
               <input
                 type="email"
                 className="form-control"
                 name="email"
                 placeholder="Email"
-                onChange={this.handleInputChange}
+                onChange={handleInputChange}
               />
             </div>
             <br />
@@ -69,26 +79,42 @@ class EmailModal extends Component {
                 className="form-control"
                 name="name"
                 placeholder="First Name"
-                onChange={this.handleInputChange}
+                onChange={handleInputChange}
               />
             </div>
-            <div className="sub-btn-container">
+
+        
+          </Col>
+
+        </Row>
+
+        <Row>
+          <Col>
+            <CheckBox />
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
+          <div className="sub-btn-container">
               <button className="sub-btn " type="submit">
                 <h4>
                 Subscribe
                 </h4>
               </button>
             </div>
-          </form>
           </Col>
-
         </Row>
 
-      </Container>
+        
+
+          </Container>
+          </form>
+       </div>
  
      
     );
-  }
+  
 }
 
 export default EmailModal;

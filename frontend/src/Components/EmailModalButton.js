@@ -44,7 +44,7 @@ export default function EmailModalButton()
 
  
         
-        <Modal show={show} onHide={handleClose} animation={true} centered>
+        <Modal show={show} onHide={handleClose} animation={true} centered className="email-modal">
 
         <Tabs defaultActiveKey="email" className="tabs">
 

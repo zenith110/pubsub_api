@@ -54,8 +54,8 @@
 }
 
 .modal-image {
-  width: 300px !important;
-  height: 300px !important;
+  width: 400px !important;
+  height: 400px !important;
 }
 
 .modal-image-container {
@@ -79,4 +79,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 20px;
+}
+
+.modal-details-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.modal-content {
+  border-color: seagreen;
+  border-width: 7px;
+  box-shadow: 10px 10px 12px rgba(83, 80, 80, 0.068);
 }
