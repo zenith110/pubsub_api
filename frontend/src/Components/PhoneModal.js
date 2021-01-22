@@ -1,29 +1,26 @@
-import React, {Component} from "react";
-
+import React, {useState} from "react";
+import CheckBox from "./CheckBox"
 import {Modal, Container, Row, Col, Button } from 'react-bootstrap';
 import './EmailModal.css'
 
-class PhoneModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      phoneNumber: "",
-    };
-    
-  }
+const PhoneModal = () =>{
 
-  handleInputChange = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value,
-    });
+ const [checkedSubs, setCheckedSubs] = useState([])
+  const [phoneNumber, setPhoneNumber] = useState("")
+
+  console.log(checkedSubs)
+
+  const handleInputChange = (e) => {
+
+    setPhoneNumber(e.target.value)
   };
 
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const { phoneNumber } = this.state;
 
     const info = {
-      phoneNumber
+      phoneNumber,
+      checkedSubs
     };
     
     fetch("http://127.0.0.1:5000/phone/", {
@@ -35,18 +32,36 @@ class PhoneModal extends Component {
       .then((json) => console.log(json));
   };
 
-  render() {
     return (
-        <form className="form-group" onSubmit={this.handleSubmit}>
-        <div>
-        <h3>Enter phone number</h3>
-        <input name = "phoneNumber" onChange={this.handleInputChange}>
-        </input>
-        <button className="sub-btn">Subscribe</button>
-      </div>
+        <form className="form-group" onSubmit={handleSubmit}>
+          <Container>
+            <Row>
+              <Col>
+              <h3>Enter phone number</h3>
+
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <input name = "phoneNumber" onChange={handleInputChange}/>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <CheckBox checkedSubs={checkedSubs} setCheckedSubs={setCheckedSubs}/>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col>
+                <button className="sub-btn">Subscribe</button>
+              </Col>
+            </Row>
+          </Container>
+        
       </form> 
     );
-  }
+  
 }
 
 export default PhoneModal;

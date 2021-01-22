@@ -4,7 +4,7 @@ import {Modal, Container, Row, Col, Button } from 'react-bootstrap';
 import CheckBox from "./CheckBox"
 import './EmailModal.css'
 
-const EmailModal = ({subs}) =>{
+const EmailModal = () =>{
   const [email, setEmail] = useState("")
   const [name, setName] = useState("") 
   const [checkedSubs, setCheckedSubs] = useState([])
