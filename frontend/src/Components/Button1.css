@@ -1,0 +1,23 @@
+.btn1 {
+  background-color: rgb(255, 255, 255);
+  color: #34af6b;
+  height: 60px;
+  width: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 3px 6px 20px rgba(112, 128, 144, 0.705);
+  border-radius: 13px;
+  cursor: pointer;
+  border-color: #34af6b;
+  border-width: 4px;
+  border-style: solid;
+}
+
+.btn1-title {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.btn1:hover {
+}

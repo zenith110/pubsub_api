@@ -3,6 +3,9 @@ import React, { useState, useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button, Card, Badge, Container, Row, Col, CardDeck, Modal} from 'react-bootstrap';
 import './SubCardv2.css'
+import {motion} from "framer-motion"
+
+import Button1 from "./Button1"
 
 const SubCardv2 = ( {option}) => {
 
@@ -139,7 +142,7 @@ const SubCardv2 = ( {option}) => {
 
                               <Row>
                                 <Col>
-                                <Button onClick={handleClose}>Close</Button>
+                                  <Button1 onClick={handleClose} title="Close"/>
                                 </Col>
                               </Row>
                             </Container>
@@ -188,7 +191,10 @@ const SubCardv2 = ( {option}) => {
 
                     return(
 
-                    <div key = {pubsub.name}>
+                      <motion.div key = {pubsub.name}
+                      
+                      whileHover={{scale: 1.09, originX: .48, originY: .5}}
+                      transition={{type: 'spring', stiffness: 300 }}>
                          <Card className="sub-card" >
                         <Card.Img className="sub-card-img" variant="top" src = {pubsub.image} />
                           
@@ -229,7 +235,7 @@ const SubCardv2 = ( {option}) => {
                        
 
 
-                        </div>
+                        </motion.div>
                        
 
 
