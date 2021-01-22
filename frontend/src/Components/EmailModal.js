@@ -11,17 +11,6 @@ const EmailModal = ({subs}) =>{
 
   console.log(checkedSubs)
 
-  /*
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: "",
-      name: "",
-
-    };
-    
-  }
-  */
 
   const handleInputChange = (e) => {
     
@@ -39,7 +28,10 @@ const EmailModal = ({subs}) =>{
     const info = {
       email,
       name,
+      checkedSubs
     };
+
+    console.log(info)
 
     fetch("http://127.0.0.1:5000/email/", {
       method: "POST",
@@ -49,6 +41,8 @@ const EmailModal = ({subs}) =>{
       .then((res) => res.json())
       .then((json) => console.log(json));
   };
+
+    
 
 
   
