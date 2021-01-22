@@ -25,20 +25,18 @@ const CheckBox = () =>
 
     const handleCheck = (e) =>
     {
-        console.log(e.target.checked)
 
         if(e.target.checked == true)
         {
                 console.log(e.target.id + " has been checked")
                 setCheckedSubs([...checkedSubs, e.target.id])
-
-                console.log(checkedSubs)
+=
 
         }
         else if (e.target.checked == false)
         {
             setCheckedSubs(checkedSubs.filter(sub => sub != e.target.id))
-            console.log(checkedSubs)
+
         }
 
 
