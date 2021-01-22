@@ -49,11 +49,12 @@ def email():
     """
     email = content["email"]
     first_name = content["name"]
-
+    checked_subs = content["checkedSubs"]
     """
     Sends off data to add to list
     """
-    mailchimp.register_data(email, first_name)
+    email = mailchimp.register_data(email, first_name, checked_subs)
+    return email
 
 
 """

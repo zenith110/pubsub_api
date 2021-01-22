@@ -27,7 +27,7 @@ def send_mail(campaign_id, client):
         print(error)
 
 
-def campaign_creation_function(campaign_name, audience_id, from_name, reply_to, client):
+def campaign_creation_function(campaign_name, audience_id, from_name, reply_to, client, sub_name):
     campaign_name = campaign_name
     audience_id = audience_id
     from_name = from_name
@@ -35,11 +35,19 @@ def campaign_creation_function(campaign_name, audience_id, from_name, reply_to, 
 
     data = {
         "recipients": {"list_id": audience_id},
+        "segment_opts": {
+        "match": "any",
+        "conditions": [{
+            "condition_type": "Interests",
+            "field": sub_name,
+            "op": "interestcontains",
+        }]},
         "settings": {
             "subject_line": campaign_name,
             "from_name": from_name,
             "reply_to": reply_to,
         },
+        
         "type": "regular",
     }
 
@@ -59,7 +67,7 @@ def send_email(sub_name, date):
     from_name = "Pubsub-api"
     reply_to = "abrahannevarez@gmail.com"
     campaign = campaign_creation_function(
-        campaign_name, audience_id, from_name, reply_to, client
+        campaign_name, audience_id, from_name, reply_to, client, sub_name
     )
     html_code = newsletter_template.html_code
     html_code = html_code.replace("sub_name", sub_name).replace("dates_of_sub", date)
