@@ -6,7 +6,10 @@ import './EmailModal.css'
 
 const EmailModal = ({subs}) =>{
   const [email, setEmail] = useState("")
-  const [name, setName] = useState("")
+  const [name, setName] = useState("") 
+  const [checkedSubs, setCheckedSubs] = useState([])
+
+  console.log(checkedSubs)
 
   /*
   constructor(props) {
@@ -90,7 +93,7 @@ const EmailModal = ({subs}) =>{
 
         <Row>
           <Col>
-            <CheckBox />
+            <CheckBox setCheckedSubs={setCheckedSubs} checkedSubs={checkedSubs}/>
           </Col>
         </Row>
 

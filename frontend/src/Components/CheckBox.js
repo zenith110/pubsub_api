@@ -4,11 +4,11 @@ import "./CheckBox.css"
 import {Form, Container, Row, Col} from 'react-bootstrap'
 
 
-const CheckBox = () =>
+const CheckBox = (props) =>
 {
 
     const [sub, setSub] = useState([])
-    const [checkedSubs, setCheckedSubs] = useState([])
+    //const [checkedSubs, setCheckedSubs] = useState([])
 
     
     
@@ -29,13 +29,12 @@ const CheckBox = () =>
         if(e.target.checked == true)
         {
                 console.log(e.target.id + " has been checked")
-                setCheckedSubs([...checkedSubs, e.target.id])
-=
+                props.setCheckedSubs([...props.checkedSubs, e.target.id])
 
         }
         else if (e.target.checked == false)
         {
-            setCheckedSubs(checkedSubs.filter(sub => sub != e.target.id))
+            props.setCheckedSubs(props.checkedSubs.filter(sub => sub != e.target.id))
 
         }
 
