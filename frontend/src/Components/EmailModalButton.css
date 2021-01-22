@@ -20,3 +20,19 @@ h3 {
   background-color: rgb(255, 255, 255);
   color: black !important;
 }
+
+.nav-tabs {
+  border-radius: 0px;
+  border-top-right-radius: 14px;
+  border-top-left-radius: 14px;
+  background-color: rgba(49, 44, 44, 0.233);
+}
+.nav-tabs a:active {
+  color: rgb(55, 156, 55);
+}
+
+.nav-item {
+  border-radius: 0px;
+}
+.nav-link {
+}

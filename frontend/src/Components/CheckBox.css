@@ -1,0 +1,9 @@
+.checkbox-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkbox-title {
+  text-align: center;
+  font-weight: 700;
+}

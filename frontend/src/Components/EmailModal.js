@@ -4,7 +4,7 @@ import {Modal, Container, Row, Col, Button } from 'react-bootstrap';
 import CheckBox from "./CheckBox"
 import './EmailModal.css'
 
-const EmailModal = () =>{
+const EmailModal = ({subs}) =>{
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
 
@@ -56,7 +56,7 @@ const EmailModal = () =>{
 
           <Row>
 
-            <Col className="newsletter-input">
+            <Col className="newsletter-input ">
 
             <h2 className="newsletter-input-title">
               Sign up for Email notifications today!
