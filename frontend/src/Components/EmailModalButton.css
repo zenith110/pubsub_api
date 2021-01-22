@@ -25,7 +25,7 @@ h3 {
   border-radius: 0px;
   border-top-right-radius: 14px;
   border-top-left-radius: 14px;
-  background-color: rgba(49, 44, 44, 0.233);
+  background-color: rgba(59, 145, 66, 0.295);
 }
 .nav-tabs a:active {
   color: rgb(55, 156, 55);
@@ -35,4 +35,17 @@ h3 {
   border-radius: 0px;
 }
 .nav-link {
+}
+
+.nav-tabs .nav-link:hover {
+  border-color: transparent !important;
+}
+
+.nav-tabs .nav-link {
+  width: 50%;
+  border-top-left-radius: 13px;
+  border-top-right-radius: 13px;
+  color: rgb(255, 255, 255);
+  font-size: 25px;
+  text-align: center;
 }

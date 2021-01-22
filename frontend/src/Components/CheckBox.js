@@ -30,6 +30,7 @@ const CheckBox = (props) =>
         {
                 console.log(e.target.id + " has been checked")
                 props.setCheckedSubs([...props.checkedSubs, e.target.id])
+                //return( {'color': 'green'})
 
         }
         else if (e.target.checked == false)
@@ -38,12 +39,11 @@ const CheckBox = (props) =>
 
         }
 
+        
 
-
-
-        //setCheckedSubs([...sub, {'checked' : false}])
 
     }
+
 
     return(<div>
         <Container className="checkbox-container">
@@ -64,11 +64,12 @@ const CheckBox = (props) =>
                                 type='checkbox'
                                 value = {sub.name}
                                 onChange={handleCheck}
+                                
                                 />
                               
                                
                             </Col>
-                            <Col sm={11}>
+                            <Col sm={11}  name = {sub.name}>
                                 <h5>
                                     {sub.name}
                                 </h5>
