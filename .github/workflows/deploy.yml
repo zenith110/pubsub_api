@@ -44,8 +44,6 @@ jobs:
       - name: docker push frontend
         env:
           FRONTEND: ${{ secrets.FRONTEND }}
-      - name: docker push backend
-        env:
           BACKEND: ${{ secrets.BACKEND }}
         run: |
           docker tag pubsub-backend $BACKEND
