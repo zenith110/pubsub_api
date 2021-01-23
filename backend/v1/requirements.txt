@@ -3,3 +3,5 @@ mailchimp3
 requests
 psycopg2-binary
 flask_cors
+mailchimp
+mailchimp_marketing
