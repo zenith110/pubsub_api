@@ -22,7 +22,7 @@ def phone_add():
     content = request.json
     phone_number = content["phoneNumber"]
     checked_subs = content["checkedSubs"]
-    print(checked_subs)
+
     phone = phone_adding.add_phone(phone_number, checked_subs)
     return phone
 

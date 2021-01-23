@@ -2,8 +2,10 @@ from mailchimp3 import MailChimp
 from services.mailchimp_api import key, username, list_id
 from mailchimp_marketing.api_client import ApiClientError
 import hashlib
-from itertools import chain 
+from itertools import chain
 import re
+
+
 def hash_email(email: str):
     result = hashlib.md5(email.encode("utf-8")).hexdigest()
     return result
@@ -23,10 +25,12 @@ def create_interest(client, list_id: str, checked_subs: list):
             + "\nError: {}".format(error.text)
         )
         return
+
+
 def make_category_id_bool_json(interest_schema, sub_name):
     data = []
     for i in range(0, len(interest_schema)):
-        if(interest_schema[i]["title"] == sub_name):
+        if interest_schema[i]["title"] == sub_name:
             id = interest_schema[i]["id"]
             print("Found the sub!\n")
             print(sub_name + " id is: " + str(interest_schema[i]["id"] + "\n"))
@@ -34,15 +38,19 @@ def make_category_id_bool_json(interest_schema, sub_name):
             data.append(bool_data + "-" + str(i))
             return data
         else:
-            print(str(interest_schema[i]["title"] + " is not what we're looking for!\n"))
+            print(
+                str(interest_schema[i]["title"] + " is not what we're looking for!\n")
+            )
             bool_data = "false"
             data.append(bool_data + "-" + str(i))
             continue
         return data
+
+
 def make_category_id_json(interest_schema, sub_name):
     data = []
     for i in range(0, len(interest_schema)):
-        if(interest_schema[i]["title"] == sub_name):
+        if interest_schema[i]["title"] == sub_name:
             id = interest_schema[i]["id"]
             data.append(str(id))
             return data
@@ -51,13 +59,16 @@ def make_category_id_json(interest_schema, sub_name):
             data.append(id)
             continue
         return data
+
+
 def get_category_id(interest_schema, sub_name):
     for i in range(0, len(interest_schema)):
-        if(interest_schema[i]["title"] == sub_name):
+        if interest_schema[i]["title"] == sub_name:
             id = interest_schema[i]["id"]
             return id
         else:
             continue
+
 
 def register_data(email: str, first_name: str, checked_subs: list):
     id_data = []
@@ -68,15 +79,13 @@ def register_data(email: str, first_name: str, checked_subs: list):
     Adds provided first name with provided email  to pubsub mailing newsletter
     """
     print("Now printing all the interest categories")
-    all_interest = client.lists.interest_categories.all(list_id= list_id, get_all=False)
+    all_interest = client.lists.interest_categories.all(list_id=list_id, get_all=False)
     for i in range(0, len(checked_subs)):
         id = get_category_id(all_interest["categories"], checked_subs[i])
         id_data.append(id)
-    
+
     for i in checked_subs:
-        if (
-            i == None
-        ):
+        if i == None:
             print("Interest doesn't exist, let's make it!")
             interest = create_interest(client, list_id, checked_subs[i])
             print(type(interest))
@@ -109,7 +118,7 @@ def register_data(email: str, first_name: str, checked_subs: list):
         # for i in checked_subs:
         #     id_data = make_category_id_json(all_interest["categories"], i)
         #     sub_results_id.append(list(set(id_data)))
-        
+
         # for i in checked_subs:
         #     id_data = make_category_id_bool_json(all_interest["categories"], i)
         #     sub_results_id_bool.append(list(set(id_data)))
@@ -127,10 +136,10 @@ def register_data(email: str, first_name: str, checked_subs: list):
         #             "status": "subscribed",
         #             "merge_fields": {"FNAME": first_name},
         #             "interests": [
-                        
+
         #             ]
         # }
-        
+
         # for i in range(0, len(sub_results_id)):
         #     print(data["interests"])
 
