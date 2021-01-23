@@ -10,6 +10,8 @@ const EmailModal = () =>{
   const [name, setName] = useState("") 
   const [checkedSubs, setCheckedSubs] = useState([])
 
+  const[error, setError] = useState("")
+
   console.log(checkedSubs)
 
 
@@ -19,6 +21,17 @@ const EmailModal = () =>{
       setEmail(e.target.value)
     else if (e.target.name == 'name')
       setName(e.target.value)
+
+    //handle errors
+    if(e.target.name == 'name')
+    {
+      if(Number(e.target.name)== true)
+        setError("Name must only be letters")
+
+    }
+
+        
+
 
   };
 
@@ -69,6 +82,7 @@ const EmailModal = () =>{
                 placeholder="Email"
                 onChange={handleInputChange}
               />
+
             </div>
             <br />
             <div className="form-input" >
@@ -79,6 +93,7 @@ const EmailModal = () =>{
                 placeholder="First Name"
                 onChange={handleInputChange}
               />
+               <h1>{error}</h1>
             </div>
 
         
