@@ -36,6 +36,15 @@ jobs:
       - name: Dockerize backend
         run: |
           cd backend/v1/
+          cd src/services/
+          mailchimp='"${{ secrets.MAILCHIMP }}"'
+          echo "api_key = $mailchimp" > mailchimp_api.py
+          cd ../
+          mkdir settings
+          cd services/
+          db='"${{ secrets.DB }}"'
+          echo "api_key = $db" > dblogin.json
+          cd ../../
           docker build --tag pubsub-backend .
       - name: Dockerize frontend
         run: |
