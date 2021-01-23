@@ -25,7 +25,7 @@ def sms(connect_db, sub_name, date):
     for index, numbers in enumerate(records):
           for i in range(0, len(records)):
               if(sub_name in records[i][1]):
-                  print(str(numbers[index]))
+                  
                   phone_number = "+1" + str(numbers[index])
                   notification = client.notify.services(serive_sid).notifications.create(
                         to_binding='{"binding_type":"sms", "address":"' + phone_number + '"}',
