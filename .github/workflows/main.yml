@@ -1,0 +1,48 @@
+# Deploys a payload to the server to get the latest data
+name: Deploy to Docker
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  Deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7.9 
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.9
+      - name: Install dependencies
+        run: |
+          cd backend/v1/
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Lint with flake8
+        run: |
+          cd backend/v1/
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Docker Login
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      - name: Dockerize backend
+        run: |
+          docker build --tag pubsub-backend .
+      - name: Dockerize frontend
+        run: |
+          cd ../../frontend
+          docker build --tag pubsub-frontend Dockerfile.prod.
+      - name: docker push
+        env:
+          REPO: ${{ secrets.REPO }}
+        run: |
+          docker tag pubsub-backend $REPO
+          docker push $REPO
