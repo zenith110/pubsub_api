@@ -7,13 +7,13 @@ export default function NotificationsBox()
 {
     return(
 
-        <Container className="notifications-container">
+        <Container fluid className="notifications-container">
             <Row>
                 <Col>
                     <h1 style={{'text-align': 'center'}}>
                          Want to get notified?
                     </h1>
-                    <h4>Sign up for SMS or Email notifications for your favorite sub</h4>
+                    <h4 style={{'text-align': 'center'}}>Sign up for SMS or Email notifications for your favorite sub</h4>
                 </Col>
 
             </Row>
