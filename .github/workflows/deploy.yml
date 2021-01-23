@@ -39,7 +39,8 @@ jobs:
           docker build --tag pubsub-backend .
       - name: Dockerize frontend
         run: |
-          cd ../../frontend
+          echo $PWD
+          cd ../frontend/
           docker build --tag pubsub-frontend Dockerfile.prod.
       - name: docker push
         env:
