@@ -8,6 +8,7 @@
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.5.0",
     "bootstrap": "^4.5.3",
+    "framer-motion": "^3.2.2-rc.1",
     "node-fetch": "^2.6.1",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",

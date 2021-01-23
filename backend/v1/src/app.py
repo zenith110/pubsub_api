@@ -21,7 +21,10 @@ Route to add phone numbers
 def phone_add():
     content = request.json
     phone_number = content["phoneNumber"]
-    phone_adding.add_phone(phone_number)
+    checked_subs = content["checkedSubs"]
+    print(checked_subs)
+    phone = phone_adding.add_phone(phone_number, checked_subs)
+    return phone
 
 
 """
@@ -114,9 +117,6 @@ def sub_runner_path(sub_name):
     print("Off to the function it goes!")
     sub = sub_runner.sub_runner_checker(sub_name)
     return sub
-
-
-
 
 
 if __name__ == "__main__":

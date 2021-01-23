@@ -17,18 +17,25 @@ def sms(connect_db, sub_name, date):
     connection = connect_db.connect()
     cur = connection.cursor()
     # Queries only for non null phone numbers
-    query = "SELECT phone_number FROM {table} WHERE phone_number is not null"
+    query = "SELECT phone_number, category FROM {table} WHERE phone_number is not null AND  category is not null"
     cur.execute(query.format(table=connect_db.get_table()))
     # Grabs data from query
     records = cur.fetchall()
     # Loops through the tuple to afix the phone number to message recipent
     for index, numbers in enumerate(records):
-        phone_number = "+1" + str(numbers[index])
-        notification = client.notify.services(serive_sid).notifications.create(
-            # We recommend using a GUID or other anonymized identifier for Identity
-            to_binding='{"binding_type":"sms", "address":"' + phone_number + '"}',
-            body="Hello there from pubsub-api.dev! Reaching out to you that "
-            + sub_name
-            + " is on sale from "
-            + date,
-        )
+          for i in range(0, len(records)):
+              if(sub_name in records[i][1]):
+                  print(str(numbers[index]))
+                  phone_number = "+1" + str(numbers[index])
+                  notification = client.notify.services(serive_sid).notifications.create(
+                        to_binding='{"binding_type":"sms", "address":"' + phone_number + '"}',
+                        body="Hello there from pubsub-api.dev! Reaching out to you that "
+                        + sub_name
+                        + " is on sale from "
+                        + date,
+                        )
+                  return "Sent text message!"
+              else:
+                  print("Could not find match!")
+            
+                
