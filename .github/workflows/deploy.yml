@@ -35,6 +35,7 @@ jobs:
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
       - name: Dockerize backend
         run: |
+          cd backend/v1/
           docker build --tag pubsub-backend .
       - name: Dockerize frontend
         run: |
