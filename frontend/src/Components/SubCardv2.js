@@ -117,7 +117,7 @@ const SubCardv2 = ( {option}) => {
                                 } 
                                 
                                 }
-                              ).map(sub => {return sub.on_sale=== "True" ? <h2 style={{color: 'green'}}>Sale</h2>: <h2 style={{color: 'red'}}>Not On Sale</h2>})
+                              ).map(sub => {return sub.on_sale=== "True" ? <h2 style={{color: ' #34af6b'}}>On Sale</h2>: <h2 style={{color: 'red'}}>Not On Sale</h2>})
                               }
                             
                                 </Col>

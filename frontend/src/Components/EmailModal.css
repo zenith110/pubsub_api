@@ -1,6 +1,8 @@
 .newsletter-container {
+  display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 
 .newsletter-title {
@@ -80,4 +82,11 @@ h2.newsletter-input-title {
   border-color: rgb(0, 0, 0);
   border-width: 3px;
   outline: none;
+}
+
+.newsletter-input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }

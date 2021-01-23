@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import CheckBox from "./CheckBox"
 import {Modal, Container, Row, Col, Button } from 'react-bootstrap';
 import Button1 from "./Button1"
-import './EmailModal.css'
+import './PhoneModal.css'
 
 const PhoneModal = () =>{
 
@@ -35,7 +35,7 @@ const PhoneModal = () =>{
 
     return (
         <form className="form-group" onSubmit={handleSubmit}>
-          <Container>
+          <Container className="phone-modal-container">
             <Row>
               <Col>
               <h3>Enter phone number</h3>
@@ -44,7 +44,7 @@ const PhoneModal = () =>{
             </Row>
             <Row>
               <Col>
-                <input name = "phoneNumber" onChange={handleInputChange}/>
+                <input className="form-control" name = "phoneNumber" placeholder="Phone Number" onChange={handleInputChange}/>
               </Col>
             </Row>
             <Row>
@@ -56,7 +56,7 @@ const PhoneModal = () =>{
             <Row>
               <Col>
               <Button1 title="Subscribe" onClick={handleSubmit} type="submit" size="md" variant="primary"/>
-                <button className="sub-btn">Subscribe</button>
+                
               </Col>
             </Row>
           </Container>
