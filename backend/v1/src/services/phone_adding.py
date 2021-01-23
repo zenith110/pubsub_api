@@ -2,10 +2,11 @@ import connect_db
 import json
 
 
-def add_phone(phone_number: str):
+def add_phone(phone_number: str, subs_selected: list):
     """
     Ignores the numbers or special characters
     """
+    subs_selected = ", ".join(subs_selected)
     getVals = list([val for val in phone_number if val.isnumeric()])
     """
     Joins back the list into a string to print at the end
@@ -24,15 +25,23 @@ def add_phone(phone_number: str):
     )
     count = cur.fetchone()[0]
     if count == True:
-        print("Phone number within database, skipping!")
+        update_string = "Update {table} SET category = '{subs_selection}' WHERE phone_number = '{phone}'"
+        update_query = cur.execute(
+            update_string.format(
+                table=connect_db.get_table(),
+                subs_selection=subs_selected,
+                phone=phone_number,
+            )
+        )
+        print("We finished adding data!")
+        return "we updated!"
     else:
         print("Inserting " + phone_number + " into the db!")
         cur.execute(
             "INSERT INTO "
             + connect_db.get_table()
-            + "(phone_number) VALUES ("
-            + phone_number
-            + ")"
+            + "(phone_number, category) VALUES (%s, %s)",
+            (phone_number, subs_selected),
         )
         connect_db.close(connection)
     return "Phone data now complete!"

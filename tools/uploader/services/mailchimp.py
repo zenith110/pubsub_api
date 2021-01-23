@@ -27,7 +27,9 @@ def send_mail(campaign_id, client):
         print(error)
 
 
-def campaign_creation_function(campaign_name, audience_id, from_name, reply_to, client, sub_name):
+def campaign_creation_function(
+    campaign_name, audience_id, from_name, reply_to, client, sub_name
+):
     campaign_name = campaign_name
     audience_id = audience_id
     from_name = from_name
@@ -36,18 +38,20 @@ def campaign_creation_function(campaign_name, audience_id, from_name, reply_to, 
     data = {
         "recipients": {"list_id": audience_id},
         "segment_opts": {
-        "match": "any",
-        "conditions": [{
-            "condition_type": "Interests",
-            "field": sub_name,
-            "op": "interestcontains",
-        }]},
+            "match": "any",
+            "conditions": [
+                {
+                    "condition_type": "Interests",
+                    "field": sub_name,
+                    "op": "interestcontains",
+                }
+            ],
+        },
         "settings": {
             "subject_line": campaign_name,
             "from_name": from_name,
             "reply_to": reply_to,
         },
-        
         "type": "regular",
     }
 
