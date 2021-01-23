@@ -142,7 +142,7 @@ const SubCardv2 = ( {option}) => {
 
                               <Row>
                                 <Col>
-                                  <Button1 onClick={handleClose} title="Close"/>
+                                  <Button1 onClick={handleClose} title="Close" size="sm" variant="secondary"/>
                                 </Col>
                               </Row>
                             </Container>
@@ -194,7 +194,7 @@ const SubCardv2 = ( {option}) => {
                       <motion.div key = {pubsub.name}
                       
                       whileHover={{scale: 1.09, originX: .48, originY: .5}}
-                      transition={{type: 'spring', stiffness: 300 }}>
+                      transition={{type: 'spring', stiffness: 200 }}>
                          <Card className="sub-card" >
                         <Card.Img className="sub-card-img" variant="top" src = {pubsub.image} />
                           

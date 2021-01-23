@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import CheckBox from "./CheckBox"
 import {Modal, Container, Row, Col, Button } from 'react-bootstrap';
+import Button1 from "./Button1"
 import './EmailModal.css'
 
 const PhoneModal = () =>{
@@ -54,6 +55,7 @@ const PhoneModal = () =>{
 
             <Row>
               <Col>
+              <Button1 title="Subscribe" onClick={handleSubmit} type="submit" size="md" variant="primary"/>
                 <button className="sub-btn">Subscribe</button>
               </Col>
             </Row>

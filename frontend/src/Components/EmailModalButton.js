@@ -3,6 +3,7 @@ import EmailModal from './EmailModal.js'
 import {Modal, Container, Row, Col, Button, Tabs, Tab} from 'react-bootstrap';
 import { MailIcon } from 'react-mail-icon'
 import PhoneModal from "./PhoneModal.js"
+import Button1 from "./Button1"
 import './EmailModalButton.css'
 
 
@@ -68,10 +69,8 @@ export default function EmailModalButton()
 
       </Tabs>
         <Modal.Footer>
-          <Button className="sub-btn" variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
 
+          <Button1 onClick={handleClose} title="Close" size="sm" variant="secondary"/>
         </Modal.Footer>
       </Modal>
       </>
