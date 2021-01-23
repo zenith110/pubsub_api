@@ -40,7 +40,7 @@ jobs:
       - name: Dockerize frontend
         run: |
           cd frontend/
-          docker build --tag pubsub-frontend Dockerfile.prod.
+          docker build --tag pubsub-frontend Dockerfile.prod
       - name: docker push
         env:
           REPO: ${{ secrets.REPO }}
