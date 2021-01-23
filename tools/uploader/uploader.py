@@ -15,7 +15,7 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
         self.setupUi(self)
         self.upload.clicked.connect(self.add_entry)
         self.delete_2.clicked.connect(self.delete_entry)
-        
+
     def delete_entry(self):
         sub_name = self.sub_name.text()
         dates = self.date.text()
@@ -68,13 +68,13 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
                     table=connect_db.get_table(),
                     on_sale=on_sale,
                     dates=dates,
-                    price = price,
-                    sub = sub_name
+                    price=price,
+                    sub=sub_name,
                 )
             )
             # Sends an email out if a sub is now on sale
             if on_sale == "True":
-                mailchimp.send_email(original, dates)
+                # mailchimp.send_email(original, dates)
                 phonenumber.sms(connect_db, original, dates)
         else:
             print("This sub doesn't exist, now adding!")
@@ -86,7 +86,7 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
                 (sub_name, dates, on_sale, price, image),
             )
             if on_sale == "True":
-                mailchimp.send_email(original, dates)
+                # mailchimp.send_email(original, dates)
                 phonenumber.sms(connect_db, original, dates)
 
         connect_db.close(connection)
