@@ -10,10 +10,7 @@ services:
     build: ./frontend/
     environment:
       CHOKIDAR_USEPOLLING: "true"
-    stdin_open: true 
-    volumes:
-      - '.:/app'
-      - '/app/node_modules'
+    stdin_open: true
     ports:
       - 80:80
     depends_on: 

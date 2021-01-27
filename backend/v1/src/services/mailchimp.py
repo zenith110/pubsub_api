@@ -11,54 +11,83 @@ def hash_email(email: str):
     return result
 
 
-def create_interest(client, list_id: str, checked_subs: list):
+def create_interest(client, list_id: str, name: str):
     try:
         interest = client.lists.interest_categories.create(
-            list_id, {"title": checked_subs, "type": "checkboxes"}
+            list_id, {"title": name, "type": "checkboxes"}
         )
-        print("Made the interest group " + checked_subs)
+        print("Made the interest group " + name)
         return interest
     except ApiClientError as error:
         print(
             "Failed to make interest group: "
-            + checked_subs
+            + name
             + "\nError: {}".format(error.text)
         )
         return
 
 
-def make_category_id_bool_json(interest_schema, sub_name):
-    data = []
-    for i in range(0, len(interest_schema)):
-        if interest_schema[i]["title"] == sub_name:
-            id = interest_schema[i]["id"]
-            print("Found the sub!\n")
-            print(sub_name + " id is: " + str(interest_schema[i]["id"] + "\n"))
-            bool_data = "true"
-            data.append(bool_data + "-" + str(i))
-            return data
-        else:
-            print(
-                str(interest_schema[i]["title"] + " is not what we're looking for!\n")
-            )
-            bool_data = "false"
-            data.append(bool_data + "-" + str(i))
-            continue
-        return data
 
 
-def make_category_id_json(interest_schema, sub_name):
-    data = []
+
+def make_category_id_json(interest_schema, sub_name: list, email: str, first_name: str):
+    data_subs = []
+    sub_names = []
+    data = {
+             "email_address": email,
+                "status": "subscribed",
+                "merge_fields": {"FNAME": first_name},
+                "interests": {
+                    
+                }
+        }
+    i = 0
     for i in range(0, len(interest_schema)):
-        if interest_schema[i]["title"] == sub_name:
-            id = interest_schema[i]["id"]
-            data.append(str(id))
-            return data
-        else:
-            id = interest_schema[i]["id"]
-            data.append(id)
-            continue
-        return data
+        for j in range(0, len(sub_name)):
+            if(interest_schema[i]["name"] == sub_name[j]):
+                id = interest_schema[i]["id"]
+                data_subs.append(interest_schema[i]["name"] + ":" + str(id) + ":True")
+                sub_names.append(interest_schema[i]["name"])
+            else:
+                id = interest_schema[i]["id"]
+                data_subs.append(interest_schema[i]["name"] + ":" + str(id) + ":False")
+                sub_names.append(interest_schema[i]["name"])
+                # data["interests"][id] = False
+    data_subs = list(set(data_subs))
+    sub_names = list(set(sub_names))
+    for i in range(0, len(data_subs)):
+        for j in range(0, len(sub_name)):
+            if(re.findall("^" + sub_name[j] + ":[a-z0-9]*:False$", data_subs[i])):
+                data_subs = list([val.replace(data_subs[i], "") for val in data_subs])
+            else:
+                continue
+    
+    
+    while("" in data_subs) : 
+        data_subs.remove("")
+
+    for i in range(0, len(data_subs)):
+        for j in range(0, len(sub_names)):
+            if(re.findall("True", data_subs[i])):
+                # print(data_subs[i])
+                data_subs = list([val.replace(sub_names[j] + ":", "") for val in data_subs])
+                data_subs = list([val.replace(":True", ": True") for val in data_subs])
+            else:
+                data_subs = list([val.replace(sub_names[j] + ":", "") for val in data_subs])
+                data_subs = list([val.replace(":False", ": False") for val in data_subs])
+    print(data_subs)
+                
+    for i in range(0, len(data_subs)):
+        if(re.findall("True", data_subs[i])):
+            true = list([val.replace(": True", "") for val in data_subs])
+            data["interests"][true[i]] = True
+        elif(re.findall("False", data_subs[i])):
+            false = list([val.replace(": False", "") for val in data_subs])
+            data["interests"][false[i]] = False
+       
+
+    return data
+                
 
 
 def get_category_id(interest_schema, sub_name):
@@ -71,81 +100,57 @@ def get_category_id(interest_schema, sub_name):
 
 
 def register_data(email: str, first_name: str, checked_subs: list):
-    id_data = []
-    print("Email is: " + email + "\nName is: " + first_name)
+   
     client = MailChimp(key, username)
-    print(checked_subs)
+    
     """
     Adds provided first name with provided email  to pubsub mailing newsletter
     """
-    print("Now printing all the interest categories")
+    
     all_interest = client.lists.interest_categories.all(list_id=list_id, get_all=False)
-    for i in range(0, len(checked_subs)):
-        id = get_category_id(all_interest["categories"], checked_subs[i])
-        id_data.append(id)
+    try:
+        interest = create_interest(client, list_id, "pubsub")
+    except:
+        print("Pubsub exists, let's keep moving!")
+    
 
-    for i in checked_subs:
-        if i == None:
-            print("Interest doesn't exist, let's make it!")
-            interest = create_interest(client, list_id, checked_subs[i])
-            print(type(interest))
-        else:
-            print("Interests exist, let's get out!")
-            break
-    hashed_email = hash_email(email)
+    hashed_email = hash_email(email.lower())
+    all_interest = client.lists.interest_categories.all(list_id = list_id, get_all= True)
+    pubsub = get_category_id(all_interest["categories"], "pubsub")
     if client.lists.members.get(list_id=list_id, subscriber_hash=hashed_email) == None:
         client.lists.members.create(
             list_id,
             {
-                "email_address": email,
+                "email_address": email.lower,
                 "status": "subscribed",
                 "merge_fields": {"FNAME": first_name},
-                "interest": checked_subs,
+                "interest": pubsub
             },
         )
-        print(checked_subs)
-        print("Added " + first_name + " and " + email + " to the sub newsletter!")
         return "Added user to list and category!"
     else:
         print("User data exists, let's update their data!")
-        # hashed_email = hash_email(email)
-        # all_interest = client.lists.interest_categories.all(list_id = list_id, get_all=False)
-        # sub_results_id = []
-        # sub_results_id_bool = []
-        # """
-        # Removes duplicates
-        # """
-        # for i in checked_subs:
-        #     id_data = make_category_id_json(all_interest["categories"], i)
-        #     sub_results_id.append(list(set(id_data)))
+        hashed_email = hash_email(email.lower())
+        all_interest = client.lists.interest_categories.all(list_id = list_id, get_all= True)
 
-        # for i in checked_subs:
-        #     id_data = make_category_id_bool_json(all_interest["categories"], i)
-        #     sub_results_id_bool.append(list(set(id_data)))
-        # """
-        # Turns our 2D array into a singular one
-        # """
-        # sub_results_id = list(chain.from_iterable(sub_results_id))
-        # sub_results_id_bool = list(chain.from_iterable(sub_results_id_bool))
-        # sub_results_id_bool = [s[:-1] for s in sub_results_id_bool]
-        # sub_results_id_bool = [s.replace("-", "") for s in sub_results_id_bool]
-        # print(sub_results_id_bool)
-        # print(sub_results_id)
-        # data = {
-        #      "email_address": email,
-        #             "status": "subscribed",
-        #             "merge_fields": {"FNAME": first_name},
-        #             "interests": [
+        pubsub = get_category_id(all_interest["categories"], "pubsub")
+        for i in checked_subs:
+            try:
+                client.lists.interest_categories.interests.create(list_id= list_id, category_id = pubsub, data={"name": i})
+            except:
+                print("It exists, let's ignore")
+                continue
+        interests = client.lists.interest_categories.interests.all(list_id= list_id, category_id= pubsub, get_all=False)
 
-        #             ]
-        # }
-
-        # for i in range(0, len(sub_results_id)):
-        #     print(data["interests"])
-
-        # print(data)
-        # for i in range(0, len(checked_subs)):
-        #     client.lists.members.update(list_id, hashed_email,
-        #         data
-        #     )
-        # return "Updated"
+        """
+        Removes duplicates
+        """
+        
+        
+        id_data = make_category_id_json(interests["interests"], checked_subs, email, first_name)
+        
+    
+        client.lists.members.update(list_id, hashed_email,
+                id_data
+        )
+        return "Updated"

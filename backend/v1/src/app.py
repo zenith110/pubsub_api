@@ -6,27 +6,11 @@ from services import mailchimp
 from services import sub_runner
 from services import on_sale_service
 from services import sub_count
-from services import phone_adding
 from services import all_subs
 from services import random_subs
 
 app = Flask(__name__, static_url_path="/static")
 CORS(app)
-"""
-Route to add phone numbers
-"""
-
-
-@app.route("/phone/", methods=["POST", "GET"])
-def phone_add():
-    content = request.json
-    phone_number = content["phoneNumber"]
-    checked_subs = content["checkedSubs"]
-
-    phone = phone_adding.add_phone(phone_number, checked_subs)
-    return phone
-
-
 """
 Gets the current sub count
 """

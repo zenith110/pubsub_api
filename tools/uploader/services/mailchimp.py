@@ -37,16 +37,22 @@ def campaign_creation_function(
 
     data = {
         "recipients": {"list_id": audience_id},
-        "segment_opts": {
-            "match": "any",
-            "conditions": [
+        "conditions": [
                 {
                     "condition_type": "Interests",
                     "field": sub_name,
                     "op": "interestcontains",
+                    "value": "pubsub"
                 }
             ],
-        },
+        "segment_opts": [
+            {
+                "match": sub_name,
+                "conditions": [
+
+                ],
+            }
+        ],
         "settings": {
             "subject_line": campaign_name,
             "from_name": from_name,
@@ -54,7 +60,8 @@ def campaign_creation_function(
         },
         "type": "regular",
     }
-
+    data["segment_opts"][0]["conditions"] = data["conditions"]
+    
     new_campaign = client.campaigns.create(data)
     return new_campaign
 

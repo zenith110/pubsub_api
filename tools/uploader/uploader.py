@@ -6,7 +6,6 @@ from PySide2 import QtWidgets, QtCore, QtGui
 from ui import uploader
 import connect_db
 from services import mailchimp
-from services import phonenumber
 
 
 class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
@@ -74,8 +73,7 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
             )
             # Sends an email out if a sub is now on sale
             if on_sale == "True":
-                # mailchimp.send_email(original, dates)
-                phonenumber.sms(connect_db, original, dates)
+                mailchimp.send_email(original, dates)
         else:
             print("This sub doesn't exist, now adding!")
             # Inserts the data into each column
@@ -86,8 +84,7 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
                 (sub_name, dates, on_sale, price, image),
             )
             if on_sale == "True":
-                # mailchimp.send_email(original, dates)
-                phonenumber.sms(connect_db, original, dates)
+                mailchimp.send_email(original, dates)
 
         connect_db.close(connection)
 
