@@ -45,7 +45,7 @@ def make_category_id_json(interest_schema, sub_name: list, email: str, first_nam
                 id = interest_schema[i]["id"]
                 data_subs.append(interest_schema[i]["name"] + ":" + str(id) + ":False")
                 sub_names.append(interest_schema[i]["name"])
-                # data["interests"][id] = False
+                
     data_subs = list(set(data_subs))
     sub_names = list(set(sub_names))
     for i in range(0, len(data_subs)):
@@ -61,7 +61,6 @@ def make_category_id_json(interest_schema, sub_name: list, email: str, first_nam
     for i in range(0, len(data_subs)):
         for j in range(0, len(sub_names)):
             if re.findall("True", data_subs[i]):
-                # print(data_subs[i])
                 data_subs = list(
                     [val.replace(sub_names[j] + ":", "") for val in data_subs]
                 )

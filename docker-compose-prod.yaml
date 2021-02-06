@@ -1,13 +1,13 @@
 version: "3.9"
 services:
   backend:
-    build: ./backend/v1
+    image: zenith110/pubsub-backend
     environment:
       CHOKIDAR_USEPOLLING: "true"
     ports:
     - 5000:80
   frontend:
-    build: ./frontend/
+    image: zenith110/pubsub-frontend
     environment:
       CHOKIDAR_USEPOLLING: "true"
     stdin_open: true

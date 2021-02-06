@@ -15,7 +15,7 @@ services:
       - '.:/app'
       - '/app/node_modules'
     ports:
-      - 80:80
+      - 5001:3000
     depends_on: 
     - backend
     
