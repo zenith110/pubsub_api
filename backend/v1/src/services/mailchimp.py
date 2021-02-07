@@ -1,16 +1,29 @@
 from mailchimp3 import MailChimp
-from services.mailchimp_api import key, username, list_id
 from mailchimp_marketing.api_client import ApiClientError
 import hashlib
 from itertools import chain
 import re
 
+with open("services/mailchimp.json") as json_data:
+    data = json.load(json_data)
 
+"""
+Declare globals for json to pass around
+"""
+key = data["Login"]["key"]
+username = data["Login"]["username"]
+list_id = data["Login"]["list_id"]
+
+"""
+Given an email, return a md5 result
+"""
 def hash_email(email: str):
     result = hashlib.md5(email.encode("utf-8")).hexdigest()
     return result
 
-
+"""
+Create an interest using the react data
+"""
 def create_interest(client, list_id: str, name: str):
     try:
         interest = client.lists.interest_categories.create(
@@ -24,7 +37,9 @@ def create_interest(client, list_id: str, name: str):
         )
         return
 
-
+"""
+Modifies the user's subs recieved from the newsletter
+"""
 def make_category_id_json(interest_schema, sub_name: list, email: str, first_name: str):
     data_subs = []
     sub_names = []
@@ -93,7 +108,9 @@ def get_category_id(interest_schema, sub_name):
         else:
             continue
 
-
+"""
+Adds the user and builds an account through mailchimp
+"""
 def register_data(email: str, first_name: str, checked_subs: list):
 
     client = MailChimp(key, username)
