@@ -16,7 +16,7 @@ const SubCardv2 = ( {option}) => {
 
     // Get ID for indivdual card info button. Return subData position for modal
     const handleOpen = (e) => 
-    {8443
+    {
       setModalIsOpen(true);
       setSubIndex(e.target.id);
       setCurSub(e.target.value)
