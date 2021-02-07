@@ -3,3 +3,4 @@ services/mailchimp_api.py
 env/
 services/__pycache__/
 __pycache__/
+services/mailchimp.json
