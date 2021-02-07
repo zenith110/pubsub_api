@@ -21,7 +21,7 @@ function Grid({filter}) {
     const url = window.location.href.slice(0, -1)
     // Sends a post request for our number of subs
     useEffect(()=>{
-      fetch(url + ':8080/totalcount/')
+      fetch(url + ':8443/totalcount/')
       .then ((response) => response.json())
       .then((data) => setSubCount(data))
       .catch((error) => console.log(error))

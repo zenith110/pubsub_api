@@ -5,7 +5,7 @@ services:
     environment:
       CHOKIDAR_USEPOLLING: "true"
     ports:
-    - 8080:5000
+    - 8443:5000
   frontend:
     image: zenith110/pubsub-frontend
     environment:

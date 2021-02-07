@@ -27,7 +27,7 @@ const SubCardv2 = ( {option}) => {
     const url = window.location.href.slice(0, -1)
     // fetching pubsub data
     useEffect(()=>{
-        fetch(url + ':8080/onsale/')
+        fetch(url + ':8443/onsale/')
         .then ((response) => response.json())
         .then((data) => setSub(data))
         .catch((error) => console.log(error))
