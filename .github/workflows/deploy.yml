@@ -44,7 +44,7 @@ jobs:
           mkdir settings
           db='"${{ secrets.DB }}"'
           echo "api_key = $db" > dblogin.json
-          cd ../../
+          cd ../
           docker build --tag pubsub-backend .
       - name: Dockerize Frontend
         run: |
