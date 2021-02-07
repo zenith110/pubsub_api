@@ -10,10 +10,10 @@ const CheckBox = (props) =>
     const [sub, setSub] = useState([])
     //const [checkedSubs, setCheckedSubs] = useState([])
 
-    
+    const url = window.location.href.slice(0, -1)
     
     useEffect(()=>{
-        fetch('https://backend/onsale/')
+        fetch(url + ':5000/onsale/')
         .then ((response) => response.json())
         .then((data) => setSub(data))
         .catch((error) => console.log(error))
@@ -28,7 +28,6 @@ const CheckBox = (props) =>
 
         if(e.target.checked == true)
         {
-                console.log(e.target.id + " has been checked")
                 props.setCheckedSubs([...props.checkedSubs, e.target.id])
                 //return( {'color': 'green'})
 

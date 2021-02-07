@@ -23,8 +23,9 @@ const SubCard = ({position}, params) => {
     let[subData, setSub] = useState([])
     const [modalIsOpen, setModalIsOpen] = useState(false)
     let sub = new Sub();
+    const url = window.location.href.slice(0, -1)
     useEffect(()=>{
-        fetch('http://localhost:5000/onsale/')
+        fetch(url + ':5000/onsale/')
         .then ((response) => response.json())
         .then((data) => setSub(data))
         .catch((error) => console.log(error))

@@ -168,4 +168,5 @@ def register_data(email: str, first_name: str, checked_subs: list):
         )
 
         client.lists.members.update(list_id, hashed_email, id_data)
+        print("Finished update!")
         return "Updated"

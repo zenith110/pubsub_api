@@ -12,8 +12,6 @@ const EmailModal = () =>{
 
   const[error, setError] = useState("")
 
-  console.log(checkedSubs)
-
 
   const handleInputChange = (e) => {
     
@@ -45,9 +43,9 @@ const EmailModal = () =>{
       checkedSubs
     };
 
-    console.log(info)
+    const url = window.location.href.slice(0, -1)
 
-    fetch("https://backend/email/", {
+    fetch(url + ":5000/email/", {
       method: "POST",
       body: JSON.stringify(info),
       headers: { "Content-Type": "application/json" },

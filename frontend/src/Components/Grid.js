@@ -20,9 +20,10 @@ function Grid({filter}) {
     for(i = 0; i < subCount; i++){
       SubCardArr.push(<SubCard className="sub-card" position={i} setSale={setSale}></SubCard>)
     }
+    const url = window.location.href.slice(0, -1)
     // Sends a post request for our number of subs
     useEffect(()=>{
-      fetch('http://backend/totalcount/')
+      fetch(url + ':5000/totalcount/')
       .then ((response) => response.json())
       .then((data) => setSubCount(data))
       .catch((error) => console.log(error))

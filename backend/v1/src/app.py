@@ -47,6 +47,7 @@ def email():
     Sends off data to add to list
     """
     email = mailchimp.register_data(email, first_name, checked_subs)
+    print("Email data has finished!")
     return email
 
 

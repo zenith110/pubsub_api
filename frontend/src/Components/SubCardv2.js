@@ -23,16 +23,17 @@ const SubCardv2 = ( {option}) => {
 
     }
     const handleClose = () => setModalIsOpen(false)
-
+    
+    const url = window.location.href.slice(0, -1)
     // fetching pubsub data
     useEffect(()=>{
-        fetch('https://api.pubsub-api.dev/onsale/')
+        fetch(url + ':5000/onsale/')
         .then ((response) => response.json())
         .then((data) => setSub(data))
         .catch((error) => console.log(error))
       }, [])
 
-      console.log(subData)
+      
 
     
       
