@@ -22,7 +22,7 @@ function Grid({filter}) {
     }
     // Sends a post request for our number of subs
     useEffect(()=>{
-      fetch('http://backend/totalcount/')
+      fetch('https://backend/totalcount/')
       .then ((response) => response.json())
       .then((data) => setSubCount(data))
       .catch((error) => console.log(error))

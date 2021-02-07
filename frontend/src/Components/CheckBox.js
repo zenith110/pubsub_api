@@ -13,7 +13,7 @@ const CheckBox = (props) =>
     
     
     useEffect(()=>{
-        fetch('http://backend/onsale/')
+        fetch('https://backend/onsale/')
         .then ((response) => response.json())
         .then((data) => setSub(data))
         .catch((error) => console.log(error))

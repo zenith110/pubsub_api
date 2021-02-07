@@ -19,6 +19,7 @@ Gets the current sub count
 @app.route("/totalcount/", methods=["POST", "GET"])
 def num():
     sub_count_data = sub_count.count()
+    print(sub_count_data)
     return sub_count_data
 
 

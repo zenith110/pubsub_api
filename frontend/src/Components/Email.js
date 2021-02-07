@@ -28,7 +28,7 @@ class Email extends Component {
       name,
     };
 
-    fetch("http://backend/email/", {
+    fetch("https://backend/email/", {
       method: "POST",
       body: JSON.stringify(info),
       headers: { "Content-Type": "application/json" },
