@@ -18,10 +18,10 @@ function Grid({filter}) {
     for(i = 0; i < subCount; i++){
       SubCardArr.push(<SubCard className="sub-card" position={i} setSale={setSale}></SubCard>)
     }
-    const url = window.location.href.slice(0, -1)
+    const url = "https://api.pubsub-api.dev"
     // Sends a post request for our number of subs
     useEffect(()=>{
-      fetch(url + ':8080/totalcount/')
+      fetch('/totalcount/')
       .then ((response) => response.json())
       .then((data) => setSubCount(data))
       .catch((error) => console.log(error))

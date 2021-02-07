@@ -27,8 +27,8 @@ class Email extends Component {
       email,
       name,
     };
-    const url = window.location.href.slice(0, -1)
-    fetch(url + ":8080/email/", {
+    const url = "https://api.pubsub-api.dev"
+    fetch(url + "/email/", {
       method: "POST",
       body: JSON.stringify(info),
       headers: { "Content-Type": "application/json" },
