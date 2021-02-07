@@ -23,5 +23,6 @@ def all_subs_data():
     """
     for sub in records:
         data["All_subs".lower()].append({"name": sub[0]})
-
-    return jsonify(data["All_subs".lower()])
+    response = jsonify(data["All_subs".lower()])
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response

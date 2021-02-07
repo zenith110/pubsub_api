@@ -1,4 +1,4 @@
-from flask import Flask, render_template, abort
+from flask import Flask, render_template, abort, jsonify
 import connect_db
 import json
 
@@ -38,7 +38,8 @@ def random_subs():
             }
         )
 
-        sub_info = json.dumps(data["random_sub"], indent=2)
+        sub_info = jsonify(data["random_sub"])
+        sub_info.headers.add('Access-Control-Allow-Origin', '*')
         return sub_info
     except:
         return abort(404)

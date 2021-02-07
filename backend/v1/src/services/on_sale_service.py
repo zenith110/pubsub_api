@@ -51,5 +51,6 @@ def on_sale_check():
                 "query_name": sub_name[i],
             }
         )
-
-    return jsonify(data["All_subs".lower()])
+    response = jsonify(data["All_subs".lower()])
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
