@@ -29,16 +29,17 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Docker Login
         env:
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_USER: '${{ secrets.DOCKER_USER }}'
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-      - name: Dockerize backend
+      - name: Dockerize Backend
+        env:
+          MAILCHIMP: ${{ secrets.MAILCHIMP }}
         run: |
           cd backend/v1/
           cd src/services/
-          mailchimp='"${{ secrets.MAILCHIMP }}"'
-          echo "$mailchimp" > mailchimp_api.py
+          echo $MAILCHIMP > mailchimp_api.py
           cd ../
           mkdir settings
           cd services/
@@ -46,16 +47,19 @@ jobs:
           echo "api_key = $db" > dblogin.json
           cd ../../
           docker build --tag pubsub-backend .
-      - name: Dockerize frontend
+      - name: Dockerize Frontend
         run: |
           cd frontend/
           docker build --tag pubsub-frontend -f ./Dockerfile.prod ./
-      - name: docker push frontend
+      - name: Docker push frontend
         env:
           FRONTEND: ${{ secrets.FRONTEND }}
+        run: |
+          docker tag pubsub-frontend $FRONTEND
+          docker push $FRONTEND
+      - name: Docker push backend
+        env:
           BACKEND: ${{ secrets.BACKEND }}
         run: |
           docker tag pubsub-backend $BACKEND
-          docker tag pubsub-frontend $FRONTEND
           docker push $BACKEND
-          docker push $FRONTEND
