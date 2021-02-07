@@ -36,6 +36,7 @@ jobs:
       - name: Dockerize Backend
         env:
           MAILCHIMP: ${{ secrets.MAILCHIMP }}
+          DB: ${{ secrets.DB }}
         run: |
           cd backend/v1/
           cd src/services/
@@ -45,8 +46,8 @@ jobs:
           echo "now in src/"
           mkdir settings
           cd settings/
-          db='"${{ secrets.DB }}"'
-          echo $db > dblogin.json
+          ls
+          echo $DB > dblogin.json
           cd ../../
           docker build --tag pubsub-backend .
       - name: Dockerize Frontend
