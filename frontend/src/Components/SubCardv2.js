@@ -30,7 +30,6 @@ const SubCardv2 = ( {option}) => {
         .then ((response) => response.json())
         .then((data) => setSub(data))
         .catch((error) => console.log(error))
-
       }, [])
 
       console.log(subData)
