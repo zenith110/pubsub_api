@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.7"
 services:
   backend:
     build: ./backend/v1
@@ -7,7 +7,7 @@ services:
     ports:
     - 5000:80
   frontend:
-    build: ./frontend/
+    build: ./frontend/Dockerfile
     environment:
       CHOKIDAR_USEPOLLING: "true"
     stdin_open: true 
@@ -17,6 +17,8 @@ services:
     ports:
       - 5001:3000
     depends_on: 
+    - backend
+    links: 
     - backend
     
     
