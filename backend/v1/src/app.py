@@ -12,7 +12,7 @@ from services import random_subs
 app = Flask(__name__, static_url_path="/static")
 CORS(app)
 @app.route("/", methods=["POST", "GET"])
-@crossdomain(origin='*')
+
 def homepage():
     print("Welcome to the home page!")
     return "Welcome to the home page!"
@@ -23,7 +23,7 @@ Gets the current sub count
 
 
 @app.route("/totalcount/", methods=["POST", "GET"])
-@crossdomain(origin='*')
+
 def num():
     sub_count_data = sub_count.count()
     print(sub_count_data)
@@ -36,7 +36,7 @@ Adds a email and first name to the pubsub sales newsletter
 
 
 @app.route("/email/", methods=["POST"])
-@crossdomain(origin='*')
+
 def email():
     content = request.json
 
@@ -60,7 +60,7 @@ Returns all the sub data for the frontend
 
 
 @app.route("/onsale/", methods=["POST", "GET"])
-@crossdomain(origin='*')
+
 def onsale_data():
     on_sale_post = on_sale_service.on_sale_check()
     return on_sale_post
@@ -72,7 +72,7 @@ Returns all the sub names
 
 
 @app.route("/allsubs/", methods=["POST", "GET"])
-@crossdomain(origin='*')
+
 def all_names():
     all_subs.all_subs_data()
 
@@ -83,7 +83,7 @@ Fetches a sub based on the sub name provided
 
 
 @app.route("/subs/", methods=["POST", "GET"])
-@crossdomain(origin='*')
+
 def sub():
     if request.method == "GET":
         sub_name = request.args.get("name")
@@ -117,4 +117,4 @@ def sub_runner_path(sub_name):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=8443)
