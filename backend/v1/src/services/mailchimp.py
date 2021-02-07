@@ -134,8 +134,7 @@ def register_data(email: str, first_name: str, checked_subs: list):
             {
                 "email_address": email.lower,
                 "status": "subscribed",
-                "merge_fields": {"FNAME": first_name},
-                "interest": pubsub,
+                "merge_fields": {"FNAME": first_name}
             },
         )
         return "Added user to list and category!"

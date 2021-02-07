@@ -21,7 +21,7 @@ function Grid({filter}) {
     const url = "https://api.pubsub-api.dev"
     // Sends a post request for our number of subs
     useEffect(()=>{
-      fetch('/totalcount/')
+      fetch(url + '/totalcount/')
       .then ((response) => response.json())
       .then((data) => setSubCount(data))
       .catch((error) => console.log(error))
