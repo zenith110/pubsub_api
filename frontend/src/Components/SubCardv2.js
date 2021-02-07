@@ -16,7 +16,7 @@ const SubCardv2 = ( {option}) => {
 
     // Get ID for indivdual card info button. Return subData position for modal
     const handleOpen = (e) => 
-    {
+    {8443
       setModalIsOpen(true);
       setSubIndex(e.target.id);
       setCurSub(e.target.value)
@@ -26,7 +26,7 @@ const SubCardv2 = ( {option}) => {
 
     // fetching pubsub data
     useEffect(()=>{
-        fetch('https://pubsub-api.dev/api/onsale/')
+        fetch('https://api.pubsub-api.dev/onsale/')
         .then ((response) => response.json())
         .then((data) => setSub(data))
         .catch((error) => console.log(error))

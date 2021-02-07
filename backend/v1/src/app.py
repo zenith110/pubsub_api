@@ -11,6 +11,10 @@ from services import random_subs
 
 app = Flask(__name__, static_url_path="/static")
 CORS(app)
+@app.route("/", methods=["POST", "GET"]):
+def homepage:
+    print("Welcome to the home page!")
+    return "Welcome to the home page!"
 """
 Gets the current sub count
 """
