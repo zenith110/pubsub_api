@@ -47,7 +47,7 @@ const EmailModal = () =>{
 
     console.log(info)
 
-    fetch("http://127.0.0.1:5000/email/", {
+    fetch("http://backend/email/", {
       method: "POST",
       body: JSON.stringify(info),
       headers: { "Content-Type": "application/json" },

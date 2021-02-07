@@ -2,7 +2,6 @@ import React, {Component, useState} from "react";
 import EmailModal from './EmailModal.js'
 import {Modal, Container, Row, Col, Button, Tabs, Tab} from 'react-bootstrap';
 import { MailIcon } from 'react-mail-icon'
-import PhoneModal from "./PhoneModal.js"
 import Button1 from "./Button1"
 import './EmailModalButton.css'
 
@@ -58,15 +57,7 @@ export default function EmailModalButton()
 
           </Tab>
 
-          <Tab eventKey="phone" title="Phone">
-              <Modal.Body>
-                <PhoneModal/>
-              </Modal.Body>
-
-          </Tab>
-
-
-
+        
       </Tabs>
         <Modal.Footer>
 
