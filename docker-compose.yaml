@@ -7,13 +7,10 @@ services:
     ports:
     - 5000:80
   frontend:
-    build: ./frontend/Dockerfile
+    build: ./frontend/localhost/
     environment:
       CHOKIDAR_USEPOLLING: "true"
     stdin_open: true 
-    volumes:
-      - '.:/app'
-      - '/app/node_modules'
     ports:
       - 5001:3000
     depends_on: 

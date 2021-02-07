@@ -26,7 +26,7 @@ const SubCardv2 = ( {option}) => {
 
     // fetching pubsub data
     useEffect(()=>{
-        fetch('http://backend/onsale/')
+        fetch('https://pubsub-api.dev/api/onsale/')
         .then ((response) => response.json())
         .then((data) => setSub(data))
         .catch((error) => console.log(error))
