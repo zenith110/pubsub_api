@@ -12,8 +12,6 @@ function Grid({filter}) {
     const [subCount, setSubCount] = useState([])
     const [sale, setSale] = useState(false)
 
-    console.log("Filtering \n")
-    console.log(filter)
     let SubCardArr = [];
     var i;
     // Creates an array of subcard components
@@ -23,7 +21,7 @@ function Grid({filter}) {
     const url = window.location.href.slice(0, -1)
     // Sends a post request for our number of subs
     useEffect(()=>{
-      fetch(url + ':5000/totalcount/')
+      fetch(url + ':8080/totalcount/')
       .then ((response) => response.json())
       .then((data) => setSubCount(data))
       .catch((error) => console.log(error))

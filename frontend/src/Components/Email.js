@@ -28,7 +28,7 @@ class Email extends Component {
       name,
     };
     const url = window.location.href.slice(0, -1)
-    fetch(url + ":5000/email/", {
+    fetch(url + ":8080/email/", {
       method: "POST",
       body: JSON.stringify(info),
       headers: { "Content-Type": "application/json" },
