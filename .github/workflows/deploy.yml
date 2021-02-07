@@ -38,7 +38,7 @@ jobs:
           cd backend/v1/
           cd src/services/
           mailchimp='"${{ secrets.MAILCHIMP }}"'
-          echo "$mailchimp" > mailchimp_api.py
+          echo $mailchimp > mailchimp_api.py
           cd ../
           mkdir settings
           cd services/
