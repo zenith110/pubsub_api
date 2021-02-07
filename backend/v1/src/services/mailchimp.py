@@ -3,7 +3,7 @@ from mailchimp_marketing.api_client import ApiClientError
 import hashlib
 from itertools import chain
 import re
-
+import json
 with open("services/mailchimp.json") as json_data:
     data = json.load(json_data)
 
