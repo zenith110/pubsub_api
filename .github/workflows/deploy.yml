@@ -48,6 +48,8 @@ jobs:
           cd settings/
           ls
           echo $DB > dblogin.json
+          echo "db login file now made!"
+          ls
           cd ../../
           docker build --tag pubsub-backend .
       - name: Dockerize Frontend
