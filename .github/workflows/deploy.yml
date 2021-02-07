@@ -34,11 +34,12 @@ jobs:
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
       - name: Dockerize Backend
+        env:
+          MAILCHIMP: ${{ secrets.MAILCHIMP }}
         run: |
           cd backend/v1/
           cd src/services/
-          mailchimp=${{ secrets.MAILCHIMP }}
-          echo $mailchimp > mailchimp_api.py
+          echo $MAILCHIMP > mailchimp_api.py
           cd ../
           mkdir settings
           cd services/
