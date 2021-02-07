@@ -25,7 +25,7 @@ const SubCard = ({position}, params) => {
     let sub = new Sub();
     const url = window.location.href.slice(0, -1)
     useEffect(()=>{
-        fetch(url + ':8443/onsale/')
+        fetch(url + ':8080/onsale/')
         .then ((response) => response.json())
         .then((data) => setSub(data))
         .catch((error) => console.log(error))
