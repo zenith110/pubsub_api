@@ -11,5 +11,5 @@ def count():
     count = str(count)
     # Remove the tuple aspect of the number
     count = count.replace("(", "").replace(",", "").replace(")", "")
-    
+
     return count

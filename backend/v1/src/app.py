@@ -11,11 +11,13 @@ from services import random_subs
 
 app = Flask(__name__, static_url_path="/static")
 CORS(app)
-@app.route("/", methods=["POST", "GET"])
 
+
+@app.route("/", methods=["POST", "GET"])
 def homepage():
     print("Welcome to the home page!")
     return "Welcome to the home page!"
+
 
 """
 Gets the current sub count
@@ -23,7 +25,6 @@ Gets the current sub count
 
 
 @app.route("/totalcount/", methods=["POST", "GET"])
-
 def num():
     sub_count_data = sub_count.count()
     print(sub_count_data)
@@ -36,7 +37,6 @@ Adds a email and first name to the pubsub sales newsletter
 
 
 @app.route("/email/", methods=["POST"])
-
 def email():
     content = request.json
 
@@ -60,7 +60,6 @@ Returns all the sub data for the frontend
 
 
 @app.route("/onsale/", methods=["POST", "GET"])
-
 def onsale_data():
     on_sale_post = on_sale_service.on_sale_check()
     return on_sale_post
@@ -72,7 +71,6 @@ Returns all the sub names
 
 
 @app.route("/allsubs/", methods=["POST", "GET"])
-
 def all_names():
     all_subs.all_subs_data()
 
@@ -83,7 +81,6 @@ Fetches a sub based on the sub name provided
 
 
 @app.route("/subs/", methods=["POST", "GET"])
-
 def sub():
     if request.method == "GET":
         sub_name = request.args.get("name")

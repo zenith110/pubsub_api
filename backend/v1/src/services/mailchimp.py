@@ -4,6 +4,7 @@ import hashlib
 from itertools import chain
 import re
 import json
+
 with open("services/mailchimp.json") as json_data:
     data = json.load(json_data)
 
@@ -17,13 +18,18 @@ list_id = data["Login"]["list_id"]
 """
 Given an email, return a md5 result
 """
+
+
 def hash_email(email: str):
     result = hashlib.md5(email.encode("utf-8")).hexdigest()
     return result
 
+
 """
 Create an interest using the react data
 """
+
+
 def create_interest(client, list_id: str, name: str):
     try:
         interest = client.lists.interest_categories.create(
@@ -37,9 +43,12 @@ def create_interest(client, list_id: str, name: str):
         )
         return
 
+
 """
 Modifies the user's subs recieved from the newsletter
 """
+
+
 def make_category_id_json(interest_schema, sub_name: list, email: str, first_name: str):
     data_subs = []
     sub_names = []
@@ -60,7 +69,7 @@ def make_category_id_json(interest_schema, sub_name: list, email: str, first_nam
                 id = interest_schema[i]["id"]
                 data_subs.append(interest_schema[i]["name"] + ":" + str(id) + ":False")
                 sub_names.append(interest_schema[i]["name"])
-                
+
     data_subs = list(set(data_subs))
     sub_names = list(set(sub_names))
     for i in range(0, len(data_subs)):
@@ -108,9 +117,12 @@ def get_category_id(interest_schema, sub_name):
         else:
             continue
 
+
 """
 Adds the user and builds an account through mailchimp
 """
+
+
 def register_data(email: str, first_name: str, checked_subs: list):
 
     client = MailChimp(key, username)
@@ -152,7 +164,7 @@ def register_data(email: str, first_name: str, checked_subs: list):
         """
         Removes duplicates
         """
-        
+
         id_data = make_category_id_json(
             interests["interests"], checked_subs, email, first_name
         )
@@ -171,5 +183,3 @@ def register_data(email: str, first_name: str, checked_subs: list):
         client.lists.members.create(list_id, data)
         print("Finished making the client!")
         return "hi"
-   
-   

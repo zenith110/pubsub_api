@@ -52,5 +52,5 @@ def on_sale_check():
             }
         )
     response = jsonify(data["All_subs".lower()])
-    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add("Access-Control-Allow-Origin", "*")
     return response

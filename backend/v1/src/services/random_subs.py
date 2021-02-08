@@ -39,7 +39,7 @@ def random_subs():
         )
 
         sub_info = jsonify(data["random_sub"])
-        sub_info.headers.add('Access-Control-Allow-Origin', '*')
+        sub_info.headers.add("Access-Control-Allow-Origin", "*")
         return sub_info
     except:
         return abort(404)

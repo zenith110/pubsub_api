@@ -13,7 +13,7 @@ export default function NotificationsBox()
                     <h1 style={{'text-align': 'center'}}>
                          Want to get notified?
                     </h1>
-                    <h4 style={{'text-align': 'center'}}>Sign up for SMS or Email notifications for your favorite sub</h4>
+                    <h4 style={{'text-align': 'center'}}>Sign up for email notifications for your favorite sub!</h4>
                 </Col>
 
             </Row>
