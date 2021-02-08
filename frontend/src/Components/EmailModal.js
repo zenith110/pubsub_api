@@ -44,7 +44,6 @@ const EmailModal = () =>{
     };
 
     const url = "https://api.pubsub-api.dev"
-
     fetch(url + "/email/", {
       method: "POST",
       body: JSON.stringify(info),

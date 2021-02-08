@@ -128,18 +128,8 @@ def register_data(email: str, first_name: str, checked_subs: list):
     hashed_email = hash_email(email.lower())
     all_interest = client.lists.interest_categories.all(list_id=list_id, get_all=True)
     pubsub = get_category_id(all_interest["categories"], "pubsub")
-    if client.lists.members.get(list_id=list_id, subscriber_hash=hashed_email) == None:
-        client.lists.members.create(
-            list_id,
-            {
-                "email_address": email.lower,
-                "status": "subscribed",
-                "merge_fields": {"FNAME": first_name}
-            },
-        )
-        print("User has been submitted!")
-        return "Added user to list and category!"
-    else:
+    try:
+        client.lists.members.get(list_id=list_id, subscriber_hash=hashed_email)
         print("User data exists, let's update their data!")
         hashed_email = hash_email(email.lower())
         all_interest = client.lists.interest_categories.all(
@@ -162,7 +152,7 @@ def register_data(email: str, first_name: str, checked_subs: list):
         """
         Removes duplicates
         """
-
+        
         id_data = make_category_id_json(
             interests["interests"], checked_subs, email, first_name
         )
@@ -170,3 +160,16 @@ def register_data(email: str, first_name: str, checked_subs: list):
         client.lists.members.update(list_id, hashed_email, id_data)
         print("Finished update!")
         return "Updated"
+    except:
+        print("Now making a client!")
+        interests = client.lists.interest_categories.interests.all(
+            list_id=list_id, category_id=pubsub, get_all=False
+        )
+        data = make_category_id_json(
+            interests["interests"], checked_subs, email, first_name
+        )
+        client.lists.members.create(list_id, data)
+        print("Finished making the client!")
+        return "hi"
+   
+   
