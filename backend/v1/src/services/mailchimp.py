@@ -137,6 +137,7 @@ def register_data(email: str, first_name: str, checked_subs: list):
                 "merge_fields": {"FNAME": first_name}
             },
         )
+        print("User has been submitted!")
         return "Added user to list and category!"
     else:
         print("User data exists, let's update their data!")
