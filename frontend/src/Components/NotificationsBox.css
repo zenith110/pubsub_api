@@ -5,8 +5,6 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-
-  border-radius: 12px;
 }
 .notifications-container h1 {
   font-size: 80px;
@@ -17,4 +15,11 @@
   font-style: oblique;
   color: white;
   font-weight: 600;
+}
+
+@media (max-width: 575px) {
+  .notifications-container {
+    flex-direction: column;
+    height: 100%;
+  }
 }

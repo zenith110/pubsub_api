@@ -9,6 +9,22 @@
   background-color: rgba(255, 255, 255, 0.568);
 }
 
+.grid-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  flex-wrap: wrap;
+  flex-flow: row wrap;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+}
+
 .newsletter-margin {
   margin-top: 200px;
   margin-bottom: 200px;
@@ -17,7 +33,5 @@
 .header {
   display: flex;
   align-items: center;
-  justify-content: left;
-  margin-left: 120px;
-  margin-top: 30px;
+  justify-content: center;
 }

@@ -9,6 +9,7 @@ import EmailModal from "./Components/EmailModal.js";
 import EmailModalButton from "./Components/EmailModalButton.js";
 import NotifcationsBox from "./Components/NotificationsBox.js"
 import FilterButtons from "./Components/FilterButtons.js"
+import Footer from "./Components/Footer.js"
 
 import Navbar from "./Components/Navbar.js"
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -23,7 +24,10 @@ function App() {
   return (
     <div className="App">
       <Navbar></Navbar>
-      <Container fluid>
+      <Container fluid sm className="content-container">
+     
+
+       
         <Row>
           <Col className="header">
           <h2 style={{'fontFamily': 'Poppins', 'font-size': '40px'}}>
@@ -34,16 +38,16 @@ function App() {
 
         </Row>
         <Row>
-            <Col className="header grid">
+            <Col className="header grid ">
               <FilterButtons setOption={setOption}/>
 
             </Col>
-          </Row>
+        </Row>
 
-        <Row >
-
-       
-          <Col className="grid">    <SubCardv2 option={option}/></Col>
+        <Row className="grid-row" >
+            <Col xs={12} className="grid ">    
+              <SubCardv2 option={option}/>
+            </Col>
         </Row>
         <Row  className="newsletter-margin">
           <Col>
@@ -52,7 +56,12 @@ function App() {
           </Col>
 
         </Row>
-    
+
+        <Row>
+          <Col>
+            <Footer/>
+          </Col>
+        </Row>
 
       </Container>
       

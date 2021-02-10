@@ -191,7 +191,7 @@ const SubCardv2 = ( {option}) => {
 
                     return(
 
-                      <motion.div key = {pubsub.name}
+                      <motion.div className = "sub-card-container" key = {pubsub.name}
                       
                       whileHover={{scale: 1.09, originX: .48, originY: .5}}
                       transition={{type: 'spring', stiffness: 200 }}>

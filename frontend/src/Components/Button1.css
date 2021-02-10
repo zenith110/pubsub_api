@@ -12,6 +12,11 @@
   border-style: solid;
 }
 
+.secondary:hover {
+  background-color: #76bb959f;
+  color: white;
+}
+
 .primary {
   background-color: #34af6b;
   color: #ffffff;
