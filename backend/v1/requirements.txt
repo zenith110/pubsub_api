@@ -6,3 +6,5 @@ flask_cors
 mailchimp
 mailchimp_marketing
 gunicorn
+flasgger
+Flask-Limiter

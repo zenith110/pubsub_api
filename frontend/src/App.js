@@ -14,7 +14,7 @@ import Footer from "./Components/Footer.js"
 import Navbar from "./Components/Navbar.js"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, CardDeck, Card, Button, ToggleButton} from 'react-bootstrap';
-
+// import Footer from "./Components/Footer.js"
 function App() {
   // Assigns state to count so we can add new subs
   const[option, setOption] = useState("All")
@@ -65,7 +65,6 @@ function App() {
 
       </Container>
       
-
     </div>
   );
 }

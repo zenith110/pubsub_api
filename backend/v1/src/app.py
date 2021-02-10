@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify, Config
 import requests
 import json
 from flask_cors import CORS
@@ -8,34 +8,39 @@ from services import on_sale_service
 from services import sub_count
 from services import all_subs
 from services import random_subs
-
+from flasgger import Swagger, swag_from
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 app = Flask(__name__, static_url_path="/static")
 CORS(app)
 
-
-@app.route("/", methods=["POST", "GET"])
-def homepage():
-    print("Welcome to the home page!")
-    return "Welcome to the home page!"
-
-
+swagger = Swagger(app)
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["200 per day, 50 per hour"]
+)
 """
 Gets the current sub count
 """
 
 
-@app.route("/totalcount/", methods=["POST", "GET"])
+@app.route("/totalcount/", methods=["GET"])
 def num():
+    """ Fetches the total amount of subs that we have available
+    ---
+    responses:
+        200:
+            description: How many subs we have
+        
+    """
     sub_count_data = sub_count.count()
-    print(sub_count_data)
     return sub_count_data
 
 
 """
 Adds a email and first name to the pubsub sales newsletter
 """
-
-
 @app.route("/email/", methods=["POST"])
 def email():
     content = request.json
@@ -50,17 +55,19 @@ def email():
     Sends off data to add to list
     """
     email = mailchimp.register_data(email, first_name, checked_subs)
-    print("Email data has finished!")
     return email
-
-
 """
 Returns all the sub data for the frontend
 """
-
-
-@app.route("/onsale/", methods=["POST", "GET"])
+@app.route("/onsale/", methods=["GET"])
 def onsale_data():
+    """ Gets all the pubsubs data
+    ---
+    responses:
+        200:
+            description: Sub's names in JSON
+        
+    """
     on_sale_post = on_sale_service.on_sale_check()
     return on_sale_post
 
@@ -70,21 +77,43 @@ Returns all the sub names
 """
 
 
-@app.route("/allsubs/", methods=["POST", "GET"])
+@app.route("/allsubs/", methods=["GET"])
 def all_names():
-    all_subs.all_subs_data()
-
+    """ Fetches all the pubsubs we have available
+    ---
+    responses:
+        200:
+            description: Sub's names in JSON
+        
+    """
+    return all_subs.all_subs_data()
 
 """
 Fetches a sub based on the sub name provided
 """
 
 
-@app.route("/subs/", methods=["POST", "GET"])
+@app.route("/subs/", methods=["GET"])
 def sub():
+    """ Fetches pubsub
+    Name requires hyphens when using a sub with spaces
+    If random is provided as a name, will return a random sub
+    ---
+    parameters:  
+      - name: name
+        in: query
+        type: string
+        required: true
+    responses:
+        200:
+            description: Sub JSON response
+        400:
+            description: Sub could not be found
+        
+    """
     if request.method == "GET":
         sub_name = request.args.get("name")
-        if sub_name == "":
+        if sub_name == "random":
             sub = random_sub()
             return sub
         else:
@@ -108,7 +137,6 @@ Uses a sub name to fetch the data on it
 
 
 def sub_runner_path(sub_name):
-    print("Off to the function it goes!")
     sub = sub_runner.sub_runner_checker(sub_name)
     return sub
 
