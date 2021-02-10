@@ -9,11 +9,17 @@ from services import sub_count
 from services import all_subs
 from services import random_subs
 from flasgger import Swagger, swag_from
+from flask_limiter import Limiter
+from flask_limiter import get_remote_address
 import docs
 app = Flask(__name__, static_url_path="/static")
 Swagger(app)
 CORS(app)
-
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["200 per day, 50 per hour"]
+)
 """
 Gets the current sub count
 """
@@ -29,7 +35,6 @@ def num():
         
     """
     sub_count_data = sub_count.count()
-    print(sub_count_data)
     return sub_count_data
 
 
@@ -50,7 +55,6 @@ def email():
     Sends off data to add to list
     """
     email = mailchimp.register_data(email, first_name, checked_subs)
-    print("Email data has finished!")
     return email
 """
 Returns all the sub data for the frontend
@@ -103,6 +107,8 @@ def sub():
     responses:
         200:
             description: Sub JSON response
+        400:
+            description: Sub could not be found
         
     """
     if request.method == "GET":
