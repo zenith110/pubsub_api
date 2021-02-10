@@ -10,7 +10,7 @@ from services import all_subs
 from services import random_subs
 from flasgger import Swagger, swag_from
 from flask_limiter import Limiter
-from flask_limiter import get_remote_address
+from flask_limiter.util import get_remote_address
 import docs
 app = Flask(__name__, static_url_path="/static")
 Swagger(app)
