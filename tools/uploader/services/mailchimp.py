@@ -74,7 +74,7 @@ def send_email(sub_name, date):
     campaign_name = "Pubsub Sale notification"
     audience_id = list_id
     from_name = "Pubsub-api"
-    reply_to = "abrahannevarez@gmail.com"
+    reply_to = "noreply@pubsub-api.dev"
     campaign = campaign_creation_function(
         campaign_name, audience_id, from_name, reply_to, client, sub_name
     )
