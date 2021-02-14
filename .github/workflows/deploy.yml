@@ -41,7 +41,7 @@ jobs:
         run: |
           cd bot/src/
           echo "BOT_TOKEN = $TOKEN" > .env
-          
+          cd ../../
       - name: Dockerize Backend
         env:
           MAILCHIMP: ${{ secrets.MAILCHIMP }}
