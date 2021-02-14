@@ -118,7 +118,7 @@ class Pubsub(commands.Cog):
                         description="Beep beep, I bring you the most current pubsub deals!",
                     )
                     pubsub_message.add_field(
-                        name="Last time " + sub_argument + " was on sale",
+                        name="Last time " + sub_argument + " sub was on sale",
                         value="Last sale was from " + sub.last_sale,
                     )
                     pubsub_message.set_image(url=sub.image)
