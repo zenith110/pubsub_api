@@ -7,7 +7,7 @@ from discord_webhook import DiscordWebhook
 from datetime import datetime
 from pytz import timezone
 def discord_notification():
-    with open("discord_hook") as discord_hook:
+    with open("discord_hook.json") as discord_hook:
         data = json.load(discord_hook)
 
     tz = timezone("EST")
@@ -15,7 +15,7 @@ def discord_notification():
     webhook_key = data["webhook_key"]
     up = DiscordWebhook(
                 url=webhook_key,
-                content="```Site  is up again! Done at:\n"
+                content="```Site  is up again! Both containers returned responsive\nDone at:\n"
                 + str(now.month)
                 + "/"
                 + str(now.day)
@@ -26,7 +26,7 @@ def discord_notification():
                 + ":"
                 + str(now.minute) + "```"
             )
-        up_response = up.execute()
+    up_response = up.execute()
 """
 Pulls a container, specified by name
 """
@@ -43,8 +43,8 @@ def docker_login():
 
     client = docker.from_env()
 
-    username = login["Login"]["Username"]
-    password = login["Login"]["Password"]
+    username = login["Username"]
+    password = login["Password"]
 
     client.login(username=username, password=password)
     return client
@@ -59,6 +59,9 @@ def docker_checks():
     kill_all = subprocess.Popen(["killall", "docker-compose"])
     docker_compose = subprocess.Popen(["docker-compose", "up", "--build"])
     discord_notification()
-
-if __name__ == "__main__":
-    schedule.every().day.at("00:00").do(docker_checks)
+    
+docker_compose = subprocess.Popen(["docker-compose", "up", "--build"])
+schedule.every().day.at("00:00").do(docker_checks)
+while True:
+    schedule.run_pending()
+    time.sleep(1)
