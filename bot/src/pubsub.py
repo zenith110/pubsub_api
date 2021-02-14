@@ -2,8 +2,6 @@
 Fetches the latest pub sub deal 
 """
 import requests
-
-
 class RandomSub:
     def __init__(self):
         self.innards = None
