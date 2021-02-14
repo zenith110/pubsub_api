@@ -27,11 +27,11 @@ class Help(commands.Cog):
 
     @commands.command(aliases=["help", "commands"])
     async def HelpSystem(self, context: discord.ext.commands.context.Context):
-         await context.send(
-                        f"{context.author.mention}, here is our current list of commands\n" +
-                        "```!pubsub - for getting specific pubsub data\n!no-sale - for subs not on sale\n!onsale - for all subs currently on sale!\nSpecial thanks for pubsub-api.dev for providing pubsub data\n"+
-                        "\nGithub repo is here -> https://github.com/zenith110/pubsub_api```"
-                    )
+        await context.send(
+            f"{context.author.mention}, here is our current list of commands\n"
+            + "```!pubsub - for getting specific pubsub data\n!no-sale - for subs not on sale\n!onsale - for all subs currently on sale!\nSpecial thanks for pubsub-api.dev for providing pubsub data\n"
+            + "\nUse !pubsub help for getting what subs we have available!\nGithub repo is here -> https://github.com/zenith110/pubsub_api```"
+        )
 
 
 """

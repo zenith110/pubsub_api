@@ -5,6 +5,7 @@ import json
 import re
 import pubsub
 
+
 class Pubsub(commands.Cog):
     """
     sets up the basic components of the class
@@ -29,7 +30,9 @@ class Pubsub(commands.Cog):
                 subs = pubsub.GetAllSubs()
                 if subs.status_code == "200":
                     await context.send(
-                        f"{context.author.mention}, here is our list of subs! \n```" + subs.sub_name + "```"
+                        f"{context.author.mention}, here is our list of subs! \n```"
+                        + subs.sub_name
+                        + "```"
                     )
                 elif subs.status_code == "404":
                     print("API is down...")

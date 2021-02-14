@@ -2,6 +2,8 @@
 Fetches the latest pub sub deal 
 """
 import requests
+
+
 class RandomSub:
     def __init__(self):
         self.innards = None
@@ -21,17 +23,18 @@ def GetAllSubs():
         sub_names = []
         print(response)
         for i in range(len(response)):
-            if(response[i]["name"] == " "):
+            if response[i]["name"] == " ":
                 continue
             else:
                 sub_names.append(response[i]["name"].replace("\n", ""))
-        
+
         sub.sub_name = "\n".join(sub_names).replace("-", " ")
         sub.status_code = "200"
         return sub
     except:
         sub.status_code = "404"
         return sub
+
 
 def GetPubSub(sub_name: str):
     sub_name = sub_name.replace(" ", "-")
