@@ -55,7 +55,7 @@ class Pubsub(commands.Cog):
                     sub_argument_changed = sub_argument.replace(" ", "-")
                     if sub.status == "True":
                         await context.send(
-                            f"{context.author.mention}, here is your {original_sub_argument}, it's on sale!"
+                            f"{context.author.mention}"
                         )
                         pubsub_message = discord.Embed(
                             title="Latest deal for pubsubs",
@@ -97,7 +97,7 @@ class Pubsub(commands.Cog):
                 sub_argument = sub_argument.replace("-", " ")
                 if status == "True":
                     await context.send(
-                        f"{context.author.mention}, here is your {sub_argument}, it's on sale!"
+                        f"{context.author.mention}"
                     )
                     pubsub_message = discord.Embed(
                         title="Latest deal for pubsubs",
@@ -114,7 +114,7 @@ class Pubsub(commands.Cog):
                     await context.send(embed=pubsub_message)
                 else:
                     await context.send(
-                        f"{context.author.mention}, here is {sub_argument}, it's not on sale!"
+                        f"{context.author.mention}"
                     )
                     pubsub_message = discord.Embed(
                         title="Latest deal for pubsubs",
