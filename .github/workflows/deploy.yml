@@ -41,7 +41,8 @@ jobs:
         run: |
           cd bot/src/
           echo "BOT_TOKEN = $TOKEN" > .env
-          cd ../../
+          cd ../
+          docker build --tag pubsub-bot .
       - name: Dockerize Backend
         env:
           MAILCHIMP: ${{ secrets.MAILCHIMP }}
