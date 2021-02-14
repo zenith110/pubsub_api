@@ -21,9 +21,14 @@ def GetAllSubs():
         url = "https://api.pubsub-api.dev/allsubs/"
         response = requests.get(url).json()
         sub_names = []
+        print(response)
         for i in range(len(response)):
-            sub_names.append(response[i]["name"])
-        sub.sub_name = ", ".join(sub_names)
+            if(response[i]["name"] == " "):
+                continue
+            else:
+                sub_names.append(response[i]["name"].replace("\n", ""))
+        
+        sub.sub_name = "\n".join(sub_names).replace("-", " ")
         sub.status_code = "200"
         return sub
     except:

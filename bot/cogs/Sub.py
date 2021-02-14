@@ -29,7 +29,7 @@ class Pubsub(commands.Cog):
                 subs = pubsub.GetAllSubs()
                 if subs.status_code == "200":
                     await context.send(
-                        f"{context.author.mention}, here is our list of subs! \n" + subs
+                        f"{context.author.mention}, here is our list of subs! \n```" + subs.sub_name + "```"
                     )
                 elif subs.status_code == "404":
                     print("API is down...")

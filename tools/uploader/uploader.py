@@ -6,7 +6,7 @@ from PySide2 import QtWidgets, QtCore, QtGui
 from ui import uploader
 import connect_db
 from services import mailchimp
-
+from discord_webhook import DiscordWebhook, DiscordEmbed
 
 class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
     def __init__(self):
@@ -75,6 +75,16 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
             # Sends an email out if a sub is now on sale
             if on_sale == "True":
                 mailchimp.send_email(original, dates)
+                with open("webhook.json") as webhook_data:
+                    data = json.load(webhook_data)
+                webhook = DiscordWebhook(url=data["webhook"])
+                embed = DiscordEmbed(title = "New sub on sale!", description = ":tada: A sub is on sale!\n" + sub_name + " is on sale from: " dates + ", for the price of " + price)
+                embed.set_image(url = image)
+                
+                # add embed object to webhook
+                webhook.add_embed(embed)
+
+                response = webhook.execute()
         else:
             print("This sub doesn't exist, now adding!")
             # Inserts the data into each column
@@ -86,6 +96,16 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
             )
             if on_sale == "True":
                 mailchimp.send_email(original, dates)
+                with open("webhook.json") as webhook_data:
+                    data = json.load(webhook_data)
+                webhook = DiscordWebhook(url=data["webhook"])
+                embed = DiscordEmbed(title = "New sub on sale!", description = ":tada: A sub is on sale!\n" + sub_name + " is on sale from: " dates + ", for the price of " + price)
+                embed.set_image(url = image)
+                
+                # add embed object to webhook
+                webhook.add_embed(embed)
+
+                response = webhook.execute()
 
         connect_db.close(connection)
 
