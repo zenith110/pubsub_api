@@ -39,7 +39,7 @@ jobs:
         env:
           TOKEN: '${{ secrets.BOT_TOKEN}}'
         run: |
-          cd src/
+          cd bot/src/
           echo "BOT_TOKEN = $TOKEN" > .env
           
       - name: Dockerize Backend
