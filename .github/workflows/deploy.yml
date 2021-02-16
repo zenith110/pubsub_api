@@ -33,6 +33,16 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+          
+      # Dockerizes the bot to be sent to the repo
+      - name: Dockerize Bot
+        env:
+          TOKEN: '${{ secrets.BOT_TOKEN}}'
+        run: |
+          cd bot/src/
+          echo "BOT_TOKEN = $TOKEN" > .env
+          cd ../
+          docker build --tag pubsub-bot .
       - name: Dockerize Backend
         env:
           MAILCHIMP: ${{ secrets.MAILCHIMP }}
@@ -68,3 +78,9 @@ jobs:
         run: |
           docker tag pubsub-backend $BACKEND
           docker push $BACKEND
+      - name: Docker push bot
+        env:
+          BOT: ${{ secrets.BOT }}
+        run: |
+          docker tag pubsub-bot $BOT
+          docker push $BOT

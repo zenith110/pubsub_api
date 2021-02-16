@@ -6,6 +6,8 @@ services:
       CHOKIDAR_USEPOLLING: "true"
     ports:
     - 8443:5000
+  discord-bot:
+    image: zenith110/pubsub-bot
   frontend:
     image: zenith110/pubsub-frontend
     environment:
@@ -15,6 +17,7 @@ services:
       - 80:80
     depends_on: 
     - backend
+    - discord-bot
     links: 
     - backend
     
