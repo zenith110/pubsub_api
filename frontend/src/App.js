@@ -28,7 +28,7 @@ function App() {
      
 
        
-        <Row>
+        <Row className="row-buffer-sm">
           <Col className="header">
           <h2 style={{'fontFamily': 'Poppins', 'font-size': '40px'}}>
             Current Subs

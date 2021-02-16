@@ -39,19 +39,19 @@ const Footer = () =>{
 
             <Row className="row-buffer-sm icons">
                 <Col>
-                <a href="https://discord.gg/DeHK6C3Kc5">
+                <a className="icon" href="https://discord.gg/DeHK6C3Kc5">
                     <FaDiscord  size={50}/>
                 </a>
                     
                 </Col>
                 <Col>
-                <a href="https://discord.com/api/oauth2/authorize?client_id=711747646179770390&permissions=22528&scope=bot" >
+                <a className="icon" href="https://discord.com/api/oauth2/authorize?client_id=711747646179770390&permissions=22528&scope=bot" >
                   <FaRobot  size={50}/>
                 </a>
                     
                 </Col>
                 <Col>
-                <a href="https://github.com/zenith110/pubsub_api">
+                <a className="icon" href="https://github.com/zenith110/pubsub_api">
                      <FaGithub  size={50}/>
                 </a>
                     

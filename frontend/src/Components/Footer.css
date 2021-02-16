@@ -45,5 +45,10 @@
   font-size: 60px !important;
 }
 
-.icons {
+.icon {
+  color: rgb(43, 42, 40);
+}
+
+.icon:hover {
+  color: rgb(61, 57, 57);
 }
