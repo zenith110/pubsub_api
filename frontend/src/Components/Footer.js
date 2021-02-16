@@ -45,7 +45,7 @@ const Footer = () =>{
                     
                 </Col>
                 <Col>
-                <a className="icon" href="https://discord.com/api/oauth2/authorize?client_id=711747646179770390&permissions=22528&scope=bot" >
+                <a href="https://discord.com/api/oauth2/authorize?client_id=711747646179770390&permissions=8&scope=bot" >
                   <FaRobot  size={50}/>
                 </a>
                     
