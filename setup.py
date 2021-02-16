@@ -56,6 +56,7 @@ def docker_checks():
     client = docker_login()
     docker_pull("pubsub-frontend", client)
     docker_pull("pubsub-backend", client)
+    docker_pull("pubsub-bot", client)
     kill_all = subprocess.Popen(["killall", "docker-compose"])
     docker_compose = subprocess.Popen(["docker-compose", "up", "--build"])
     discord_notification()
