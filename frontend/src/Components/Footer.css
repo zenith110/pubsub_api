@@ -1,9 +1,14 @@
 .footer-container {
-  background-color: rgb(207, 207, 207);
+  width: 100%;
+  display: flex;
+
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .footer {
-  background-color: rgb(0, 0, 0);
 }
 
 .footer-container h1 {
@@ -19,4 +24,26 @@
 
 .name-btn:hover {
   color: brown !important;
+}
+
+.footer-col-1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-col-1 h1 {
+  font-size: 50px !important;
+}
+
+.row-buffer {
+  margin-top: 150px;
+}
+
+.name-btn a {
+  font-size: 60px !important;
+}
+
+.icons {
 }

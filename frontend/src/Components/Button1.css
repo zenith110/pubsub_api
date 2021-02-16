@@ -12,8 +12,15 @@
   border-style: solid;
 }
 
+.secondary a {
+  color: #34af6b;
+}
+
 .secondary:hover {
   background-color: #76bb959f;
+}
+
+.secondary:hover a {
   color: white;
 }
 
@@ -46,5 +53,10 @@
   font-weight: 800;
 }
 
-.btn1:hover {
+.btn1:hover a {
+  text-decoration: none !important;
+}
+
+.btn1 a:hover {
+  color: white;
 }

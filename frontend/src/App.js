@@ -44,7 +44,7 @@ function App() {
             </Col>
         </Row>
 
-        <Row className="grid-row" >
+        <Row className="grid-row row-buffer-sm" >
             <Col xs={12} className="grid ">    
               <SubCardv2 option={option}/>
             </Col>
@@ -57,8 +57,8 @@ function App() {
 
         </Row>
 
-        <Row>
-          <Col>
+        <Row >
+          <Col md={12} fluid>
             <Footer/>
           </Col>
         </Row>

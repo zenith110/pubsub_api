@@ -1,5 +1,5 @@
 .notifications-container {
-  background-color: rgb(112, 219, 112);
+  background-color: rgb(99, 192, 99);
   height: 350px;
 
   display: flex;
@@ -7,7 +7,7 @@
   align-items: center;
 }
 .notifications-container h1 {
-  font-size: 80px;
+  font-size: 70px;
 }
 
 .notifications-container h4 {
@@ -21,5 +21,11 @@
   .notifications-container {
     flex-direction: column;
     height: 100%;
+  }
+  .notifications-container h1 {
+    font-size: 60px;
+  }
+  .notifications-container h4 {
+    font-size: 99%;
   }
 }

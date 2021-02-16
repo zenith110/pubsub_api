@@ -10,10 +10,10 @@ export default function NotificationsBox()
         <Container fluid className="notifications-container">
             <Row>
                 <Col>
-                    <h1 style={{'text-align': 'center'}}>
+                    <h1 className="notifications-title" style={{'text-align': 'center'}}>
                          Want to get notified?
                     </h1>
-                    <h4 style={{'text-align': 'center'}}>Sign up for email notifications for your favorite sub!</h4>
+                    <h4 className="notifications-desc" style={{'text-align': 'center'}}>Sign up for email notifications for your favorite sub!</h4>
                 </Col>
 
             </Row>
