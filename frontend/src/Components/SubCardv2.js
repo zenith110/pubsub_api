@@ -206,17 +206,17 @@ const SubCardv2 = ( {option}) => {
                           <Card.Body>
                             <Card.Title className="sub-card-title">{pubsub.name}  </Card.Title>
                             
-                            <Card.Text>
-                              <Container fluid>
+                     
+                              <Container fluid className="card-info-container">
                                 <Row className="card-details">
-                                  <Col sm={4} >
+                                  <Col xs={4} >
                                       <Badge className="badge" pill variant = {pubsub.on_sale === 'False'? 'danger' : 'success'} >
                                          <h4>
                                           {pubsub.on_sale === 'True'? "On Sale" : "Not On Sale"}
                                          </h4>
                                       </Badge>
                                   </Col>
-                                  <Col sm={{ span: 4, offset: 4 }}>
+                                  <Col xs={{ span: 4, offset: 4 }}>
                                     <Button id={index} size = "lg" className="more-info-btn" onClick={handleOpen} value={pubsub.name}>
                                       Info
                                     </Button>
@@ -228,7 +228,7 @@ const SubCardv2 = ( {option}) => {
                               </Container>
                             
                        
-                            </Card.Text>
+                          
                           </Card.Body>
                          
                         </Card>

@@ -56,8 +56,8 @@ const CheckBox = (props) =>
                         return (
 
                                        
-                         <Row >
-                            <Col sm={1} className="checks">
+                         <Row className="check-row">
+                            <Col xs={1}  className="checks">
                                 <Form.Check
                                 id = {sub.name}
                                 type='checkbox'
@@ -68,8 +68,8 @@ const CheckBox = (props) =>
                               
                                
                             </Col>
-                            <Col sm={11}  name = {sub.name}>
-                                <h5>
+                            <Col  name = {sub.name}>
+                                <h5 className="check-title">
                                     {sub.name}
                                 </h5>
                             </Col>
