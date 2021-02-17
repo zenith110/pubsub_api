@@ -22,6 +22,9 @@ class Sale(commands.Cog):
                 continue
         discord_embeds = []
         try:
+            await context.send(
+                        f"{context.author.mention}"
+            )
             for pubsub in range(len(sale_list)):
                 discord_embeds.append(
                     discord.Embed(

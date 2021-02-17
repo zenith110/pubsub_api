@@ -481,7 +481,7 @@ html_code = """\
           <td align="center" valign="top" id="bodyCell">
             <!-- BEGIN TEMPLATE // -->
 			<center>
-            <p>Howdy *|FNAME|*, just reaching out from pubsub-api.dev to inform you that the following sub is on sale: sub_name, from: dates_of_sub</p>
+            <p>Howdy *|FNAME|*, just reaching out from https://www.pubsub-api.dev/ to inform you that the following sub is on sale: sub_name, from: dates_of_sub</p>
 			</center>
       <!-- // END TEMPLATE -->
     </td>

@@ -22,6 +22,9 @@ class NotOnSale(commands.Cog):
                 continue
         discord_embeds = []
         try:
+            await context.send(
+                        f"{context.author.mention}"
+            )
             for pubsub in range(len(not_on_sale_list)):
                 discord_embeds.append(
                     discord.Embed(

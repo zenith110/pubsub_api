@@ -78,7 +78,7 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
                 with open("webhook.json") as webhook_data:
                     data = json.load(webhook_data)
                 webhook = DiscordWebhook(url=data["webhook"])
-                embed = DiscordEmbed(title = "New sub on sale!", description = ":tada: A sub is on sale!\n" + sub_name + " is on sale from: " dates + ", for the price of " + price)
+                embed = DiscordEmbed(title = "New sub on sale!", description = ":tada: A sub is on sale!\n" + sub_name + " is on sale from: " + dates + ", for the price of " + price)
                 embed.set_image(url = image)
                 
                 # add embed object to webhook
@@ -99,7 +99,7 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
                 with open("webhook.json") as webhook_data:
                     data = json.load(webhook_data)
                 webhook = DiscordWebhook(url=data["webhook"])
-                embed = DiscordEmbed(title = "New sub on sale!", description = ":tada: A sub is on sale!\n" + sub_name + " is on sale from: " dates + ", for the price of " + price)
+                embed = DiscordEmbed(title = "New sub on sale!", description = ":tada: A sub is on sale!\n" + sub_name + " is on sale from: " + dates + ", for the price of " + price)
                 embed.set_image(url = image)
                 
                 # add embed object to webhook
