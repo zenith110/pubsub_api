@@ -123,9 +123,11 @@ const SubCardv2 = ( {option}) => {
                                 </Col>
                               </Row>
                               <Row>
-                                <Col>
-                                <h2>
-                              Last on Sale: <br></br>  
+                                <Col >
+                               
+                             
+                                <h2 className="">
+                              Last Sale <br></br>  
                               {subData.filter(sub => {
                                 if(sub.name == curSub)
                                 {
@@ -137,6 +139,9 @@ const SubCardv2 = ( {option}) => {
                               }
 
                             </h2>
+
+                               
+                   
                                 </Col>
                               </Row>
 
