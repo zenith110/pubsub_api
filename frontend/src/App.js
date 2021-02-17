@@ -39,7 +39,7 @@ function App() {
         </Row>
         <Row>
             <Col className="header grid ">
-              <FilterButtons setOption={setOption}/>
+              <FilterButtons setOption={setOption} option={option}/>
 
             </Col>
         </Row>

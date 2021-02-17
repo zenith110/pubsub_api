@@ -25,3 +25,8 @@
   box-shadow: none;
   color: white !important;
 }
+
+.selected {
+  background-color: #34af6bb7 !important;
+  color: white !important;
+}

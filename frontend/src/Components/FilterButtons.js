@@ -21,6 +21,7 @@ const FilterButtons = (props) => {
          //Show all subs
 
         props.setOption("All")
+
         return true
       }
      
@@ -45,9 +46,11 @@ const FilterButtons = (props) => {
     return (
       <div>
 
-              <Button value="All" className="filter-btn" onClick={handleButtons} >All</Button>
-              <Button value="Sale" className="filter-btn" onClick={handleButtons}>On Sale</Button>
-              <Button value="NotSale" className="filter-btn" onClick={handleButtons}>Not On Sale</Button>
+              
+              
+              <Button value="All" className={`filter-btn ${props.option == "All"? "selected": ""}`} onClick={handleButtons} >All</Button>
+              <Button value="Sale" className={`filter-btn ${props.option == "Sale"? "selected": ""}`} onClick={handleButtons}>On Sale</Button>
+              <Button value="NotSale" className={`filter-btn ${props.option == "NotSale"? "selected": ""}`} onClick={handleButtons}>Not On Sale</Button>
 
    
       </div>
