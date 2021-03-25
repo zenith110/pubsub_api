@@ -114,3 +114,11 @@
 
 @media (max-width: 575px) {
 }
+
+.card-info-container {
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: center;
+}

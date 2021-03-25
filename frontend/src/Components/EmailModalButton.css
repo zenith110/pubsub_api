@@ -18,7 +18,7 @@ h3 {
 
 .tabs {
   background-color: rgb(255, 255, 255);
-  color: black !important;
+  color: rgb(0, 0, 0) !important;
 }
 
 .nav-tabs {
@@ -46,7 +46,7 @@ h3 {
   border-top-left-radius: 13px;
   border-top-right-radius: 13px;
   color: rgb(255, 255, 255);
-  text-shadow: 3px 1px 10px rgba(0, 0, 0, 0.288);
+  text-shadow: 3px 1px 10px rgba(189, 184, 184, 0.288);
   font-size: 25px;
   text-align: center;
 }

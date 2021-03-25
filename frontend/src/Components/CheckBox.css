@@ -1,9 +1,24 @@
 .checkbox-container {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  background-color: rgb(255, 255, 255);
+  border-radius: 10px;
+  box-shadow: 2px 2px 8px 1px rgba(77, 77, 77, 0.281);
 }
 
 .checkbox-title {
   text-align: center;
   font-weight: 700;
+}
+
+.check-row {
+  margin-top: 3px;
+}
+
+.checks {
+}
+
+.check-title {
+  width: 90%;
 }
