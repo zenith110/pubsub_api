@@ -1,66 +1,89 @@
-import React, {Component} from "react";
+import React, {Component, useState} from "react";
 
 import {Modal, Container, Row, Col, Button } from 'react-bootstrap';
+import CheckBox from "./CheckBox"
+import Button1 from "./Button1"
 import './EmailModal.css'
 
-class EmailModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: "",
-      name: "",
+const EmailModal = () =>{
+  const [email, setEmail] = useState("")
+  const [name, setName] = useState("") 
+  const [checkedSubs, setCheckedSubs] = useState([])
 
-    };
+  const[error, setError] = useState("")
+
+
+  const handleInputChange = (e) => {
     
-  }
+    if(e.target.name == 'email')
+      setEmail(e.target.value)
+    else if (e.target.name == 'name')
+      setName(e.target.value)
 
-  handleInputChange = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value,
-    });
+    //handle errors
+    if(e.target.name == 'name')
+    {
+      if(Number(e.target.name)== true)
+        setError("Name must only be letters")
+
+    }
+
+        
+
+
   };
 
-  handleSubmit = (e) => {
-    e.preventDefault();
 
-    const { email, name } = this.state;
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
     const info = {
       email,
       name,
+      checkedSubs
     };
-
-    fetch("http://127.0.0.1:5000/email/", {
+    if(email === "" || name === ""){
+      alert("Please provide a first name and email!")
+    }
+    
+    const url = "https://api.pubsub-api.dev"
+    // const url = "http://127.0.0.1:5000"
+    fetch(url + "/email/", {
       method: "POST",
       body: JSON.stringify(info),
       headers: { "Content-Type": "application/json" },
     })
-      .then((res) => res.json())
-      .then((json) => console.log(json));
+      alert("Information has been sent, feel free to close!")
+      // .then((res) => res.json())
+      // .then((json) => console.log(json));
   };
+    
 
 
-  render() {
+  
     return (
-      <Container className="newsletter-container">
+      <div>
+      <form className="form-group" onSubmit={handleSubmit}>
+        <Container className="newsletter-container">
 
-        <Row>
+          <Row>
 
-          <Col className="newsletter-input">
+            <Col className="newsletter-input ">
 
             <h2 className="newsletter-input-title">
               Sign up for Email notifications today!
             </h2>
        
-          <form className="form-group" onSubmit={this.handleSubmit}>
+          
             <div className="form-input" >
               <input
                 type="email"
                 className="form-control"
                 name="email"
                 placeholder="Email"
-                onChange={this.handleInputChange}
+                onChange={handleInputChange}
               />
+
             </div>
             <br />
             <div className="form-input" >
@@ -69,26 +92,48 @@ class EmailModal extends Component {
                 className="form-control"
                 name="name"
                 placeholder="First Name"
-                onChange={this.handleInputChange}
+                onChange={handleInputChange}
               />
+               <h1>{error}</h1>
             </div>
-            <div className="sub-btn-container">
+
+        
+          </Col>
+
+        </Row>
+
+        <Row>
+          <Col>
+            <CheckBox setCheckedSubs={setCheckedSubs} checkedSubs={checkedSubs}/>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
+          <div className="sub-btn-container">
+
+            <Button1 title="Subscribe" onClick={handleSubmit} type="submit" size="md" variant="primary"/>
+
+            {/*}
               <button className="sub-btn " type="submit">
                 <h4>
                 Subscribe
                 </h4>
               </button>
+            {*/}
             </div>
-          </form>
           </Col>
-
         </Row>
 
-      </Container>
+        
+
+          </Container>
+          </form>
+       </div>
  
      
     );
-  }
+  
 }
 
 export default EmailModal;

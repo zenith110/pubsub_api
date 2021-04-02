@@ -1,0 +1,25 @@
+version: "3.3"
+services:
+  backend:
+    image: zenith110/pubsub-backend
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    ports:
+    - 8443:5000
+  discord-bot:
+    image: zenith110/pubsub-bot
+  frontend:
+    image: zenith110/pubsub-frontend
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    stdin_open: true
+    ports:
+      - 80:80
+    depends_on: 
+    - backend
+    - discord-bot
+    links: 
+    - backend
+    
+    
+  

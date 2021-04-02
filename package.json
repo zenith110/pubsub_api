@@ -1,0 +1,22 @@
+{
+  "name": "pubsub_api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "client": "cd frontend && npm start",
+    "server_v1": "cd backend/v1/src/ && set FLASK_APP=app.py && flask run",
+    "v1": "concurrently \"npm run server_v1\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zenith110/pubsub_api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zenith110/pubsub_api/issues"
+  },
+  "homepage": "https://github.com/zenith110/pubsub_api#readme"
+}

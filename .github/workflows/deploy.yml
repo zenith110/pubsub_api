@@ -1,0 +1,86 @@
+# Deploys a payload to the server to get the latest data
+name: Deploy to Docker
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  Deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7.9 
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.9
+      - name: Install dependencies
+        run: |
+          cd backend/v1/
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Lint with flake8
+        run: |
+          cd backend/v1/
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Docker Login
+        env:
+          DOCKER_USER: '${{ secrets.DOCKER_USER }}'
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+          
+      # Dockerizes the bot to be sent to the repo
+      - name: Dockerize Bot
+        env:
+          TOKEN: '${{ secrets.BOT_TOKEN}}'
+        run: |
+          cd bot/src/
+          echo "BOT_TOKEN = $TOKEN" > .env
+          cd ../
+          docker build --tag pubsub-bot .
+      - name: Dockerize Backend
+        env:
+          MAILCHIMP: ${{ secrets.MAILCHIMP }}
+          DB: ${{ secrets.DB }}
+        run: |
+          cd backend/v1/
+          cd src/services/
+          echo $MAILCHIMP > mailchimp.json
+          echo "currently in services"
+          cd ../
+          echo "now in src/"
+          mkdir settings
+          cd settings/
+          ls
+          echo $DB > dblogin.json
+          echo "db login file now made!"
+          ls
+          cd ../../
+          docker build --tag pubsub-backend .
+      - name: Dockerize Frontend
+        run: |
+          cd frontend/
+          docker build --tag pubsub-frontend -f ./Dockerfile.prod ./
+      - name: Docker push frontend
+        env:
+          FRONTEND: ${{ secrets.FRONTEND }}
+        run: |
+          docker tag pubsub-frontend $FRONTEND
+          docker push $FRONTEND
+      - name: Docker push backend
+        env:
+          BACKEND: ${{ secrets.BACKEND }}
+        run: |
+          docker tag pubsub-backend $BACKEND
+          docker push $BACKEND
+      - name: Docker push bot
+        env:
+          BOT: ${{ secrets.BOT }}
+        run: |
+          docker tag pubsub-bot $BOT
+          docker push $BOT

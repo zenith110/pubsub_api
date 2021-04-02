@@ -1,0 +1,3 @@
+pyscop2
+requests
+flask_cors

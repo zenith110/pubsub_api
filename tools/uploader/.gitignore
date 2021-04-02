@@ -1,0 +1,4 @@
+services/mailchimp_api.py
+settings/
+__pycache__/
+webhook.json

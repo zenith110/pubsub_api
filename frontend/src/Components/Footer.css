@@ -1,0 +1,54 @@
+.footer-container {
+  width: 100%;
+  display: flex;
+
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.footer {
+}
+
+.footer-container h1 {
+  color: black !important;
+}
+
+.container-fluid {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.name-btn:hover {
+  color: brown !important;
+}
+
+.footer-col-1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-col-1 h1 {
+  font-size: 50px !important;
+}
+
+.row-buffer {
+  margin-top: 150px;
+}
+
+.name-btn a {
+  font-size: 60px !important;
+}
+
+.icon {
+  color: rgb(43, 42, 40);
+}
+
+.icon:hover {
+  color: #2fa364;
+}

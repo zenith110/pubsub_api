@@ -1,5 +1,31 @@
 .notifications-container {
-  background-color: lightgreen;
-  height: 320px;
-  width: 600px;
+  background-color: rgb(99, 192, 99);
+  height: 350px;
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.notifications-container h1 {
+  font-size: 70px;
+}
+
+.notifications-container h4 {
+  font-family: "Poppins" sans-serif;
+  font-style: oblique;
+  color: white;
+  font-weight: 600;
+}
+
+@media (max-width: 575px) {
+  .notifications-container {
+    flex-direction: column;
+    height: 100%;
+  }
+  .notifications-container h1 {
+    font-size: 60px;
+  }
+  .notifications-container h4 {
+    font-size: 99%;
+  }
 }

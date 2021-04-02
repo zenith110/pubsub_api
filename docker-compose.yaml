@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+  backend:
+    build: ./backend/v1
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    ports:
+    - 8443:5000
+  frontend:
+    build: ./frontend
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    stdin_open: true 
+    ports:
+      - 80:80
+    depends_on: 
+    - backend
+    links: 
+    - backend
+    
+    
+  
