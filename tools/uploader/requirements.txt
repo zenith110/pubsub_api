@@ -1,3 +1,4 @@
-pyscop2
+psycopg2
 requests
 flask_cors
+PySide2
