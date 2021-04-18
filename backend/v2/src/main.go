@@ -1,8 +1,8 @@
 package main
 
 import (
-	. "./services"
 	"github.com/gin-gonic/gin"
+	"pubsub-api/services"
 )
 
 func main() {
