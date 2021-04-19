@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -8,6 +9,10 @@ import (
 
 	"github.com/go-pg/pg/v10"
 )
+
+type DB struct {
+	Login Login `json:"Login"`
+}
 
 type Login struct {
 	Username string `json:"Username"`
@@ -18,13 +23,14 @@ type Login struct {
 	Port     string `json:"Port"`
 }
 
-func ParseJson() Login {
+func ParseJson() DB {
 	info, err := os.Open("settings/dblogin.json")
 	if err != nil {
 		fmt.Println(err)
 	}
 	byteValue, _ := ioutil.ReadAll(info)
-	var loginJson Login
+	var loginJson DB
+
 	jsonErr := json.Unmarshal(byteValue, &loginJson)
 	if jsonErr != err {
 		fmt.Println(jsonErr)
@@ -34,21 +40,27 @@ func ParseJson() Login {
 
 func GetTable() string {
 	json := ParseJson()
-	return json.Table
+	fmt.Println(json.Login.Table)
+	return json.Login.Table
 }
 func CloseDB() {
 	db := ConnectToDB()
 	defer db.Close()
 }
 
-func ConnectToDB() {
+func ConnectToDB() *pg.DB {
 	json := ParseJson()
 	db := pg.Connect(&pg.Options{
-		User:     json.Username,
-		Password: json.Password,
-		Host:     json.Host,
-		Port:     json.Port,
-		Database: json.Database,
+		User:     json.Login.Username,
+		Password: json.Login.Password,
+		Database: json.Login.Database,
+		Addr:     json.Login.Port,
 	})
+	fmt.Println(db)
+	ctx := context.Background()
+	if err := db.Ping(ctx); err != nil {
+		fmt.Println("Could not connect!")
+	}
+
 	return db
 }
