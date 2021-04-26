@@ -27,8 +27,8 @@ class Email extends Component {
       email,
       name,
     };
-    const url = "https://api.pubsub-api.dev"
-    // const url = "http://127.0.0.1:5000"
+    // const url = "https://api.pubsub-api.dev"
+    const url = "http://127.0.0.1:5000/"
     console.log("Gonna send data!")
     fetch(url + "/email/", {
       method: "POST",

@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify, Config
 import requests
 import json
 from flask_cors import CORS
-from services import mailchimp
+from services import newsletter
 from services import sub_runner
 from services import on_sale_service
 from services import sub_count
@@ -54,7 +54,7 @@ def email():
     """
     Sends off data to add to list
     """
-    email = mailchimp.register_data(email, first_name, checked_subs)
+    email = newsletter.register_data(email, first_name, checked_subs)
     return email
 """
 Returns all the sub data for the frontend
@@ -142,4 +142,4 @@ def sub_runner_path(sub_name):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    app.run(host="0.0.0.0", port=5000)

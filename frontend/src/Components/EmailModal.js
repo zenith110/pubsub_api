@@ -36,7 +36,6 @@ const EmailModal = () =>{
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const info = {
       email,
       name,
@@ -45,9 +44,10 @@ const EmailModal = () =>{
     if(email === "" || name === ""){
       alert("Please provide a first name and email!")
     }
-    
-    const url = "https://api.pubsub-api.dev"
-    // const url = "http://127.0.0.1:5000"
+    console.log(setCheckedSubs);
+    // const url = "https://api.pubsub-api.dev"
+    console.log("Now sending data!")
+    const url = "http://127.0.0.1:5000"
     fetch(url + "/email/", {
       method: "POST",
       body: JSON.stringify(info),
