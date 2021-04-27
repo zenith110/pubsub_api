@@ -5,7 +5,7 @@ services:
     environment:
       CHOKIDAR_USEPOLLING: "true"
     ports:
-    - 8443:5000
+    - 8080:8080
   discord-bot:
     image: zenith110/pubsub-bot
   frontend:
