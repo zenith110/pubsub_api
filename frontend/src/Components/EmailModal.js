@@ -38,9 +38,8 @@ const EmailModal = () =>{
     if(email === "" || name === ""){
       alert("Please provide a first name and email!")
     }
-    console.log(setCheckedSubs);
+    
     const url = "https://api.pubsub-api.dev"
-    // console.log("Now sending data!")
     // const url = "http://127.0.0.1:5000"
     fetch(url + "/email/", {
       method: "POST",
@@ -48,8 +47,6 @@ const EmailModal = () =>{
       headers: { "Content-Type": "application/json" },
     })
       alert("Information has been sent, feel free to close!")
-      // .then((res) => res.json())
-      // .then((json) => console.log(json));
   };
     
     return (
