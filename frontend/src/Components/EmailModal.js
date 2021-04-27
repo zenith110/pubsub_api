@@ -12,7 +12,6 @@ const EmailModal = () =>{
 
   const[error, setError] = useState("")
 
-
   const handleInputChange = (e) => {
     
     if(e.target.name == 'email')
@@ -25,14 +24,9 @@ const EmailModal = () =>{
     {
       if(Number(e.target.name)== true)
         setError("Name must only be letters")
-
     }
 
-        
-
-
   };
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -45,9 +39,9 @@ const EmailModal = () =>{
       alert("Please provide a first name and email!")
     }
     console.log(setCheckedSubs);
-    // const url = "https://api.pubsub-api.dev"
-    console.log("Now sending data!")
-    const url = "http://127.0.0.1:5000"
+    const url = "https://api.pubsub-api.dev"
+    // console.log("Now sending data!")
+    // const url = "http://127.0.0.1:5000"
     fetch(url + "/email/", {
       method: "POST",
       body: JSON.stringify(info),
@@ -58,9 +52,6 @@ const EmailModal = () =>{
       // .then((json) => console.log(json));
   };
     
-
-
-  
     return (
       <div>
       <form className="form-group" onSubmit={handleSubmit}>
