@@ -61,7 +61,7 @@ jobs:
           echo "db login file now made!"
           ls
           cd ../../
-          docker build --tag pubsub-backend .
+          docker build --tag pubsub-backend -f ./Dockerfile.prod ./
       - name: Dockerize Frontend
         run: |
           cd frontend/
