@@ -45,12 +45,12 @@ jobs:
           docker build --tag pubsub-bot .
       - name: Dockerize Backend
         env:
-          MAILCHIMP: ${{ secrets.MAILCHIMP }}
+          MAILGUN: ${{ secrets.MAILGUN }}
           DB: ${{ secrets.DB }}
         run: |
           cd backend/v1/
           cd src/services/
-          echo $MAILCHIMP > mailchimp.json
+          echo $MAILGUN > mailgun.json
           echo "currently in services"
           cd ../
           echo "now in src/"
