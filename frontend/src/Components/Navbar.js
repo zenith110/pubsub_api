@@ -7,7 +7,7 @@ function Navbar()
        <div>
        <Container fluid className="navbar">
            <Row>
-               <Col>
+               <Col className="title-container">
                     <h1>Publix-Sub Tracker</h1>
 
                </Col>

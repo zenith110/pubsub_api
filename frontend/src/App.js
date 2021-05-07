@@ -30,7 +30,7 @@ function App() {
        
         <Row className="row-buffer-sm">
           <Col className="header">
-          <h2 style={{'fontFamily': 'Poppins', 'font-size': '40px'}}>
+          <h2 className="sub-title">
             Current Subs
           </h2>
           <br/>

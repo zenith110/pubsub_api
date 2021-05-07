@@ -210,7 +210,7 @@ const SubCardv2 = ( {option}) => {
                               <Container fluid className="card-info-container">
                                 <Row className="card-details">
                                   <Col xs={4} >
-                                      <Badge className="badge" pill variant = {pubsub.on_sale === 'False'? 'danger' : 'success'} >
+                                      <Badge className={pubsub.on_sale === 'False'? 'danger-pill' : 'success-pill'} pill   >
                                          <h4>
                                           {pubsub.on_sale === 'True'? "On Sale" : "Not On Sale"}
                                          </h4>
@@ -233,12 +233,6 @@ const SubCardv2 = ( {option}) => {
                          
                         </Card>
                         
-                        
-                        
-                   
-                         
-                       
-
 
                         </motion.div>
                        

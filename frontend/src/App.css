@@ -1,5 +1,4 @@
 * {
-  font-family: "Poppins", sans-serif;
 }
 
 .grid {
@@ -34,4 +33,10 @@
 
 .row-buffer-sm {
   margin-top: 50px;
+}
+
+.sub-title {
+  font-family: "Mulish", sans-serif !important;
+  font-size: 25px;
+  padding-bottom: 15px;
 }
