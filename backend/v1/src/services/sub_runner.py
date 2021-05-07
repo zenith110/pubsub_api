@@ -17,7 +17,7 @@ def sub_runner_checker(subname):
             return (
                 "Unfortunately, we do not have deal data available on "
                 + subname.replace("-", " ")
-                + " sub at this time.\nOur current offers is the boar-head-jerk-turkey-and-gouda sub"
+                + f" sub at this time."
             )
 
         # Fetches us all the rows so we can grab data from each
