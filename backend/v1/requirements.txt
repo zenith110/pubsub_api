@@ -5,3 +5,5 @@ flask_cors
 gunicorn
 flasgger
 Flask-Limiter
+black
+psycopg2-pool

@@ -2,6 +2,7 @@ import requests
 import re
 import json
 
+
 def register_data(email: str, first_name: str, checked_subs):
     with open("services/mailgun.json") as loop:
         data = json.load(loop)
@@ -85,7 +86,7 @@ def register_data(email: str, first_name: str, checked_subs):
                     auth=("api", api_key),
                 )
                 print(response.json())
-                          
+
             elif re.findall("^.*:False$", subs):
                 subs = subs.replace(":False", "")
                 response = requests.put(
