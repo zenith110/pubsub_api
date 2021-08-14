@@ -180,9 +180,7 @@ def run_driver():
                         )
                         if on_sale == "True":
                             mailgun.send_email(all_names[i], filtered_dates[i])
-                            with open("webhook.json") as webhook_data:
-                                data = json.load(webhook_data)
-                            webhook = DiscordWebhook(url=data["webhook"])
+                            webhook = DiscordWebhook(url=os.environ.get("webhook"))
                             embed = DiscordEmbed(
                                 title="New sub on sale!",
                                 description=":tada:  A sub is on sale!\n"
@@ -232,9 +230,8 @@ def run_driver():
                         if on_sale == "True":
                             print("Sub is on sale")
                             mailgun.send_email(all_names[i], filtered_dates[i])
-                            with open("webhook.json") as webhook_data:
-                                data = json.load(webhook_data)
-                            webhook = DiscordWebhook(url=data["webhook"])
+
+                            webhook = DiscordWebhook(url=os.environ.get("webhook"))
                             embed = DiscordEmbed(
                                 title="New sub on sale!",
                                 description=":tada:  A sub is on sale!\n"
