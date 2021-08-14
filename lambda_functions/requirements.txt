@@ -1,0 +1,4 @@
+selenium
+bs4
+lxml
+boto3
