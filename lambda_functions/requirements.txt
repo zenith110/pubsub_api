@@ -2,3 +2,4 @@ selenium
 bs4
 lxml
 boto3
+psycopg2

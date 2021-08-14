@@ -112,6 +112,18 @@ def run_driver():
             print("Process has quit, stop and rerun!")
             return -1
         images = []
+
+        connection = connect_db.connect()
+        cur = connection.cursor()
+        """
+        Set all the subs to false
+        """
+        make_all_subs_false = "Update {table} SET on_sale=False"
+        update_query = cur.execute(
+            make_all_subs_false.format(
+                table=connect_db.get_table(),
+            )
+        )
         for i in range(0, len(all_names)):
             try:
                 """
@@ -149,8 +161,6 @@ def run_driver():
                 days_left_till_end = current_date - end_date_datetime
                 days_past_starting = current_date - start_date_dateime
 
-                connection = connect_db.connect()
-                cur = connection.cursor()
                 exist_query = "select exists(select 1 from {table} where pubsub_name ='{sub}' limit 1)"
                 exist_check = cur.execute(
                     exist_query.format(
@@ -167,6 +177,11 @@ def run_driver():
                     """
                     if days_past_starting.days > 0 and days_left_till_end.days < 0:
                         on_sale = "True"
+                        """
+                        Resets all the current subs which are 
+                        """
+
+                        cur.execute(update_string.format())
                         update_string = "Update {table} SET on_sale = '{on_sale}', dates = '{dates}', price = '${price}', image = '{image}' WHERE pubsub_name = '{sub}'"
                         update_query = cur.execute(
                             update_string.format(
