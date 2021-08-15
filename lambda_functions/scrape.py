@@ -6,7 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.remote.command import Command
 from bs4 import BeautifulSoup
-import os
+from decouple import config
 import boto3
 import connect_db
 from datetime import datetime
@@ -26,16 +26,17 @@ def get_status(driver):
 
 def run_driver():
     chrome_driver = "chromedriver.exe"
-    options = webdriver.ChromeOptions()
     s3 = boto3.resource(
         service_name="s3",
         region_name="us-east-2",
-        aws_access_key_id=os.environ.get("aws_access_key_id"),
-        aws_secret_access_key=os.environ.get("aws_secret_access_key"),
+        aws_access_key_id=config("AWS_ACCESS_KEY_ID"),
+        aws_secret_access_key=config("AWS_SECRET_ACCESS_KEY"),
     )
-
-    driver = webdriver.Chrome(chrome_options=options, executable_path=chrome_driver)
-    bucket_name = os.environ.get("bucket_name")
+    options =  webdriver.ChromeOptions() 
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    driver = webdriver.Chrome(chrome_options=options)
+    bucket_name = config("BUCKET_NAME")
     my_bucket = s3.Bucket(bucket_name)
     """
     Begin the web driver by starting on the weekly add
@@ -195,7 +196,7 @@ def run_driver():
                         )
                         if on_sale == "True":
                             mailgun.send_email(all_names[i], filtered_dates[i])
-                            webhook = DiscordWebhook(url=os.environ.get("webhook"))
+                            webhook = DiscordWebhook(url=config("WEBHOOK"))
                             embed = DiscordEmbed(
                                 title="New sub on sale!",
                                 description=":tada:  A sub is on sale!\n"
@@ -246,7 +247,7 @@ def run_driver():
                             print("Sub is on sale")
                             mailgun.send_email(all_names[i], filtered_dates[i])
 
-                            webhook = DiscordWebhook(url=os.environ.get("webhook"))
+                            webhook = DiscordWebhook(url=config("WEBHOOK"))
                             embed = DiscordEmbed(
                                 title="New sub on sale!",
                                 description=":tada:  A sub is on sale!\n"
@@ -285,4 +286,5 @@ def run_driver():
 
 
 if __name__ == "__main__":
+
     run_driver()
