@@ -3,4 +3,4 @@ bs4
 lxml
 boto3
 psycopg2
-python-decouple
+python-dotenv

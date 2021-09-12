@@ -74,12 +74,11 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
             )
             # Sends an email out if a sub is now on sale
             if on_sale == "True":
-                print("Sub is on sales")
                 mailgun.send_email(original, dates)
                 with open("webhook.json") as webhook_data:
                     data = json.load(webhook_data)
                 webhook = DiscordWebhook(url=data["webhook"])
-                embed = DiscordEmbed(title = "New sub on sale!", description = ":tada:  A sub is on sale!\n" + sub_name + " is on sale from: " + dates + ", for the price of " + price)
+                embed = DiscordEmbed(title = "New sub on sale!", description = "@810362326954934283 :tada:  A current sub is on sale!\n" + sub_name + " is on sale from: " + dates + ", for the price of " + price)
                 embed.set_image(url = image)
                 
                 # add embed object to webhook
@@ -101,7 +100,7 @@ class uploader(uploader.Ui_MainWindow, QtWidgets.QMainWindow):
                 with open("webhook.json") as webhook_data:
                     data = json.load(webhook_data)
                 webhook = DiscordWebhook(url=data["webhook"])
-                embed = DiscordEmbed(title = "New sub on sale!", description = ":tada:  A sub is on sale!\n" + sub_name + " is on sale from: " + dates + ", for the price of " + price)
+                embed = DiscordEmbed(title = "New sub on sale!", description = ":tada:  @810362326954934283 A sub is on sale!\n" + sub_name + " is on sale from: " + dates + ", for the price of " + price)
                 embed.set_image(url = image)
                                
                 # add embed object to webhook

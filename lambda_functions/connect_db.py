@@ -1,6 +1,5 @@
 import psycopg2
 import json
-from decouple import config
 
 """
 Allows us to query specific commands
@@ -16,15 +15,16 @@ def close(connection):
     connection.close()
 
 
-def get_table():
-    return config("TABLE")
+def get_table(db_object):
+    return db_object.table
 
 
-def connect():
+def connect(db_object):
+    print(vars(db_object))
     return psycopg2.connect(
-        user=config("USERNAME"),
-        password=config("PASSWORD"),
-        host=config("HOST"),
-        port=config("PORT"),
-        database=config("DATABASE"),
+        user=db_object.user,
+        password=db_object.password,
+        host=db_object.host,
+        port=db_object.port,
+        database=db_object.database,
     )

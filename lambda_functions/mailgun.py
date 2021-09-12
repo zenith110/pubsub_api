@@ -1,13 +1,18 @@
 import requests
+from dotenv import load_dotenv
+from os.path import join, dirname
 import os
+
+dotenv_path = join(dirname(__file__), ".env")
+load_dotenv(dotenv_path)
 import json
 
 
 def send_email(original_sub: str, dates: str):
     sub = original_sub.replace(" ", "")
 
-    domain = os.environ.get("domain")
-    api_key = os.environ.get("api_key")
+    domain = os.getenv("DOMAIN")
+    api_key = os.getenv("API_KEY")
     response = requests.post(
         f"https://api.mailgun.net/v3/{domain}/messages",
         auth=("api", api_key),
