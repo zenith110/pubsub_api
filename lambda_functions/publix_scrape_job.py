@@ -60,7 +60,6 @@ def parse_publix_deli_page(zipCode):
     # find product valid thru date
     for product in response.json()[0]:
         if "Sub" in product["title"]: # find subs only
-            
             temp_dict = []
 
             try:
@@ -71,6 +70,8 @@ def parse_publix_deli_page(zipCode):
 
             temp_dict.append(product["title"])      
             temp_dict.append(str(product["savingmsg"]))
+            temp_image_holder = str(product["productimages"]).split("-")
+            temp_dict.append(temp_image_holder[0] + "-600x600-" + temp_image_holder[2])
             try:
                 temp_dict.append(str(end_date).split("&amp;quot;Valid Through")[1].strip())
             except:
