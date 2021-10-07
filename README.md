@@ -1,12 +1,20 @@
 # Table of Contents
-1. [Goals](#goals)
-2. [How to use](#how-to-use)
+1. [Credits](#credits)
+2. [Goals](#goals)
+3. [How to use](#how-to-use)
     1. [All Button](#all-button)
     2. [On Sale Button](#on-sale-button)
     3. [Not On Sale Button](#not-on-sale-button)
     4. [Newsletter](#newsletter)
-3. [Playground](#playground)
-4. [Discord-Bot](#discord-bot)
+4. [Playground](#playground)
+5. [Discord-Bot](#discord-bot)
+
+### Credits
+Without these people's support, Pubsub-api would not be functioning the way it is today!
+CallumCoy - Help with making JSON data easy to read, various bug fixes.
+i7Solar - Shifting the web scraping over to using pure requests.
+Sfabura - Design of the website and ux.
+
 ## Goals
 To deliver users the latest deals on Publix subs, via email or through the api via various mediums such as: Discord bots, Slack Bots, or other functionality
 
