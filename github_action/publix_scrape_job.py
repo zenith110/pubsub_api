@@ -94,15 +94,17 @@ def scrape_publix_job():
     """
     Set all the subs to false
     """
-    make_all_subs_false = "Update {table} SET on_sale=False"
+    on_sale = "False"
+    make_all_subs_false = "Update {table} SET on_sale ='{on_sale}'"
     update_query = cur.execute(
         make_all_subs_false.format(
             table=db_utils.get_table(db_object),
+            on_sale=on_sale,
         )
     )
     for i in range(0, len(sub_sale_list.name)):
         db_utils.sub_check(
-            sub_sale_list.name[i], sub_sale_list.date[i], sub_sale_list.price[i], sub_sale_list.image[i], cur, os.getenv("WEBHOOK"), mailgun_instance, db_object)
+            sub_sale_list.name[i], sub_sale_list.date[i], sub_sale_list.price[i], sub_sale_list.image[i], cur, os.getenv("WEBHOOK"), mailgun_instance, db_object, connection)
 
 
 def find_closest_publix(zipCode):
