@@ -11,8 +11,11 @@
 
 ### Credits
 Without these people's support, Pubsub-api would not be functioning the way it is today!
+
 CallumCoy - Help with making JSON data easy to read, various bug fixes.
+
 i7Solar - Shifting the web scraping over to using pure requests.
+
 Sfabura - Design of the website and ux.
 
 ## Goals
