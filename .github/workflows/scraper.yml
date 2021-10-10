@@ -1,0 +1,46 @@
+name: Sub Scraper
+on:
+  schedule:
+    # Runs every day at 9am UTC
+    - cron: '0 0 * * THU'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7.9 
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.9
+      - name: install python dependencies
+        run: |
+          cd github_action
+          pip install -r requirements.txt
+      - name: Run scraper
+        run: |
+          python publix_scrape_job.py
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+          WEBHOOK: ${{ secrets.WEBHOOK }}
+          DOMAIN: ${{ secrets.DOMAIN }}
+          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
+          SENDER: ${{ secrets.SENDER }}
+          USERNAME_DB: ${{ secrets.USERNAME_DB }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          HOST: ${{ secrets.HOST }}
+          PORT: ${{ secrets.PORT }}
+          DATABASE: ${{ secrets.DATABASE }}
+          TABLE: ${{ secrets.TABLE }}
+          ZIPCODE: ${{ secrets.ZIPCODE }}
