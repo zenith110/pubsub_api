@@ -89,22 +89,22 @@ def convert_month_to_numerical(month: str):
 
 def scrape_publix_job():
     sub_sale_list = parse_publix_deli_page(os.getenv("ZIPCODE"))
-    connection = db_utils.connect(db_object)
-    cur = connection.cursor()
-    """
-    Set all the subs to false
-    """
-    on_sale = "False"
-    make_all_subs_false = "Update {table} SET on_sale ='{on_sale}'"
-    update_query = cur.execute(
-        make_all_subs_false.format(
-            table=db_utils.get_table(db_object),
-            on_sale=on_sale,
-        )
-    )
-    for i in range(0, len(sub_sale_list.name)):
-        db_utils.sub_check(
-            sub_sale_list.name[i], sub_sale_list.date[i], sub_sale_list.price[i], sub_sale_list.image[i], cur, os.getenv("WEBHOOK"), mailgun_instance, db_object, connection)
+    # connection = db_utils.connect(db_object)
+    # cur = connection.cursor()
+    # """
+    # Set all the subs to false
+    # """
+    # on_sale = "False"
+    # make_all_subs_false = "Update {table} SET on_sale ='{on_sale}'"
+    # update_query = cur.execute(
+    #     make_all_subs_false.format(
+    #         table=db_utils.get_table(db_object),
+    #         on_sale=on_sale,
+    #     )
+    # )
+    # for i in range(0, len(sub_sale_list.name)):
+    #     db_utils.sub_check(
+    #         sub_sale_list.name[i], sub_sale_list.date[i], sub_sale_list.price[i], sub_sale_list.image[i], cur, os.getenv("WEBHOOK"), mailgun_instance, db_object, connection)
 
 
 def find_closest_publix(zipCode):
@@ -235,7 +235,7 @@ def parse_publix_deli_page(zipCode):
 
         for sub in range(0, len(pubsub.name)):
             s3_utils.check_image(
-                pubsub.name[sub], pubsub.image_original, my_bucket, pubsub)
+                pubsub.name[sub], pubsub.image_original[sub], my_bucket, pubsub)
     return pubsub
 
 
