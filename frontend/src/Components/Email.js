@@ -29,7 +29,6 @@ class Email extends Component {
     };
     const url = "https://api.pubsub-api.dev"
     // const url = "http://127.0.0.1:5000/"
-    console.log("Gonna send data!")
     fetch(url + "/email/", {
       method: "POST",
       body: JSON.stringify(info),

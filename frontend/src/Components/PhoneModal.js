@@ -11,8 +11,6 @@ const PhoneModal = () =>{
   const [errorMessage, setErrorMessage] = useState("")
   const [success, setSuccess] = useState("fail")
 
-  console.log(checkedSubs)
-
   const handleInputChange = (e) => {
 
     setPhoneNumber(e.target.value)

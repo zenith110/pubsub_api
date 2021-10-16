@@ -5,24 +5,23 @@ import CheckBox from "./CheckBox"
 import Button1 from "./Button1"
 import './EmailModal.css'
 
-const EmailModal = () =>{
+const EmailModal = ({setShow}) =>{
   const [email, setEmail] = useState("")
   const [name, setName] = useState("") 
   const [checkedSubs, setCheckedSubs] = useState([])
-
   const[error, setError] = useState("")
 
   const handleInputChange = (e) => {
     
-    if(e.target.name == 'email')
+    if(e.target.name === 'email')
       setEmail(e.target.value)
-    else if (e.target.name == 'name')
+    else if (e.target.name === 'name')
       setName(e.target.value)
 
     //handle errors
-    if(e.target.name == 'name')
+    if(e.target.name === 'name')
     {
-      if(Number(e.target.name)== true)
+      if(Number(e.target.name)=== true)
         setError("Name must only be letters")
     }
 
@@ -40,13 +39,12 @@ const EmailModal = () =>{
     }
     
     const url = "https://api.pubsub-api.dev"
-    // const url = "http://127.0.0.1:5000"
     fetch(url + "/email/", {
       method: "POST",
       body: JSON.stringify(info),
       headers: { "Content-Type": "application/json" },
     })
-      alert("Information has been sent, feel free to close!")
+      setShow(false);
   };
     
     return (
@@ -102,13 +100,6 @@ const EmailModal = () =>{
 
             <Button1 title="Subscribe" onClick={handleSubmit} type="submit" size="md" variant="primary"/>
 
-            {/*}
-              <button className="sub-btn " type="submit">
-                <h4>
-                Subscribe
-                </h4>
-              </button>
-            {*/}
             </div>
           </Col>
         </Row>

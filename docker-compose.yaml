@@ -15,7 +15,7 @@ services:
       CHOKIDAR_USEPOLLING: "true"
     stdin_open: true 
     ports:
-      - 80:80
+      - 3000:3000
     depends_on: 
     - pubsub-api-backend
     links: 

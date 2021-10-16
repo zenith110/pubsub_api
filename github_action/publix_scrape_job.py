@@ -103,6 +103,7 @@ def scrape_publix_job():
         )
     )
     for i in range(0, len(sub_sale_list.name)):
+        print(sub_sale_list.name[i])
         db_utils.sub_check(
             sub_sale_list.name[i], sub_sale_list.date[i], sub_sale_list.price[i], sub_sale_list.image[i], cur, os.getenv("WEBHOOK"), mailgun_instance, db_object, connection)
 
@@ -204,7 +205,7 @@ def parse_publix_deli_page(zipCode):
                 now = datetime.date.today()
                 whole_sub_sale_date = str(now.month) + \
                     "/" + str(now.day) + "/" + str(now.year) + "-" + str(converted_month_number) + \
-                    "/" + shave_zeros(month_day) + "/" + \
+                    "/" + month_day + "/" + \
                     str(now.year)
             except:
                 print(

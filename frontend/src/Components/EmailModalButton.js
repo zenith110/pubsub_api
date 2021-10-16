@@ -52,7 +52,7 @@ export default function EmailModalButton()
                
             <Modal.Body>
 
-                <EmailModal/>
+                <EmailModal setShow={setShow}/>
             </Modal.Body>
 
           </Tab>

@@ -42,8 +42,6 @@ const SubCard = ({position}, params) => {
     if(sub.on_sale[position] === "False"){
       sub.status = "Not On Sale"
       sub.buttontype = "danger"
-      console.log(params)
-      console.log(typeof(params));
    
     }else if(sub.on_sale[position] === "True"){
       sub.status = "On Sale"
