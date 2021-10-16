@@ -1,8 +1,8 @@
 name: Sub Scraper
 on:
   schedule:
-    # Runs every day at 9am UTC
-    - cron: '0 0 * * THU'
+    # Runs every Thursday at 4am UTC
+    - cron: '0 4 * * THU'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
