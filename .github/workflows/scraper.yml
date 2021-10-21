@@ -28,6 +28,7 @@ jobs:
           pip install -r requirements.txt
       - name: Run scraper
         run: |
+          cd github_action
           python publix_scrape_job.py
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
