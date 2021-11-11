@@ -62,16 +62,6 @@ jobs:
           ls
           cd ../../
           docker build --tag pubsub-backend -f ./Dockerfile.prod ./
-      - name: Dockerize Frontend
-        run: |
-          cd frontend/
-          docker build --tag pubsub-frontend -f ./Dockerfile.prod ./
-      - name: Docker push frontend
-        env:
-          FRONTEND: ${{ secrets.FRONTEND }}
-        run: |
-          docker tag pubsub-frontend $FRONTEND
-          docker push $FRONTEND
       - name: Docker push backend
         env:
           BACKEND: ${{ secrets.BACKEND }}
@@ -84,3 +74,10 @@ jobs:
         run: |
           docker tag pubsub-bot $BOT
           docker push $BOT
+      - name: Push to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_KEY }}
+          script: ./deploy.sh
