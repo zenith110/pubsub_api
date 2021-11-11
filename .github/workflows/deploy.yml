@@ -80,4 +80,8 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_KEY }}
-          script: ./deploy.sh
+          script: |
+            echo "SENDER=${{ secrets.SENDER}}" > .env
+            echo "DOMAIN=${{ secrets.DOMAIN}}" >> .env
+            echo "API_KEY=${{ secrets.API_KEY}}" >> .env
+            ./deploy.sh
