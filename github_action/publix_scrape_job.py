@@ -223,6 +223,8 @@ def parse_publix_deli_page(zipCode):
             # Encountered a boar head's sub sale
             if("oar" in sub_name):
                 sub_name = sub_name.replace("Boar&#39;s Head&reg;", "")
+            elif("Chicken Tender" in sub_name):
+                sub_name = sub_name.replace("Chicken Tender", "Chicken Tenders")
             pubsub.name.append(sub_name[1:-1])
             pubsub.price.append(str(price))
             temp_image_holder = str(product["productimages"]).split("-")
