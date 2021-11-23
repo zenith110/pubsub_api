@@ -1,6 +1,6 @@
 # Deploys a payload to the server to get the latest data
 name: Deploy to Docker
-
+# Deploys data based off master branch
 on:
   push:
     branches: [ master ]
