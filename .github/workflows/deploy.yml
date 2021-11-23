@@ -80,7 +80,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_KEY }}
+          password: ${{ secrets.SERVER_PASSWORD }}
           script: |
             echo "SENDER=${{ secrets.SENDER}}" > .env
             echo "DOMAIN=${{ secrets.DOMAIN}}" >> .env
