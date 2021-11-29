@@ -82,7 +82,8 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
+            sudo rm -r .env
             echo "SENDER=${{ secrets.SENDER}}" > .env
             echo "DOMAIN=${{ secrets.DOMAIN}}" >> .env
-            echo "API_KEY=${{ secrets.API_KEY}}" >> .env
+            echo "API_KEY=${{ secrets.MAILGUN_API_KEY}}" >> .env
             ./deploy.sh
