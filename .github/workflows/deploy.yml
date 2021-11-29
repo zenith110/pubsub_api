@@ -1,10 +1,11 @@
 # Deploys a payload to the server to get the latest data
 name: Deploy to Docker
-
+# Deploys data based off master branch
 on:
   push:
     branches: [ master ]
-
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 jobs:
   Deployment:
     runs-on: ubuntu-latest
@@ -62,16 +63,6 @@ jobs:
           ls
           cd ../../
           docker build --tag pubsub-backend -f ./Dockerfile.prod ./
-      - name: Dockerize Frontend
-        run: |
-          cd frontend/
-          docker build --tag pubsub-frontend -f ./Dockerfile.prod ./
-      - name: Docker push frontend
-        env:
-          FRONTEND: ${{ secrets.FRONTEND }}
-        run: |
-          docker tag pubsub-frontend $FRONTEND
-          docker push $FRONTEND
       - name: Docker push backend
         env:
           BACKEND: ${{ secrets.BACKEND }}
@@ -84,3 +75,15 @@ jobs:
         run: |
           docker tag pubsub-bot $BOT
           docker push $BOT
+      - name: Push to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: |
+            sudo rm -r .env
+            echo "SENDER=${{ secrets.SENDER}}" > .env
+            echo "DOMAIN=${{ secrets.DOMAIN}}" >> .env
+            echo "API_KEY=${{ secrets.MAILGUN_API_KEY}}" >> .env
+            ./deploy.sh
