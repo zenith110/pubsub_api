@@ -1,7 +1,7 @@
 import psycopg2
 import json
 import connect_db
-from flask import Flask, render_template, jsonify
+from flask import Flask, jsonify
 
 
 def on_sale_check():

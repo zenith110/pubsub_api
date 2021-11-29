@@ -11,7 +11,7 @@ from services import random_subs
 from flasgger import Swagger, swag_from
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-
+import os
 app = Flask(__name__, static_url_path="/static")
 CORS(app)
 
@@ -19,6 +19,11 @@ swagger = Swagger(app)
 limiter = Limiter(
     app, key_func=get_remote_address, default_limits=["200 per day, 50 per hour"]
 )
+class NewsLetter:
+    def __init__(self, api_key, domain, sender) :
+        self.api_key = api_key
+        self.domain = domain
+        self.sender = sender
 """
 Gets the current sub count
 """
@@ -55,7 +60,11 @@ def email():
     """
     Sends off data to add to list
     """
-    email = newsletter.register_data(email, first_name, checked_subs)
+    email_object = NewsLetter()
+    email_object.sender = os.getenv("SENDER")
+    email_object.domain = os.getenv("DOMAIN")
+    email_object.api_key = os.getenv("API_KEY")
+    email = newsletter.register_data(email, first_name, checked_subs, email_object)
     return email
 
 

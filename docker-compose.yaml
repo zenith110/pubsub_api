@@ -7,15 +7,23 @@ services:
       dockerfile: Dockerfile.dev
     container_name: pubsub-api-backend
     restart: unless-stopped
+    volumes:
+      - ./backend:/home/backend/app
     ports:
-      - 5000:5000
+      - "5000:5000"
+    env_file:
+      - .env
   pubsub-api-frontend:
     build: ./frontend
     environment:
       CHOKIDAR_USEPOLLING: "true"
+    container_name: pubsub-api-frontend
     stdin_open: true 
     ports:
-      - 3000:3000
+      - "3000:3000"
+    volumes:
+      - ./frontend:/home/frontend
+      - /home/frontend/node_modules
     depends_on: 
     - pubsub-api-backend
     links: 
