@@ -1,16 +1,15 @@
 # set base image (host OS)
 FROM python:3.7.9-slim
 
-
+ENV FLASK_DEBUG=1
+ENV prod=False
 # set the working directory in the container
 WORKDIR /home/backend/app
 
 # copy the content of the local src directory to the working directory
 COPY requirements.txt .
 RUN pip install -r requirements.txt
-COPY src/ .
-EXPOSE 8080
+COPY . .
+EXPOSE 5000
 RUN pwd
-RUN ls
-ENV FLASK_DEBUG 1
 CMD [ "python", "./app.py" ]
