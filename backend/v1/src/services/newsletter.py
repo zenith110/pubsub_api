@@ -25,6 +25,7 @@ def register_data(email: str, first_name: str, checked_subs, email_object):
     api_key = email_object.api_key
     domain = email_object.domain
     sender = email_object.sender
+    overall_mailing_list = email_object.overall
     checked_subs = [subs.replace(" ", "") for subs in checked_subs]
     files = {
         "subscribed": (None, "True"),

@@ -9,5 +9,8 @@ WORKDIR /home/backend/app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY src/ .
+EXPOSE 8080
 RUN pwd
+RUN ls
+ENV FLASK_DEBUG 1
 CMD [ "python", "./app.py" ]

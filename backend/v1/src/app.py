@@ -64,6 +64,7 @@ def email():
     email_object.sender = os.getenv("SENDER")
     email_object.domain = os.getenv("DOMAIN")
     email_object.api_key = os.getenv("API_KEY")
+    email_object.overall = os.getenv("OVERALL_MAILING_LIST")
     email = newsletter.register_data(email, first_name, checked_subs, email_object)
     return email
 
