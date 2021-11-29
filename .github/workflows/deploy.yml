@@ -87,5 +87,5 @@ jobs:
             echo "DOMAIN=${{ secrets.DOMAIN}}" >> .env
             echo "API_KEY=${{ secrets.MAILGUN_API_KEY}}" >> .env
             echo "OVERALL_MAILING_LIST=${{ secrets.OVERALL_MAILING_LIST}}" >> .env
-            echo "BOT_TOKEN =${{ secrets.BOT_TOKEN}}" >> .env
+            echo "BOT_TOKEN=${{ secrets.BOT_TOKEN}}" >> .env
             ./deploy.sh
