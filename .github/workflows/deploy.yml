@@ -50,17 +50,14 @@ jobs:
           DB: ${{ secrets.DB }}
         run: |
           cd backend/v1/
-          cd src/services/
+          cd services/
           echo $MAILGUN > mailgun.json
           echo "currently in services"
           cd ../
-          echo "now in src/"
           mkdir settings
           cd settings/
           ls
           echo $DB > dblogin.json
-          echo "db login file now made!"
-          ls
           cd ../../
           docker build --tag pubsub-backend -f ./Dockerfile.prod ./
       - name: Docker push backend
