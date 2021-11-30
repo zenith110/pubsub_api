@@ -50,7 +50,7 @@ jobs:
           DB: ${{ secrets.DB }}
         run: |
           cd backend/v1/
-          cd services/
+          cd src/services/
           echo $MAILGUN > mailgun.json
           echo "currently in services"
           cd ../
