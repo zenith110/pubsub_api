@@ -12,7 +12,7 @@ def send_email_first_time(domain_name: str, sender: str, recipent: str, sub_sale
         data={"from": f"Pubsub Api  {sender}",
               "to": f"{recipent}",
               "subject": "Your first pubsub-api newsletter!",
-              "text": f"Hello {first_name}, \nThank you for registering for your first newsletter! \n\nThe current subs that you picked and their sale status are listed:\n\n {sub_sales}"})
+              "text": f"Hello {first_name}, \nThank you for registering for your first newsletter!\n\nThe current subs that you picked and their sale status are listed:\n\n {sub_sales}"})
 
 def check_email_in_mailing_list(domain_name: str, api_key: str, email: str) -> bool:
     response = requests.get(f"https://api.mailgun.net/v3/lists/{domain_name}/members/pages",
