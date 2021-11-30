@@ -9,8 +9,6 @@ services:
     restart: unless-stopped
     ports:
       - "5000:5000"
-    volumes:
-      - ./backend/v1:/home/backend/app
     env_file:
       - .env
   pubsub-api-frontend:
@@ -23,13 +21,10 @@ services:
     stdin_open: true 
     ports:
       - "3000:3000"
-    volumes:
-      - ./frontend:/home/frontend
-      - /home/frontend/node_modules
     depends_on: 
     - pubsub-api-backend
-    links: 
-    - pubsub-api-backend
+    links:
+      - pubsub-api-backend
     
     
   
