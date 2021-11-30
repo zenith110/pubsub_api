@@ -47,6 +47,10 @@ def new_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image, mailgun_o
     mailgun.send_email_and_webhook(
         pubsub_name, pubsub_date, pubsub_price, pubsub_image, webhook, mailgun_obj)
 
+def remove_sub(cur, sub_name, table, db_object, connection):
+    update_string = "DELETE FROM {table} WHERE  pubsub_name = '{sub}'"
+    update_query = cur.execute(update_string.format(table=get_table(db_object), sub=sub_name))
+    close(connection)
 
 def existing_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image, webhook, mailgun_obj, db_obj, connection):
     update_string = "Update {table} SET on_sale = '{on_sale}', dates = '{dates}', price = '${price}', image = '{image}' WHERE pubsub_name = '{sub}'"
