@@ -25,6 +25,23 @@ class NewsLetter:
         self.domain = domain
         self.sender = sender
         self.overall = overall
+class DatabaseObject:
+    def __init__(self) -> None:
+        self.user = ""
+        self.password = ""
+        self.host = ""
+        self.port = ""
+        self.database = ""
+        self.table = ""
+
+db = DatabaseObject()
+db.user = os.getenv("USERNAME_DB")
+db.password = os.getenv("PASSWORD")
+db.host = os.getenv("DBHOST")
+db.port = os.getenv("PORT")
+db.database = os.getenv("DATABASE")
+db.table = os.getenv("TABLE")
+
 """
 Gets the current sub count
 """
@@ -66,7 +83,6 @@ def email():
     api_key = os.getenv("API_KEY")
     overall = os.getenv("OVERALL_MAILING_LIST")
     email_object = NewsLetter(api_key, domain, sender, overall)
-    print("ayyo, let's go to email!", flush=True)
     email = newsletter.register_data(email, first_name, checked_subs, email_object)
     return email
 
@@ -85,7 +101,7 @@ def onsale_data():
             description: Sub's names in JSON
 
     """
-    on_sale_post = on_sale_service.on_sale_check()
+    on_sale_post = on_sale_service.on_sale_check(db)
     return on_sale_post
 
 
@@ -103,7 +119,7 @@ def all_names():
             description: Sub's names in JSON
 
     """
-    return all_subs.all_subs_data()
+    return all_subs.all_subs_data(db)
 
 
 """
@@ -132,10 +148,10 @@ def sub():
     if request.method == "GET":
         sub_name = request.args.get("name")
         if sub_name == "random":
-            sub = random_sub()
+            sub = random_sub(db)
             return sub
         else:
-            sub = sub_runner_path(sub_name)
+            sub = sub_runner_path(sub_name, db)
             return sub
 
 
@@ -144,8 +160,8 @@ Generates a random sub from the database
 """
 
 
-def random_sub():
-    random_sub = random_subs.random_subs()
+def random_sub(db):
+    random_sub = random_subs.random_subs(db)
     return random_sub
 
 
@@ -155,7 +171,7 @@ Uses a sub name to fetch the data on it
 
 
 def sub_runner_path(sub_name):
-    sub = sub_runner.sub_runner_checker(sub_name)
+    sub = sub_runner.sub_runner_checker(sub_name, db)
     return sub
 
 

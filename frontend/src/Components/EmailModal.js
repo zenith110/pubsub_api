@@ -32,8 +32,7 @@ const EmailModal = ({ setShow }) => {
       alert("Please provide a first name and email!");
     }
 
-    const url = "https://api.pubsub-api.dev";
-    // const url = "http://127.0.0.1:5000/email/";
+    const url = process.env.REACT_APP_PUBSUB_API_URL;
     fetch(url, {
       method: "POST",
       body: JSON.stringify(info),

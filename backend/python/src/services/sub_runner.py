@@ -3,15 +3,15 @@ from flask import Flask, render_template, request, redirect, jsonify, abort
 import json
 
 
-def sub_runner_checker(subname):
+def sub_runner_checker(subname, db_object):
     try:
-        connection = connect_db.connect()
+        connection = connect_db.connect(db_object)
         cur = connection.cursor()
         # Checks to see if the name exist in the record, then grabs a random row from that column limiting it to one.
         try:
             command = "SELECT pubsub_name, dates, on_sale, price, image FROM {table} WHERE pubsub_name = '{name}' ORDER BY dates DESC LIMIT 1"
             query = cur.execute(
-                command.format(table=connect_db.get_table(), name=subname)
+                command.format(table=connect_db.get_table(db_object), name=subname)
             )
         except:
             return (

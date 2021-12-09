@@ -3,13 +3,13 @@ import connect_db
 import json
 
 
-def random_subs():
+def random_subs(db_object):
     try:
-        connection = connect_db.connect()
+        connection = connect_db.connect(db_object)
         cur = connection.cursor()
         # Checks to see if the name exist in the record, then grabs a random row from that column limiting it to one.
         command = "SELECT pubsub_name, dates, on_sale, price, image FROM {table} WHERE pubsub_name is NOT NULL ORDER BY random() DESC LIMIT 1"
-        query = cur.execute(command.format(table=connect_db.get_table()))
+        query = cur.execute(command.format(table=connect_db.get_table(db_object)))
 
         # Fetches us all the rows so we can grab data from each
         records = cur.fetchall()

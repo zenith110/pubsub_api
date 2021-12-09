@@ -4,14 +4,15 @@ import connect_db
 from flask import Flask, jsonify
 
 
-def on_sale_check():
-    connection = connect_db.connect()
+def on_sale_check(db_object):
+    print(db_object.__repr__())
+    connection = connect_db.connect(db_object)
     cur = connection.cursor()
     """
     Queries if there are no none entires
     """
     query = "SELECT pubsub_name, dates, on_sale, price, image FROM {table} where pubsub_name is NOT NULL"
-    cur.execute(query.format(table=connect_db.get_table()))
+    cur.execute(query.format(table=connect_db.get_table(db_object)))
     sub_name = []
     last_on_sale = []
     on_sale = []

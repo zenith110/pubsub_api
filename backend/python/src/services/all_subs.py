@@ -2,14 +2,14 @@ import connect_db
 from flask import Flask, jsonify
 
 
-def all_subs_data():
-    connection = connect_db.connect()
+def all_subs_data(db_object):
+    connection = connect_db.connect(db_object)
     cur = connection.cursor()
 
     query = (
         "SELECT pubsub_name FROM {table} WHERE pubsub_name is not NULL ORDER BY on_sale"
     )
-    cur.execute(query.format(table=connect_db.get_table()))
+    cur.execute(query.format(table=connect_db.get_table(db_object)))
 
     records = cur.fetchall()
 

@@ -22,8 +22,7 @@ const SubCard = ({ position }, params) => {
   let [subData, setSub] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   let sub = new Sub();
-  const url = "https://api.pubsub-api.dev";
-  // const url = "http://127.0.0.1:5000";
+  const url = process.env.REACT_APP_PUBSUB_API_URL;
   useEffect(() => {
     fetch(url + "/onsale/")
       .then((response) => response.json())

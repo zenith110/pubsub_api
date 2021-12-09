@@ -2,7 +2,6 @@
 FROM python:3.7.9-slim
 
 ENV FLASK_DEBUG=1
-ENV prod=False
 # set the working directory in the container
 WORKDIR /home/backend/app
 
@@ -10,6 +9,5 @@ WORKDIR /home/backend/app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY . .
-EXPOSE 5000
-RUN pwd
+ENV FLASK_DEBUG 1
 CMD [ "python", "./app.py" ]

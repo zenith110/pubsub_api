@@ -30,9 +30,7 @@ const SubCardv2 = ({ option }) => {
   };
   const handleClose = () => setModalIsOpen(false);
 
-  // const url = "https://api.pubsub-api.dev"
-  const url = "http://127.0.0.1:5000";
-  console.log(url);
+  const url = process.env.REACT_APP_PUBSUB_API_URL;
   // fetching pubsub data
   useEffect(() => {
     fetch(url + "/onsale/")
@@ -111,7 +109,7 @@ const SubCardv2 = ({ option }) => {
               <Col>
                 {subData
                   .filter((sub) => {
-                    if (sub.name == curSub) {
+                    if (sub.name === curSub) {
                       return sub;
                     }
                   })
@@ -130,7 +128,7 @@ const SubCardv2 = ({ option }) => {
                   Last Sale <br></br>
                   {subData
                     .filter((sub) => {
-                      if (sub.name == curSub) {
+                      if (sub.name === curSub) {
                         return sub;
                       }
                     })
@@ -165,11 +163,11 @@ const SubCardv2 = ({ option }) => {
           subData
             .filter(
               (data) => {
-                if (option == "All") {
+                if (option === "All") {
                   return data;
-                } else if (option == "Sale") {
+                } else if (option === "Sale") {
                   return data.on_sale === "True";
-                } else if (option == "NotSale") {
+                } else if (option === "NotSale") {
                   return data.on_sale === "False";
                 }
               }
