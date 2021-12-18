@@ -1,11 +1,11 @@
 version: "3"
 services:
-  pubsub-api-backend:
+  pubsub-api-backend-v1:
     image: pubsub-api/backend
     build:
       context: ./backend/python
       dockerfile: Dockerfile.dev
-    container_name: pubsub-api-backend
+    container_name: pubsub-api-backend-v1
     environment:
       CHOKIDAR_USEPOLLING: "true"
     restart: unless-stopped
@@ -13,6 +13,21 @@ services:
       - ./backend/python/src:/home/backend/app
     ports:
       - "8080:8080"
+    env_file:
+      - .env
+  pubsub-api-backend-v2:
+    image: pubsub-api/backend
+    build:
+      context: ./backend/go
+      dockerfile: Dockerfile.dev
+    container_name: pubsub-api-backend-v2
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    restart: unless-stopped
+    volumes:
+      - ./backend/python/src:/home/backend/app
+    ports:
+      - "8443:8443"
     env_file:
       - .env
   pubsub-api-frontend:

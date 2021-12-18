@@ -22,7 +22,9 @@ prod-build:
 prod-detached:
 	@echo "Now running in prod enviroment"
 	@$(PROD_DOCKER_COMPOSE) up -d --build
-
+generate-schema:
+	@echo "Now generating schemas for new graphql model"
+	go run github.com/99designs/gqlgen generate backend/go/src
 #===============================================#
 #     Application specific commands #
 #===============================================#

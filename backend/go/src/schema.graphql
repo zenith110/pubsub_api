@@ -1,0 +1,9 @@
+type Pubsub {
+    name: String!
+    onSale: Boolean!
+    image: String!
+    saleDates: String!
+}
+type Pubsubs{
+    pubsubs [Pubsub!]!
+}
