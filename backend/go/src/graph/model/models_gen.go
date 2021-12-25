@@ -2,19 +2,17 @@
 
 package model
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+type Pubsub struct {
+	Name     string `json:"name"`
+	Image    string `json:"image"`
+	Saledate string `json:"saledate"`
+	Onsale   bool   `json:"onsale"`
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
+type PubsubQuery struct {
+	Name *string `json:"name"`
 }
 
-type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+type Pubsubs struct {
+	Pubsubs []*Pubsub `json:"pubsubs"`
 }

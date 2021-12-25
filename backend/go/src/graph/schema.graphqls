@@ -1,28 +1,19 @@
-# GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
-
-type Todo {
-  id: ID!
-  text: String!
-  done: Boolean!
-  user: User!
-}
-
-type User {
-  id: ID!
+type Pubsub{
   name: String!
+  image: String!
+  saledate: String!
+  onsale: Boolean!
 }
 
-type Query {
-  todos: [Todo!]!
+type Pubsubs{
+  pubsubs: [Pubsub!]!
 }
 
-input NewTodo {
-  text: String!
-  userId: String!
+input PubsubQuery{
+  name: String
 }
 
 type Mutation {
-  createTodo(input: NewTodo!): Todo!
+  fetchAllSubs: Pubsubs!
+  fetchSub(input: PubsubQuery): Pubsub
 }
