@@ -3,7 +3,7 @@ FROM node:13.12.0-alpine
 WORKDIR /home/frontend
 COPY package.json ./
 COPY package-lock.json ./
-RUN npm ci --silent
+RUN npm i --silent
 EXPOSE 3000
 COPY . ./
 CMD ["npm", "run", "start"]

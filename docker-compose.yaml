@@ -4,7 +4,7 @@ services:
     image: pubsub-api/backend
     build:
       context: ./backend/python
-      dockerfile: Dockerfile.dev
+      dockerfile: dev.dockerfile
     container_name: pubsub-api-backend-v1
     environment:
       CHOKIDAR_USEPOLLING: "true"
@@ -16,16 +16,14 @@ services:
     env_file:
       - .env
   pubsub-api-backend-v2:
-    image: pubsub-api/backend
+    image: pubsub-api/backend-v2
     build:
-      context: ./backend/go
-      dockerfile: Dockerfile.dev
+      context: ./backend/go/src
+      dockerfile: dev.dockerfile
     container_name: pubsub-api-backend-v2
     environment:
       CHOKIDAR_USEPOLLING: "true"
     restart: unless-stopped
-    volumes:
-      - ./backend/python/src:/home/backend/app
     ports:
       - "8443:8443"
     env_file:
@@ -33,7 +31,7 @@ services:
   pubsub-api-frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: .dockerfile
     environment:
       CHOKIDAR_USEPOLLING: "true"
     container_name: pubsub-api-frontend
@@ -43,6 +41,8 @@ services:
     env_file:
       - .env
     depends_on:
-      - pubsub-api-backend
+      - pubsub-api-backend-v1
+      - pubsub-api-backend-v2
     links:
-      - pubsub-api-backend
+      - pubsub-api-backend-v1
+      - pubsub-api-backend-v2

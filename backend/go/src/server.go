@@ -11,10 +11,10 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 )
 
-const defaultPort = "8080"
+const defaultPort = "8443"
 
 func main() {
-	port := os.Getenv("PORT")
+	port := os.Getenv("GRAPHQLPORT")
 	if port == "" {
 		port = defaultPort
 	}

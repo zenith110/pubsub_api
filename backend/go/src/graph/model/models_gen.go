@@ -3,16 +3,14 @@
 package model
 
 type Pubsub struct {
-	Name     string `json:"name"`
-	Image    string `json:"image"`
-	Saledate string `json:"saledate"`
-	Onsale   bool   `json:"onsale"`
-}
-
-type PubsubQuery struct {
-	Name *string `json:"name"`
+	Name      string `json:"name"`
+	Image     string `json:"image"`
+	Saledates string `json:"saledates"`
+	Onsale    string `json:"onsale"`
+	Price     string `json:"price"`
 }
 
 type Pubsubs struct {
-	Pubsubs []*Pubsub `json:"pubsubs"`
+	Sub   []*Pubsub `json:"sub"`
+	Total string    `json:"total"`
 }

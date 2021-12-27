@@ -68,6 +68,10 @@ def existing_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image, webh
     mailgun.send_email_and_webhook(
         pubsub_name, pubsub_date, pubsub_price, pubsub_image, webhook, mailgun_obj)
 
+def update_sale_date(cur, sub_name, table, db_object, connection, dates):
+    update_string = "Update {table} SET dates = '{dates}' WHERE pubsub_name = '{sub}'"
+    update_query = cur.execute(update_string.format(table=get_table(db_object), sub=sub_name, dates=dates))
+    close(connection)
 
 def sub_check(pubsub_name, pubsub_date, pubsub_price, pubsub_image, cur, webhook, mailgun_obj, db_obj, connection):
     exist_query = "select exists(select 1 from {table} where pubsub_name ='{sub}' limit 1)"

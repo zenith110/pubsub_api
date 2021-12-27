@@ -34,36 +34,35 @@ type Config struct {
 }
 
 type ResolverRoot interface {
-	Mutation() MutationResolver
+	Query() QueryResolver
 }
 
 type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
-	Mutation struct {
-		FetchAllSubs func(childComplexity int) int
-		FetchSub     func(childComplexity int, input *model.PubsubQuery) int
-	}
-
 	Pubsub struct {
-		Image    func(childComplexity int) int
-		Name     func(childComplexity int) int
-		Onsale   func(childComplexity int) int
-		Saledate func(childComplexity int) int
+		Image     func(childComplexity int) int
+		Name      func(childComplexity int) int
+		Onsale    func(childComplexity int) int
+		Price     func(childComplexity int) int
+		Saledates func(childComplexity int) int
 	}
 
 	Pubsubs struct {
-		Pubsubs func(childComplexity int) int
+		Sub   func(childComplexity int) int
+		Total func(childComplexity int) int
 	}
 
 	Query struct {
+		Pubsub  func(childComplexity int, name string) int
+		Pubsubs func(childComplexity int) int
 	}
 }
 
-type MutationResolver interface {
-	FetchAllSubs(ctx context.Context) (*model.Pubsubs, error)
-	FetchSub(ctx context.Context, input *model.PubsubQuery) (*model.Pubsub, error)
+type QueryResolver interface {
+	Pubsub(ctx context.Context, name string) (*model.Pubsub, error)
+	Pubsubs(ctx context.Context) (*model.Pubsubs, error)
 }
 
 type executableSchema struct {
@@ -80,25 +79,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	ec := executionContext{nil, e}
 	_ = ec
 	switch typeName + "." + field {
-
-	case "Mutation.fetchAllSubs":
-		if e.complexity.Mutation.FetchAllSubs == nil {
-			break
-		}
-
-		return e.complexity.Mutation.FetchAllSubs(childComplexity), true
-
-	case "Mutation.fetchSub":
-		if e.complexity.Mutation.FetchSub == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_fetchSub_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.FetchSub(childComplexity, args["input"].(*model.PubsubQuery)), true
 
 	case "Pubsub.image":
 		if e.complexity.Pubsub.Image == nil {
@@ -121,19 +101,52 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Pubsub.Onsale(childComplexity), true
 
-	case "Pubsub.saledate":
-		if e.complexity.Pubsub.Saledate == nil {
+	case "Pubsub.price":
+		if e.complexity.Pubsub.Price == nil {
 			break
 		}
 
-		return e.complexity.Pubsub.Saledate(childComplexity), true
+		return e.complexity.Pubsub.Price(childComplexity), true
 
-	case "Pubsubs.pubsubs":
-		if e.complexity.Pubsubs.Pubsubs == nil {
+	case "Pubsub.saledates":
+		if e.complexity.Pubsub.Saledates == nil {
 			break
 		}
 
-		return e.complexity.Pubsubs.Pubsubs(childComplexity), true
+		return e.complexity.Pubsub.Saledates(childComplexity), true
+
+	case "Pubsubs.sub":
+		if e.complexity.Pubsubs.Sub == nil {
+			break
+		}
+
+		return e.complexity.Pubsubs.Sub(childComplexity), true
+
+	case "Pubsubs.total":
+		if e.complexity.Pubsubs.Total == nil {
+			break
+		}
+
+		return e.complexity.Pubsubs.Total(childComplexity), true
+
+	case "Query.pubsub":
+		if e.complexity.Query.Pubsub == nil {
+			break
+		}
+
+		args, err := ec.field_Query_pubsub_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Pubsub(childComplexity, args["name"].(string)), true
+
+	case "Query.pubsubs":
+		if e.complexity.Query.Pubsubs == nil {
+			break
+		}
+
+		return e.complexity.Query.Pubsubs(childComplexity), true
 
 	}
 	return 0, false
@@ -152,20 +165,6 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 			}
 			first = false
 			data := ec._Query(ctx, rc.Operation.SelectionSet)
-			var buf bytes.Buffer
-			data.MarshalGQL(&buf)
-
-			return &graphql.Response{
-				Data: buf.Bytes(),
-			}
-		}
-	case ast.Mutation:
-		return func(ctx context.Context) *graphql.Response {
-			if !first {
-				return nil
-			}
-			first = false
-			data := ec._Mutation(ctx, rc.Operation.SelectionSet)
 			var buf bytes.Buffer
 			data.MarshalGQL(&buf)
 
@@ -199,25 +198,27 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "graph/schema.graphqls", Input: `type Pubsub{
+	{Name: "schema.graphql", Input: `schema {
+    query: Query
+}
+type Query {
+    pubsub(name: String!): Pubsub
+    pubsubs: Pubsubs
+}
+type Pubsub{
   name: String!
   image: String!
-  saledate: String!
-  onsale: Boolean!
+  saledates: String!
+  onsale: String!
+  price: String!
 }
 
 type Pubsubs{
-  pubsubs: [Pubsub!]!
+  sub: [Pubsub]
+  total: ID!
 }
 
-input PubsubQuery{
-  name: String
-}
 
-type Mutation {
-  fetchAllSubs: Pubsubs!
-  fetchSub(input: PubsubQuery): Pubsub
-}
 `, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -226,22 +227,22 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Mutation_fetchSub_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *model.PubsubQuery
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOPubsubQuery2ᚖpubsubᚑapiᚋgraphᚋmodelᚐPubsubQuery(ctx, tmp)
+	var arg0 string
+	if tmp, ok := rawArgs["name"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["name"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_pubsub_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -293,80 +294,6 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 // endregion ************************** directives.gotpl **************************
 
 // region    **************************** field.gotpl *****************************
-
-func (ec *executionContext) _Mutation_fetchAllSubs(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().FetchAllSubs(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.Pubsubs)
-	fc.Result = res
-	return ec.marshalNPubsubs2ᚖpubsubᚑapiᚋgraphᚋmodelᚐPubsubs(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Mutation_fetchSub(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_fetchSub_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().FetchSub(rctx, args["input"].(*model.PubsubQuery))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.Pubsub)
-	fc.Result = res
-	return ec.marshalOPubsub2ᚖpubsubᚑapiᚋgraphᚋmodelᚐPubsub(ctx, field.Selections, res)
-}
 
 func (ec *executionContext) _Pubsub_name(ctx context.Context, field graphql.CollectedField, obj *model.Pubsub) (ret graphql.Marshaler) {
 	defer func() {
@@ -438,7 +365,7 @@ func (ec *executionContext) _Pubsub_image(ctx context.Context, field graphql.Col
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Pubsub_saledate(ctx context.Context, field graphql.CollectedField, obj *model.Pubsub) (ret graphql.Marshaler) {
+func (ec *executionContext) _Pubsub_saledates(ctx context.Context, field graphql.CollectedField, obj *model.Pubsub) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -456,7 +383,7 @@ func (ec *executionContext) _Pubsub_saledate(ctx context.Context, field graphql.
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Saledate, nil
+		return obj.Saledates, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -503,12 +430,47 @@ func (ec *executionContext) _Pubsub_onsale(ctx context.Context, field graphql.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Pubsubs_pubsubs(ctx context.Context, field graphql.CollectedField, obj *model.Pubsubs) (ret graphql.Marshaler) {
+func (ec *executionContext) _Pubsub_price(ctx context.Context, field graphql.CollectedField, obj *model.Pubsub) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Pubsub",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Price, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Pubsubs_sub(ctx context.Context, field graphql.CollectedField, obj *model.Pubsubs) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -526,7 +488,39 @@ func (ec *executionContext) _Pubsubs_pubsubs(ctx context.Context, field graphql.
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Pubsubs, nil
+		return obj.Sub, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Pubsub)
+	fc.Result = res
+	return ec.marshalOPubsub2ᚕᚖpubsubᚑapiᚋgraphᚋmodelᚐPubsub(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Pubsubs_total(ctx context.Context, field graphql.CollectedField, obj *model.Pubsubs) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Pubsubs",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Total, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -538,9 +532,80 @@ func (ec *executionContext) _Pubsubs_pubsubs(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Pubsub)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNPubsub2ᚕᚖpubsubᚑapiᚋgraphᚋmodelᚐPubsubᚄ(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_pubsub(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_pubsub_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Pubsub(rctx, args["name"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Pubsub)
+	fc.Result = res
+	return ec.marshalOPubsub2ᚖpubsubᚑapiᚋgraphᚋmodelᚐPubsub(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_pubsubs(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Pubsubs(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Pubsubs)
+	fc.Result = res
+	return ec.marshalOPubsubs2ᚖpubsubᚑapiᚋgraphᚋmodelᚐPubsubs(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1736,29 +1801,6 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputPubsubQuery(ctx context.Context, obj interface{}) (model.PubsubQuery, error) {
-	var it model.PubsubQuery
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	for k, v := range asMap {
-		switch k {
-		case "name":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -1766,39 +1808,6 @@ func (ec *executionContext) unmarshalInputPubsubQuery(ctx context.Context, obj i
 // endregion ************************** interface.gotpl ***************************
 
 // region    **************************** object.gotpl ****************************
-
-var mutationImplementors = []string{"Mutation"}
-
-func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, mutationImplementors)
-
-	ctx = graphql.WithFieldContext(ctx, &graphql.FieldContext{
-		Object: "Mutation",
-	})
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("Mutation")
-		case "fetchAllSubs":
-			out.Values[i] = ec._Mutation_fetchAllSubs(ctx, field)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "fetchSub":
-			out.Values[i] = ec._Mutation_fetchSub(ctx, field)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
 
 var pubsubImplementors = []string{"Pubsub"}
 
@@ -1821,13 +1830,18 @@ func (ec *executionContext) _Pubsub(ctx context.Context, sel ast.SelectionSet, o
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "saledate":
-			out.Values[i] = ec._Pubsub_saledate(ctx, field, obj)
+		case "saledates":
+			out.Values[i] = ec._Pubsub_saledates(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
 		case "onsale":
 			out.Values[i] = ec._Pubsub_onsale(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "price":
+			out.Values[i] = ec._Pubsub_price(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -1853,8 +1867,10 @@ func (ec *executionContext) _Pubsubs(ctx context.Context, sel ast.SelectionSet, 
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Pubsubs")
-		case "pubsubs":
-			out.Values[i] = ec._Pubsubs_pubsubs(ctx, field, obj)
+		case "sub":
+			out.Values[i] = ec._Pubsubs_sub(ctx, field, obj)
+		case "total":
+			out.Values[i] = ec._Pubsubs_total(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -1884,6 +1900,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
+		case "pubsub":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_pubsub(ctx, field)
+				return res
+			})
+		case "pubsubs":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_pubsubs(ctx, field)
+				return res
+			})
 		case "__type":
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
@@ -2164,72 +2202,19 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNPubsub2ᚕᚖpubsubᚑapiᚋgraphᚋmodelᚐPubsubᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Pubsub) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNPubsub2ᚖpubsubᚑapiᚋgraphᚋmodelᚐPubsub(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
+func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
+	res, err := graphql.UnmarshalID(v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNPubsub2ᚖpubsubᚑapiᚋgraphᚋmodelᚐPubsub(ctx context.Context, sel ast.SelectionSet, v *model.Pubsub) graphql.Marshaler {
-	if v == nil {
+func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
+	res := graphql.MarshalID(v)
+	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
 		}
-		return graphql.Null
 	}
-	return ec._Pubsub(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNPubsubs2pubsubᚑapiᚋgraphᚋmodelᚐPubsubs(ctx context.Context, sel ast.SelectionSet, v model.Pubsubs) graphql.Marshaler {
-	return ec._Pubsubs(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNPubsubs2ᚖpubsubᚑapiᚋgraphᚋmodelᚐPubsubs(ctx context.Context, sel ast.SelectionSet, v *model.Pubsubs) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._Pubsubs(ctx, sel, v)
+	return res
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -2528,6 +2513,47 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return graphql.MarshalBoolean(*v)
 }
 
+func (ec *executionContext) marshalOPubsub2ᚕᚖpubsubᚑapiᚋgraphᚋmodelᚐPubsub(ctx context.Context, sel ast.SelectionSet, v []*model.Pubsub) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOPubsub2ᚖpubsubᚑapiᚋgraphᚋmodelᚐPubsub(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
 func (ec *executionContext) marshalOPubsub2ᚖpubsubᚑapiᚋgraphᚋmodelᚐPubsub(ctx context.Context, sel ast.SelectionSet, v *model.Pubsub) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -2535,12 +2561,11 @@ func (ec *executionContext) marshalOPubsub2ᚖpubsubᚑapiᚋgraphᚋmodelᚐPub
 	return ec._Pubsub(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOPubsubQuery2ᚖpubsubᚑapiᚋgraphᚋmodelᚐPubsubQuery(ctx context.Context, v interface{}) (*model.PubsubQuery, error) {
+func (ec *executionContext) marshalOPubsubs2ᚖpubsubᚑapiᚋgraphᚋmodelᚐPubsubs(ctx context.Context, sel ast.SelectionSet, v *model.Pubsubs) graphql.Marshaler {
 	if v == nil {
-		return nil, nil
+		return graphql.Null
 	}
-	res, err := ec.unmarshalInputPubsubQuery(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
+	return ec._Pubsubs(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

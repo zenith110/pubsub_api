@@ -1,9 +1,21 @@
-type Pubsub {
-    name: String!
-    onSale: Boolean!
-    image: String!
-    saleDates: String!
+schema {
+    query: Query
 }
+type Query {
+    pubsub(name: String!): Pubsub
+    pubsubs: Pubsubs
+}
+type Pubsub{
+  name: String!
+  image: String!
+  saledates: String!
+  onsale: String!
+  price: String!
+}
+
 type Pubsubs{
-    pubsubs [Pubsub!]!
+  sub: [Pubsub]
+  total: ID!
 }
+
+
