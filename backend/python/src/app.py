@@ -94,11 +94,13 @@ Returns all the sub data for the frontend
 
 @app.route("/onsale/", methods=["GET"])
 def onsale_data():
-    """Gets all the pubsubs data
+    """Gets all the pubsubs data including name, price, image and other various data.
     ---
     responses:
         200:
-            description: Sub's names in JSON
+            description: Subs data in json.
+        404:
+            description: Subs could not be found, an error occured.
 
     """
     on_sale_post = on_sale_service.on_sale_check(db)
@@ -106,27 +108,8 @@ def onsale_data():
 
 
 """
-Returns all the sub names
-"""
-
-
-@app.route("/allsubs/", methods=["GET"])
-def all_names():
-    """Fetches all the pubsubs we have available
-    ---
-    responses:
-        200:
-            description: Sub's names in JSON
-
-    """
-    return all_subs.all_subs_data(db)
-
-
-"""
 Fetches a sub based on the sub name provided
 """
-
-
 @app.route("/subs/", methods=["GET"])
 def sub():
     """Fetches pubsub
