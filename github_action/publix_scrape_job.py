@@ -62,7 +62,7 @@ mailgun_instance = MailgunObject()
 mailgun_instance.sender_email = os.getenv("SENDER")
 mailgun_instance.domain = os.getenv("DOMAIN")
 mailgun_instance.mail_api_key = os.getenv("MAILGUN_API_KEY")
-the new implementation using Requests
+# the new implementation using Requests
 
 # Given a month full name, convert to a singular number
 
