@@ -62,15 +62,15 @@ mailgun_instance = MailgunObject()
 mailgun_instance.sender_email = os.getenv("SENDER")
 mailgun_instance.domain = os.getenv("DOMAIN")
 mailgun_instance.mail_api_key = os.getenv("MAILGUN_API_KEY")
-# the new implementation using Requests
+the new implementation using Requests
 
 # Given a month full name, convert to a singular number
 
 
 def convert_month_to_numerical(month: str):
     month_to_num = {
-        "Janurary": 1,
-        "Feburary": 2,
+        "January": 1,
+        "February": 2,
         "March": 3,
         "April": 4,
         "May": 5,

@@ -32,7 +32,6 @@ def update_sub(sub_name, dates):
     db_object.port = os.getenv("PORT")
     db_object.database = os.getenv("DATABASE")
     db_object.table = os.getenv("TABLE")
-    print(db_object.password)
     connection = db_utils.connect(db_object)
     cur = connection.cursor()
     db_utils.update_sale_date(cur, sub_name, db_utils.get_table(db_object), db_object, connection, dates)
