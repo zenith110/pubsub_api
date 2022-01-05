@@ -6,7 +6,6 @@ from services import newsletter
 from services import sub_runner
 from services import on_sale_service
 from services import sub_count
-from services import all_subs
 from services import random_subs
 from flasgger import Swagger, swag_from
 from flask_limiter import Limiter
@@ -68,7 +67,6 @@ Adds a email and first name to the pubsub sales newsletter
 @app.route("/email/", methods=["POST"])
 def email():
     content = request.json
-    print("hello!")
     """
     Parses the JSON data to be dumped into a mailchimp list
     """
