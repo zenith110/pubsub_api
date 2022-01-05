@@ -59,7 +59,7 @@ jobs:
           docker push $BACKEND
       - name: Docker build graphql
         run: |
-          cd backend/go
+          cd backend/go/src
           docker build --tag pubsub-backend-graphql -f dev.dockerfile ./
       - name: Docker push graphql
         env:
