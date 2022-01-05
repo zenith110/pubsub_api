@@ -50,7 +50,7 @@ jobs:
           DB: ${{ secrets.DB }}
         run: |
           cd backend/python
-          docker build --tag pubsub-backend-python -f ./Dockerfile.prod ./
+          docker build --tag pubsub-backend -f ./Dockerfile.prod ./
       - name: Docker push backend-python
         env:
           BACKEND: ${{ secrets.BACKEND }}
