@@ -65,7 +65,7 @@ jobs:
         env:
           BACKEND: ${{ secrets.BACKEND_GRAPHQL }}
         run: |
-          docker tag pubsub-backend $BACKEND_GRAPHQL
+          docker tag pubsub-backend-graphql $BACKEND_GRAPHQL
           docker push $BACKEND_GRAPHQL
       - name: Docker push bot
         env:
