@@ -86,10 +86,10 @@ jobs:
             echo "API_KEY=${{ secrets.MAILGUN_API_KEY}}" >> .env
             echo "OVERALL_MAILING_LIST=${{ secrets.OVERALL_MAILING_LIST}}" >> .env
             echo "BOT_TOKEN=${{ secrets.BOT_TOKEN}}" >> .env
-            echo "USERNAME_DB=$${{ secrets.USERNAME_DB }}" >> .env
-            echo "PASSWORD=$: ${{ secrets.PASSWORD }}" >> .env 
-            echo "HOST=$: ${{ secrets.HOST }}" >> .env
-            echo "PORT=$ ${{ secrets.PORT }}" >> .env
-            echo "DATABASE=$ ${{ secrets.DATABASE }}" >> .env
-            echo "TABLE=$ ${{ secrets.TABLE }}" >> .env
+            echo "USERNAME_DB=${{ secrets.USERNAME_DB }}" >> .env
+            echo "PASSWORD=${{ secrets.PASSWORD }}" >> .env 
+            echo "HOST=${{ secrets.HOST }}" >> .env
+            echo "PORT=${{ secrets.PORT }}" >> .env
+            echo "DATABASE=${{ secrets.DATABASE }}" >> .env
+            echo "TABLE=${{ secrets.TABLE }}" >> .env
             ./deploy.sh
