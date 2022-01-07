@@ -174,7 +174,11 @@ def grab_end_date(product_id, publix_collection):
     # range over the match groups
     for matchNum, match in enumerate(re.finditer(r":&amp;quot;Valid Through [\w\s]+", response.text, re.MULTILINE), start=0):
         return match.group()
-
+def remove_space_pubsub_name(pubsub):
+    for i in range(0, len(pubsub.name)):
+        if(pubsub.name[i][-1] == " "):
+            pubsub.name[i] = pubsub.name[i][:-1]
+    return pubsub
 
 def parse_publix_deli_page(zipCode):
 
@@ -190,12 +194,10 @@ def parse_publix_deli_page(zipCode):
     if response.status_code != 200:
         raise ValueError(
             'excepted 200 status for grabbing on sale page, was given ' + str(response.status_code))
-
+    pubsub = Pubsub()
     # find product valid thru date
     for product in response.json()[0]:
         if "Sub" in product["title"]:  # find subs only
-            pubsub = Pubsub()
-
             try:
                 end_date = str(grab_end_date(product["Productid"], closest_publix)).split(
                     "&amp;quot;Valid Through")[1].strip()
@@ -235,10 +237,11 @@ def parse_publix_deli_page(zipCode):
             except:
                 print(
                     "an unexpected exception occured appending the valid through (end date) to: " + product["title"])
+    remove_space_pubsub_name(pubsub)
 
-        for sub in range(0, len(pubsub.name)):
-            s3_utils.check_image(
-                pubsub.name[sub], pubsub.image_original[sub], my_bucket, pubsub)
+    for sub in range(0, len(pubsub.name)):
+        s3_utils.check_image(
+            pubsub.name[sub], pubsub.image_original[sub], my_bucket, pubsub)
     return pubsub
 
 
