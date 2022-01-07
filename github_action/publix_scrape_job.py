@@ -14,7 +14,7 @@ from os.path import join, dirname
 
 class Pubsub:
     def __init__(self) -> None:
-        self.name = []
+        self.pubsub_name = []
         self.date = []
         self.price = []
         self.image_original = []
@@ -89,6 +89,7 @@ def convert_month_to_numerical(month: str):
 
 def scrape_publix_job():
     sub_sale_list = parse_publix_deli_page(os.getenv("ZIPCODE"))
+    print(vars(sub_sale_list))
     connection = db_utils.connect(db_object)
     cur = connection.cursor()
     """
@@ -102,9 +103,9 @@ def scrape_publix_job():
             on_sale=on_sale,
         )
     )
-    for i in range(0, len(sub_sale_list.name)):
+    for i in range(0, len(sub_sale_list.pubsub_name)):
         db_utils.sub_check(
-            sub_sale_list.name[i], sub_sale_list.date[i], sub_sale_list.price[i], sub_sale_list.image[i], cur, os.getenv("WEBHOOK"), mailgun_instance, db_object)
+            sub_sale_list.pubsub_name[i], sub_sale_list.date[i], sub_sale_list.price[i], sub_sale_list.image[i] cur, db_object, os.getenv("WEBHOOK"), mailgun_instance)
     db_utils.close(connection)
 
 
@@ -144,8 +145,6 @@ def grab_price(product_id, publix_collection):
     matches = re.finditer(regex, response.text, re.MULTILINE)
     # range over the match groups
     for matchNum, match in enumerate(matches, start=1):
-        # print("Match {matchNum} was found at {start}-{end}: {match}".format(
-        #     matchNum=matchNum, start=match.start(), end=match.end(), match=match.group()))
         if(matchNum == 2):
             break
     sub_price = match.group().split(";")[3]
@@ -175,9 +174,9 @@ def grab_end_date(product_id, publix_collection):
     for matchNum, match in enumerate(re.finditer(r":&amp;quot;Valid Through [\w\s]+", response.text, re.MULTILINE), start=0):
         return match.group()
 def remove_space_pubsub_name(pubsub):
-    for i in range(0, len(pubsub.name)):
-        if(pubsub.name[i][-1] == " "):
-            pubsub.name[i] = pubsub.name[i][:-1]
+    for i in range(0, len(pubsub.pubsub_name)):
+        if(pubsub.pubsub_name[i][-1] == " "):
+            pubsub.pubsub_name[i] = pubsub.pubsub_name[i][:-1]
     return pubsub
 
 def parse_publix_deli_page(zipCode):
@@ -227,7 +226,7 @@ def parse_publix_deli_page(zipCode):
                 sub_name = sub_name.replace("Boar&#39;s Head&reg;", "")
             elif("Chicken Tender" in sub_name):
                 sub_name = sub_name.replace("Chicken Tender", "Chicken Tenders")
-            pubsub.name.append(sub_name[1:-1])
+            pubsub.pubsub_name.append(sub_name[1:-1])
             pubsub.price.append(str(price))
             temp_image_holder = str(product["productimages"]).split("-")
             pubsub.image_original.append(
@@ -239,9 +238,9 @@ def parse_publix_deli_page(zipCode):
                     "an unexpected exception occured appending the valid through (end date) to: " + product["title"])
     remove_space_pubsub_name(pubsub)
 
-    for sub in range(0, len(pubsub.name)):
+    for sub in range(0, len(pubsub.pubsub_name)):
         s3_utils.check_image(
-            pubsub.name[sub], pubsub.image_original[sub], my_bucket, pubsub)
+            pubsub.pubsub_name[sub], pubsub.image_original[sub], my_bucket, pubsub)
     return pubsub
 
 

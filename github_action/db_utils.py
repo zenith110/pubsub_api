@@ -30,7 +30,7 @@ def connect(db_object):
     )
 
 
-def new_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image, mailgun_obj, db_obj):
+def new_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image, db_obj, webhook, mailgun_obj):
     cur.execute(
         "INSERT INTO "
         + get_table(db_obj)
@@ -43,15 +43,15 @@ def new_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image, mailgun_o
             pubsub_image,
         ),
     )
-    # mailgun.send_email_and_webhook(
-    #     pubsub_name, pubsub_date, pubsub_price, pubsub_image, webhook, mailgun_obj)
+    mailgun.send_email_and_webhook(
+        pubsub_name, pubsub_date, pubsub_price, pubsub_image, webhook, mailgun_obj)
 
 def remove_sub(cur, sub_name, table, db_object, connection):
     update_string = "DELETE FROM {table} WHERE  pubsub_name = '{sub}'"
     update_query = cur.execute(update_string.format(table=get_table(db_object), sub=sub_name))
     close(connection)
 
-def existing_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image, webhook, mailgun_obj, db_obj):
+def existing_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image, db_obj, webhook, mailgun_obj):
     update_string = "Update {table} SET on_sale = '{on_sale}', dates = '{dates}', price = '${price}', image = '{image}' WHERE pubsub_name = '{sub}'"
     update_query = cur.execute(
         update_string.format(
@@ -63,15 +63,15 @@ def existing_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image, webh
             sub=pubsub_name.lower().replace(" ", "-"),
         )
     )
-    # mailgun.send_email_and_webhook(
-    #     pubsub_name, pubsub_date, pubsub_price, pubsub_image, webhook, mailgun_obj)
+    mailgun.send_email_and_webhook(
+        pubsub_name, pubsub_date, pubsub_price, pubsub_image, webhook, mailgun_obj)
 
 def update_sale_date(cur, sub_name, table, db_object, connection, dates):
     update_string = "Update {table} SET dates = '{dates}' WHERE pubsub_name = '{sub}'"
     update_query = cur.execute(update_string.format(table=get_table(db_object), sub=sub_name, dates=dates))
     close(connection)
 
-def sub_check(pubsub_name, pubsub_date, pubsub_price, pubsub_image, cur, webhook, mailgun_obj, db_obj):
+def sub_check(pubsub_name, pubsub_date, pubsub_price, pubsub_image, cur, db_obj, webhook, mailgun_obj):
     exist_query = "select exists(select 1 from {table} where pubsub_name ='{sub}' limit 1)"
     exist_check = cur.execute(
         exist_query.format(
@@ -82,8 +82,9 @@ def sub_check(pubsub_name, pubsub_date, pubsub_price, pubsub_image, cur, webhook
     count = cur.fetchone()[0]
     # Sub exist
     if count == True:
+        print(pubsub_name + " is going to be entered into the db!")
         existing_sub(cur, pubsub_name, pubsub_date,
-                     pubsub_price, pubsub_image, webhook, mailgun_obj, db_obj)
+                     pubsub_price, db_obj, webhook, mailgun_obj)
     else:
-        new_sub(cur, pubsub_name, pubsub_date, pubsub_price,
-                pubsub_image, mailgun_obj, db_obj)
+        new_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image
+                db_obj, webhook, mailgun_obj)
