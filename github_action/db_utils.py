@@ -30,7 +30,7 @@ def connect(db_object):
     )
 
 
-def new_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image, mailgun_obj, db_obj, connection):
+def new_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image, mailgun_obj, db_obj):
     cur.execute(
         "INSERT INTO "
         + get_table(db_obj)
@@ -43,7 +43,6 @@ def new_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image, mailgun_o
             pubsub_image,
         ),
     )
-    close(connection)
     mailgun.send_email_and_webhook(
         pubsub_name, pubsub_date, pubsub_price, pubsub_image, webhook, mailgun_obj)
 
@@ -64,7 +63,6 @@ def existing_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image, webh
             sub=pubsub_name.lower().replace(" ", "-"),
         )
     )
-    close(connection)
     mailgun.send_email_and_webhook(
         pubsub_name, pubsub_date, pubsub_price, pubsub_image, webhook, mailgun_obj)
 
@@ -73,7 +71,7 @@ def update_sale_date(cur, sub_name, table, db_object, connection, dates):
     update_query = cur.execute(update_string.format(table=get_table(db_object), sub=sub_name, dates=dates))
     close(connection)
 
-def sub_check(pubsub_name, pubsub_date, pubsub_price, pubsub_image, cur, webhook, mailgun_obj, db_obj, connection):
+def sub_check(pubsub_name, pubsub_date, pubsub_price, pubsub_image, cur, webhook, mailgun_obj, db_obj):
     exist_query = "select exists(select 1 from {table} where pubsub_name ='{sub}' limit 1)"
     exist_check = cur.execute(
         exist_query.format(
@@ -85,7 +83,7 @@ def sub_check(pubsub_name, pubsub_date, pubsub_price, pubsub_image, cur, webhook
     # Sub exist
     if count == True:
         existing_sub(cur, pubsub_name, pubsub_date,
-                     pubsub_price, pubsub_image, webhook, mailgun_obj, db_obj, connection)
+                     pubsub_price, pubsub_image, webhook, mailgun_obj, db_obj)
     else:
         new_sub(cur, pubsub_name, pubsub_date, pubsub_price,
-                pubsub_image, mailgun_obj, db_obj, connection)
+                pubsub_image, mailgun_obj, db_obj)
