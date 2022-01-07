@@ -7,6 +7,7 @@ from services import sub_runner
 from services import on_sale_service
 from services import sub_count
 from services import random_subs
+from services import all_subs
 from flasgger import Swagger, swag_from
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -105,6 +106,20 @@ def onsale_data():
     return on_sale_post
 
 
+"""
+Returns all the sub names
+"""
+
+
+@app.route("/allsubs/", methods=["GET"])
+def all_names():
+    """Fetches all the pubsubs we have available
+    ---
+    responses:
+        200:
+            description: Sub's names in JSON
+    """
+    return all_subs.all_subs_data(db)
 """
 Fetches a sub based on the sub name provided
 """
