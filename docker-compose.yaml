@@ -15,12 +15,12 @@ services:
       - "8080:8080"
     env_file:
       - .env
-  pubsub-api-backend-v2:
+  pubsub-api-grapqhl:
     image: pubsub-api/backend-v2
     build:
       context: ./backend/go/src
       dockerfile: dev.dockerfile
-    container_name: pubsub-api-backend-v2
+    container_name: grapqhl
     environment:
       CHOKIDAR_USEPOLLING: "true"
     restart: unless-stopped
@@ -48,9 +48,24 @@ services:
       - pubsub-api-backend-v2
   promethus:
     image: prom/prometheus
+    container_name: prom
     ports:
-      - "5000:9090"
+      - "9090:9090"
+    volumes:
+      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
   grafana:
     image: grafana/grafana
     ports:
       - "4000:3000"
+  node-exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    command:
+      - "--path.rootfs=/host"
+    network_mode: host
+    pid: host
+    restart: always
+    volumes:
+      - '/:/host:ro,rslave'
+    ports:
+      - 9100:9100
