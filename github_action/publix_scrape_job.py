@@ -105,7 +105,7 @@ def scrape_publix_job():
     )
     for i in range(0, len(sub_sale_list.pubsub_name)):
         db_utils.sub_check(
-            sub_sale_list.pubsub_name[i], sub_sale_list.date[i], sub_sale_list.price[i], sub_sale_list.image[i] cur, db_object, os.getenv("WEBHOOK"), mailgun_instance)
+            sub_sale_list.pubsub_name[i], sub_sale_list.date[i], sub_sale_list.price[i], sub_sale_list.image[i], cur, db_object, os.getenv("WEBHOOK"), mailgun_instance)
     db_utils.close(connection)
 
 

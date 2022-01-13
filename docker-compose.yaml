@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 services:
   pubsub-api-backend-v1:
     image: pubsub-api/backend
@@ -42,10 +42,10 @@ services:
       - .env
     depends_on:
       - pubsub-api-backend-v1
-      - pubsub-api-backend-v2
+      - pubsub-api-grapqhl
     links:
       - pubsub-api-backend-v1
-      - pubsub-api-backend-v2
+      - pubsub-api-grapqhl
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -54,38 +54,22 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--web.enable-lifecycle'
-    expose:
-      - 9090
-    networks:
-      - monitoring
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/etc/prometheus/console_libraries"
+      - "--web.console.templates=/etc/prometheus/consoles"
+      - "--web.enable-lifecycle"
+    ports:
+      - 9090:9090
   grafana:
     image: grafana/grafana
     ports:
       - "4000:3000"
-  node-exporter:
-    image: prom/node-exporter:latest
-    container_name: node-exporter
-    restart: unless-stopped
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.rootfs=/rootfs'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
-    expose:
-      - 9100
-    networks:
-      - monitoring
-networks:
-  monitoring:
-    driver: bridge
+  traefik:
+    image: traefik/whoami
+    ports:
+      - "9080:8080"
+    container_name: "traefik"
+
 volumes:
   prometheus_data: {}
