@@ -83,8 +83,7 @@ def sub_check(pubsub_name, pubsub_date, pubsub_price, pubsub_image, cur, db_obj,
     # Sub exist
     if count == True:
         print(pubsub_name + " is going to be entered into the db!")
-        existing_sub(cur, pubsub_name, pubsub_date,
-                     pubsub_price, db_obj, webhook, mailgun_obj)
+        existing_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image, db_obj, webhook, mailgun_obj)
     else:
         new_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image,
                 db_obj, webhook, mailgun_obj)
