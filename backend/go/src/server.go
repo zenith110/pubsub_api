@@ -22,11 +22,15 @@ func init(){
 	var cachedSystemMemory = metrics.SystemMemoryMetric("cachedSystemMemory", "How much memory is cached", "Cached")
 	var freeSystemMemory = metrics.SystemMemoryMetric("freeSystemMemory", "How much memory is free on the system", "Free")
 	var systemIdle = metrics.SystemCPUMetrics("systemIdle", "Idle readings from CPU", "Idle")
+	var networkCounter = metrics.SystemCPUMetrics("networkCounter", "Network counter in kB/s", "System")
+	var hardDriveCounter = metrics.SystemCPUMetrics("hardDriveCounter", "System readings from CPU in regards to disk IOPS", "User")
 	prometheus.Register(systemMemoryTotal)
 	prometheus.Register(usedSystemMemory)
 	prometheus.Register(cachedSystemMemory)
 	prometheus.Register(freeSystemMemory)
 	prometheus.Register(systemIdle)
+	prometheus.Register(networkCounter)
+	prometheus.Register(hardDriveCounter)
 }
 func main() {
 	port := os.Getenv("GRAPHQLPORT")
