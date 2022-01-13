@@ -86,5 +86,5 @@ def sub_check(pubsub_name, pubsub_date, pubsub_price, pubsub_image, cur, db_obj,
         existing_sub(cur, pubsub_name, pubsub_date,
                      pubsub_price, db_obj, webhook, mailgun_obj)
     else:
-        new_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image
+        new_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image,
                 db_obj, webhook, mailgun_obj)
