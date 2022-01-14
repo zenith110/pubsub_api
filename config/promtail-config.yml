@@ -1,0 +1,17 @@
+server:
+http_listen_port: 9080
+grpc_listen_port: 0
+positions:
+filename: /tmp/positions.yaml
+# hold loki When the client connects
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+scrape_configs:
+  - job_name: system
+pipeline_stages:
+static_configs:
+  - targets:
+  - localhost
+labels:
+job: nginx_access_log
+__path__: /logs/nginx/access.log

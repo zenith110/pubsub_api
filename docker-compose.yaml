@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.3"
 services:
   pubsub-api-backend-v1:
     image: pubsub-api/backend
@@ -48,35 +48,53 @@ services:
       - pubsub-api-grapqhl
   prometheus:
     image: prom/prometheus:latest
+    user: root
     container_name: prometheus
     restart: unless-stopped
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prom-storage:/etc/prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.path=/etc/prometheus"
       - "--web.console.libraries=/usr/share/prometheus/console_libraries"
       - "--web.console.templates=/usr/share/prometheus/consoles"
     ports:
       - 9090:9090
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:latest
     ports:
       - "4000:3000"
     volumes:
-      - grafana-storage:/var/lib/grafana
+      - ./grafana-storage:/var/lib/grafana
+    restart: "unless-stopped"
   traefik:
     image: traefik/whoami
     ports:
       - "9080:8080"
     container_name: "traefik"
+    restart: "unless-stopped"
   loki:
     image: grafana/loki
     container_name: loki
+    command: "-config.file=/etc/loki/config/loki-config.yml"
     ports:
       - "3100:3100"
-
-volumes:
-  grafana-storage:
-  prometheus_data:
+    volumes:
+      - ./config:/etc/loki/config
+      - ./loki-storage/index:/opt/loki/index
+      - ./loki-storage/chunks:/opt/loki/chunks
+      - ./loki-data:/etc/loki
+    restart: "unless-stopped"
+  tempo:
+    image: grafana/tempo
+    container_name: tempo
+  promtail:
+    image: grafana/promtail
+    container_name: promtail
+    volumes:
+      - ./promtail_storage/logs:/var/logs
+      - ./config:/etc/promtail/config
+      - ./nginx-storage/logs:/logs
+    restart: "unless-stopped"
+    command: "-config.file=/etc/promtail/config/promtail-config.yml"
