@@ -28,6 +28,8 @@ services:
       - "8443:8443"
     env_file:
       - .env
+    volumes:
+      - ./backend/go/src:/home/backend/graphql/
   pubsub-api-frontend:
     build:
       context: ./frontend
@@ -82,10 +84,10 @@ services:
       - "3100:3100"
     volumes:
       - ./config:/etc/loki/config
-      - ./loki-storage/index:/opt/loki/index
-      - ./loki-storage/chunks:/opt/loki/chunks
       - ./loki-data:/etc/loki
       - ./loki-data/data:/data/loki
+      - ./loki-data/index:/opt/loki/index
+      - ./loki-data/chunks:/opt/loki/chunks
     restart: "unless-stopped"
   tempo:
     image: grafana/tempo
@@ -95,9 +97,9 @@ services:
     container_name: promtail
     user: root
     volumes:
-      - ./promtail_storage/logs:/var/logs
+      - /promtail_storage/logs:/var/logs
       - ./config:/etc/promtail/config
-      - ./var/log:/var/log
+      - /var/log:/var/log
     ports:
       - "9080:9080"
     restart: "unless-stopped"

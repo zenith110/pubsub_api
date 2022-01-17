@@ -3,14 +3,28 @@ package queries
 import (
 	"context"
 	"fmt"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"io"
+	"log"
 	"os"
 	"pubsub-api/graph/model"
 	"strconv"
-)
+	"time"
 
+	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/sirupsen/logrus"
+)
+var now = time.Now()
 // Given a table name and database url, fetch all the pubsubs from the database
 func FetchAllSubs(tableName string, databaseURL string) (*model.Pubsubs, error) {
+	var logger = logrus.New()
+	logger.SetFormatter(&logrus.JSONFormatter{})
+	format := fmt.Sprint(int(now.Month())) + strconv.Itoa(now.Day()) + strconv.Itoa(now.Year()) + strconv.Itoa(now.Hour())
+	file, err := os.OpenFile("logs/pubsubs/fetchall/log_" + format + ".json", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+        log.Fatal(err)
+    }
+
+    logger.SetOutput(io.MultiWriter(file, os.Stdout))
 	// Creates a temporary array of pointers of model.Pubsub due to weird effects when appending *model.Pubsubs.Sub
 	var subs []*model.Pubsub
 	// Creates the background context
@@ -18,8 +32,7 @@ func FetchAllSubs(tableName string, databaseURL string) (*model.Pubsubs, error) 
 	// Connect to the database
 	conn, err := pgxpool.Connect(ctx, databaseURL)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
-		os.Exit(1)
+		logger.Errorf("Unable to connect to database: %v\n", err)
 	}
 	// Wait to close for later
 	defer conn.Close()
@@ -28,7 +41,7 @@ func FetchAllSubs(tableName string, databaseURL string) (*model.Pubsubs, error) 
 	var totalSubs int = 0
 	rows, connErr := conn.Query(ctx, query)
 	if connErr != nil {
-		fmt.Fprintf(os.Stderr, "Query failed: %v\n", err)
+		logger.Errorf("Query failed: %v\n", err)
 		os.Exit(1)
 	}
 	// Loops through all the subs, create the struct for each and append to our *model.Pubsub struct
