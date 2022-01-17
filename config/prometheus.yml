@@ -17,4 +17,4 @@ scrape_configs:
     metrics_path: /metrics
     scheme: http
     static_configs:
-      - targets: ["localhost:9090", "node-exporter:9100"]
+      - targets: ["localhost:9090", "graphql:8080"]

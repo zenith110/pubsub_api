@@ -5,4 +5,5 @@ WORKDIR /home/backend/v2
 COPY . /home/backend/v2
 ## Add this go mod download command to pull in any dependencies
 RUN go mod download
+RUN go fmt .
 CMD  ["go", "run", "server.go"]

@@ -71,7 +71,7 @@ services:
   traefik:
     image: traefik/whoami
     ports:
-      - "9080:8080"
+      - "7080:8080"
     container_name: "traefik"
     restart: "unless-stopped"
   loki:
@@ -85,6 +85,7 @@ services:
       - ./loki-storage/index:/opt/loki/index
       - ./loki-storage/chunks:/opt/loki/chunks
       - ./loki-data:/etc/loki
+      - ./loki-data/data:/data/loki
     restart: "unless-stopped"
   tempo:
     image: grafana/tempo
@@ -92,9 +93,12 @@ services:
   promtail:
     image: grafana/promtail
     container_name: promtail
+    user: root
     volumes:
       - ./promtail_storage/logs:/var/logs
       - ./config:/etc/promtail/config
-      - ./nginx-storage/logs:/logs
+      - ./var/log:/var/log
+    ports:
+      - "9080:9080"
     restart: "unless-stopped"
     command: "-config.file=/etc/promtail/config/promtail-config.yml"

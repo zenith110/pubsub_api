@@ -11,6 +11,8 @@ RUN apt-get -y install gcc
 # copy the content of the local src directory to the working directory
 COPY requirements.txt .
 RUN pip install -r requirements.txt
+RUN ls
 COPY . .
+RUN black src/
 ENV FLASK_DEBUG 1
 CMD [ "python", "./app.py" ]

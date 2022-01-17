@@ -33,6 +33,6 @@ generate-schema: # Runs generate schema command from go makefile
 go-format: # Formats the go file
 	$(MAKE) -C backend/go/src go-format
 format: # Formats all the files
-	@$(DEV_DOCKER_COMPOSE) up pubsub-api-backend-v1 black backend/python/src 
+	@$(DEV_DOCKER_COMPOSE) run --rm pubsub-api-backend-v1 black backend/python/src 
 	@$(DEV_DOCKER_COMPOSE) up pubsub-api-backend-v2 go fmt backend/go/src
 	@$(DEV_DOCKER_COMPOSE) up pubsub-api-frontend prettier --write frontend/
