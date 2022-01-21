@@ -15,16 +15,20 @@ import (
 )
 var now = time.Now()
 // Given a table name and database url, fetch all the pubsubs from the database
-func FetchAllSubs(tableName string, databaseURL string) (*model.Pubsubs, error) {
+func FetchAllSubs(tableName string, databaseURL string, enviroment string) (*model.Pubsubs, error) {
 	var logger = logrus.New()
 	logger.SetFormatter(&logrus.JSONFormatter{})
-	format := fmt.Sprint(int(now.Month())) + strconv.Itoa(now.Day()) + strconv.Itoa(now.Year()) + strconv.Itoa(now.Hour())
+	format := fmt.Sprint(int(now.Month())) + strconv.Itoa(now.Day()) + strconv.Itoa(now.Year())
+	if enviroment == "dev"{
 	file, err := os.OpenFile("logs/pubsubs/fetchall/log_" + format + ".json", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
         log.Fatal(err)
     }
 
     logger.SetOutput(io.MultiWriter(file, os.Stdout))
+}else if enviroment == "prod"{
+	fmt.Printf("Use s3")
+}
 	// Creates a temporary array of pointers of model.Pubsub due to weird effects when appending *model.Pubsubs.Sub
 	var subs []*model.Pubsub
 	// Creates the background context

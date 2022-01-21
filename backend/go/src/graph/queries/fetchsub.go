@@ -14,16 +14,22 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func FetchSub(tableName string, pubsubName string, databaseURL string) (*model.Pubsub, error) {
+func FetchSub(tableName string, pubsubName string, databaseURL string, enviroment string) (*model.Pubsub, error) {
 	var logger = logrus.New()
 	now := time.Now()
 	logger.SetFormatter(&logrus.JSONFormatter{})
-	format := fmt.Sprint(int(now.Month())) + strconv.Itoa(now.Day()) + strconv.Itoa(now.Year()) + strconv.Itoa(now.Hour())
+	format := fmt.Sprint(int(now.Month())) + strconv.Itoa(now.Day()) + strconv.Itoa(now.Year())
+	if enviroment == "dev"{
 	file, err := os.OpenFile("logs/pubsub/fetchsub/log_" + format + ".json", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		logger.Error("Could not locate the file: %v\n", err.Error())
 	}
 	logger.SetOutput(io.MultiWriter(file, os.Stdout))
+	}else if enviroment == "prod"{
+		fmt.Print("implement s3 option")
+		// do stuff with s3 here
+		// logger.SetOutput(io.MultiWriter(file, os.Stdout))
+	}
 	pubsubName = strings.ToLower(pubsubName)
 	pubsubName = strings.Replace(pubsubName, " ", "-", -1)
 	conn, err := pgx.Connect(context.Background(), databaseURL)

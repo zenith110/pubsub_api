@@ -50,7 +50,6 @@ services:
       - pubsub-api-grapqhl
   prometheus:
     image: prom/prometheus:latest
-    user: root
     container_name: prometheus
     restart: unless-stopped
     volumes:
@@ -104,3 +103,26 @@ services:
       - "9080:9080"
     restart: "unless-stopped"
     command: "-config.file=/etc/promtail/config/promtail-config.yml"
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    command:
+      - "--path.rootfs=/host"
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - "/:/host:ro,rslave"
+  cadvisor:
+    image: google/cadvisor:latest
+    container_name: cadvisor
+    # ports:
+    #   - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+    restart: unless-stopped
