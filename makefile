@@ -1,5 +1,5 @@
-DEV_FILE = docker-compose.yaml
-PROD_FILE = docker-compose-prod.yaml
+DEV_FILE = dev.yml
+PROD_FILE = prod.yml
 DEV_DOCKER_COMPOSE=docker-compose -f $(DEV_FILE)
 PROD_DOCKER_COMPOSE=docker-compose -f $(PROD_FILE)
 default: build

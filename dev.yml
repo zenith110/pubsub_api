@@ -1,0 +1,128 @@
+version: "3.3"
+services:
+  pubsub-api-backend-v1:
+    image: pubsub-api/backend
+    build:
+      context: ./backend/python
+      dockerfile: dev.dockerfile
+    container_name: pubsub-api-backend-v1
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    restart: unless-stopped
+    volumes:
+      - ./backend/python/src:/home/backend/app
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+  pubsub-api-grapqhl:
+    image: pubsub-api/backend-v2
+    build:
+      context: ./backend/go/src
+      dockerfile: dev.dockerfile
+    container_name: grapqhl
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    restart: unless-stopped
+    ports:
+      - "8443:8443"
+    env_file:
+      - .env
+    volumes:
+      - ./backend/go/src:/home/backend/graphql/
+  pubsub-api-frontend:
+    build:
+      context: ./frontend
+      dockerfile: .dockerfile
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    container_name: pubsub-api-frontend
+    stdin_open: true
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - pubsub-api-backend-v1
+      - pubsub-api-grapqhl
+    links:
+      - pubsub-api-backend-v1
+      - pubsub-api-grapqhl
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prom-storage:/etc/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/etc/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+    ports:
+      - 9090:9090
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "4000:3000"
+    volumes:
+      - ./grafana-storage:/var/lib/grafana
+    restart: "unless-stopped"
+  traefik:
+    image: traefik/whoami
+    ports:
+      - "7080:8080"
+    container_name: "traefik"
+    restart: "unless-stopped"
+  loki:
+    image: grafana/loki
+    container_name: loki
+    command: "-config.file=/etc/loki/config/loki-config.yml"
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./config:/etc/loki/config
+      - ./loki-data:/etc/loki
+      - ./loki-data/data:/data/loki
+      - ./loki-data/index:/opt/loki/index
+      - ./loki-data/chunks:/opt/loki/chunks
+    restart: "unless-stopped"
+  tempo:
+    image: grafana/tempo
+    container_name: tempo
+  promtail:
+    image: grafana/promtail
+    container_name: promtail
+    user: root
+    volumes:
+      - /promtail_storage/logs:/var/logs
+      - ./config:/etc/promtail/config
+      - /var/log:/var/log
+    ports:
+      - "9080:9080"
+    restart: "unless-stopped"
+    command: "-config.file=/etc/promtail/config/promtail-config.yml"
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    command:
+      - "--path.rootfs=/host"
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - "/:/host:ro,rslave"
+  cadvisor:
+    image: google/cadvisor:latest
+    container_name: cadvisor
+    # ports:
+    #   - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+    restart: unless-stopped
