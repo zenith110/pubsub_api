@@ -131,6 +131,7 @@ jobs:
           password: ${{ secrets.QA_SERVER_PASSWORD }}
           script: |
             sudo curl -L "https://github.com/docker/compose/releases/download/2.2.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
             wget https://raw.githubusercontent.com/zenith110/pubsub_api/master/qa.yml
             echo "SENDER=${{ secrets.SENDER}}" > .env
             echo "DOMAIN=${{ secrets.DOMAIN}}" >> .env
