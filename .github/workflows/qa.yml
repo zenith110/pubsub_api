@@ -132,11 +132,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            output=$(terraform output server_ip)
+            echo $output
             const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outputs.stdout }}\`
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-            ip address is:  $(terraform output server_ip)
+
             <details><summary>Show Plan</summary>
 
             \`\`\`\n
@@ -153,14 +155,11 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
-      - name: Get IP
-        run: |
-          server_ip=$(terraform output server_ip)
-          echo "SERVER_IP=$server_ip" >> $GITHUB_ENV
       - name: Push to server
         env:
           DOCKER_USER: "${{ secrets.DOCKER_USER }}"
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          SERVER_IP: $(terraform output server_ip)
         uses: appleboy/ssh-action@master
         with:
           host: $SERVER_IP
