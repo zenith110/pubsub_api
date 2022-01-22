@@ -22,7 +22,7 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${$GITHUB_HEAD_REF#refs/heads/})"
         id: extract_branch
       - name: "Test name"
-        run: echo "${GITHUB_REF##*/}.pubsub-api.dev" | tr -d ' '
+        run: echo "${{ github.head_ref }}.pubsub-api.dev" | tr -d ' '
       # - name: Install dependencies
       #   run: |
       #     cd backend/python
