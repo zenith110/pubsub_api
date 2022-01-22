@@ -153,6 +153,8 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
+      - name: IP check
+        run: echo "${{ secrets.QA_SERVER_USER }}@$SERVER_IP"
       - name: Push to server
         env:
           DOCKER_USER: "${{ secrets.DOCKER_USER }}"
