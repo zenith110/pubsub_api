@@ -155,8 +155,8 @@ jobs:
             })
       - name: Get IP
         run: |
-        server_ip=$(terraform output server_ip)
-        echo echo "SERVER_IP=$server_ip" >> $GITHUB_ENV
+          server_ip=$(terraform output server_ip)
+          echo echo "SERVER_IP=$server_ip" >> $GITHUB_ENV
       - name: Push to server
         env:
           DOCKER_USER: "${{ secrets.DOCKER_USER }}"
