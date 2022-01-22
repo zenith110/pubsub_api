@@ -165,7 +165,7 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         uses: appleboy/ssh-action@master
         with:
-          host: echo ${{ github.head_ref }}.pubsub-api.dev" | tr -d ' '
+          host: echo "${{ github.head_ref }}.pubsub-api.dev" | tr -d ' '
           username: ${{ secrets.QA_SERVER_USER }}
           password: ${{ secrets.QA_SERVER_PASSWORD }}
           script: |
