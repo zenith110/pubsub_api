@@ -153,13 +153,10 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
-      - name: Export ip address
-        run: echo ${{ secrets.QA_SERVER_USER }}@$SERVER_IP
       - name: Push to server
         env:
           DOCKER_USER: "${{ secrets.DOCKER_USER }}"
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          SERVER_IP: $(terraform output server_ip)
         uses: appleboy/ssh-action@master
         with:
           host: $SERVER_IP
