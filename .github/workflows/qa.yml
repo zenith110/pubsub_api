@@ -124,6 +124,8 @@ jobs:
         run: |
           cd infrastructure/qa
           terraform apply -auto-approve
+          output=$(terraform output server_ip)
+          echo $output
       - uses: actions/github-script@0.9.0
         if: github.event_name == 'pull_request'
         env:
@@ -152,11 +154,6 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
-      - name: Terraform output
-        run: |
-          terraform refresh
-          output=$(terraform output server_ip)
-          echo $output
       - name: Push to server
         env:
           DOCKER_USER: "${{ secrets.DOCKER_USER }}"
