@@ -23,166 +23,166 @@ jobs:
         id: extract_branch
       - name: "Test name"
         run: echo "${{ github.head_ref }}.pubsub-api.dev" | tr -d ' '
-      # - name: Install dependencies
-      #   run: |
-      #     cd backend/python
-      #     python -m pip install --upgrade pip
-      #     pip install flake8 pytest
-      #     if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      # - name: Lint with flake8
-      #   run: |
-      #     cd backend/python
-      #     # stop the build if there are Python syntax errors or undefined names
-      #     flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-      #     # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-      #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-      # - name: Docker Login
-      #   env:
-      #     DOCKER_USER: "${{ secrets.DOCKER_USER }}"
-      #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      #   run: |
-      #     docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      - name: Install dependencies
+        run: |
+          cd backend/python
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Lint with flake8
+        run: |
+          cd backend/python
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Docker Login
+        env:
+          DOCKER_USER: "${{ secrets.DOCKER_USER }}"
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 
-      # # Dockerizes the bot to be sent to the repo
-      # - name: Dockerize Bot
-      #   env:
-      #     TOKEN: "${{ secrets.BOT_TOKEN}}"
-      #   run: |
-      #     cd bot/src/
-      #     echo "BOT_TOKEN = $TOKEN" > .env
-      #     cd ../
-      #     docker build --tag pubsub-bot .
-      # - name: Dockerize Backend
-      #   env:
-      #     MAILGUN: ${{ secrets.MAILGUN }}
-      #     DB: ${{ secrets.DB }}
-      #   run: |
-      #     cd backend/python
-      #     docker build --tag pubsub-backend -f ./Dockerfile.prod ./
-      # - name: Docker push backend-python
-      #   env:
-      #     BACKEND: ${{ secrets.QA_BACKEND }}
-      #   run: |
-      #     docker tag pubsub-backend $BACKEND
-      #     docker push $BACKEND
-      # - name: Docker build graphql
-      #   run: |
-      #     cd backend/go/src
-      #     docker build --tag pubsub-backend-graphql -f dev.dockerfile ./
-      # - name: Docker push graphql
-      #   env:
-      #     BACKEND_GRAPHQL: ${{ secrets.QA_BACKEND_GRAPHQL }}
-      #   run: |
-      #     docker tag pubsub-backend-graphql $BACKEND_GRAPHQL
-      #     docker push $BACKEND_GRAPHQL
-      # - name: Docker push bot
-      #   env:
-      #     BOT: ${{ secrets.QA_BOT }}
-      #   run: |
-      #     docker tag pubsub-bot $BOT
-      #     docker push $BOT
-      # - name: Terraform fmt
-      #   id: fmt
-      #   run: |
-      #     cd infrastructure/qa
-      #     terraform fmt -check
-      #   continue-on-error: true
+      # Dockerizes the bot to be sent to the repo
+      - name: Dockerize Bot
+        env:
+          TOKEN: "${{ secrets.BOT_TOKEN}}"
+        run: |
+          cd bot/src/
+          echo "BOT_TOKEN = $TOKEN" > .env
+          cd ../
+          docker build --tag pubsub-bot .
+      - name: Dockerize Backend
+        env:
+          MAILGUN: ${{ secrets.MAILGUN }}
+          DB: ${{ secrets.DB }}
+        run: |
+          cd backend/python
+          docker build --tag pubsub-backend -f ./Dockerfile.prod ./
+      - name: Docker push backend-python
+        env:
+          BACKEND: ${{ secrets.QA_BACKEND }}
+        run: |
+          docker tag pubsub-backend $BACKEND
+          docker push $BACKEND
+      - name: Docker build graphql
+        run: |
+          cd backend/go/src
+          docker build --tag pubsub-backend-graphql -f dev.dockerfile ./
+      - name: Docker push graphql
+        env:
+          BACKEND_GRAPHQL: ${{ secrets.QA_BACKEND_GRAPHQL }}
+        run: |
+          docker tag pubsub-backend-graphql $BACKEND_GRAPHQL
+          docker push $BACKEND_GRAPHQL
+      - name: Docker push bot
+        env:
+          BOT: ${{ secrets.QA_BOT }}
+        run: |
+          docker tag pubsub-bot $BOT
+          docker push $BOT
+      - name: Terraform fmt
+        id: fmt
+        run: |
+          cd infrastructure/qa
+          terraform fmt -check
+        continue-on-error: true
 
-      # - name: Terraform Init
-      #   id: init
-      #   run: |
-      #     cd infrastructure/qa
-      #     terraform init
+      - name: Terraform Init
+        id: init
+        run: |
+          cd infrastructure/qa
+          terraform init
 
-      # - name: Terraform Validate
-      #   id: validate
-      #   run: |
-      #     cd infrastructure/qa
-      #     terraform validate -no-color
+      - name: Terraform Validate
+        id: validate
+        run: |
+          cd infrastructure/qa
+          terraform validate -no-color
 
-      # - name: Terraform Plan
-      #   id: plan
-      #   env:
-      #     TF_VAR_linode_api_token: ${{ secrets.LINODE_API_TOKEN }}
-      #     TF_VAR_linode_password: ${{ secrets.QA_SERVER_PASSWORD }}
-      #     TF_VAR_small_linode_instance: ${{ secrets.QA_SMALL_LINODE_INSTANCE }}
-      #     TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
-      #     TF_VAR_cloudflare_domain_name: ${{ secrets.QA_SERVER_IP }}
-      #     TF_VAR_qa_label: ${{ secrets.QA_LABEL }}
-      #     TF_VAR_qa_group: ${{ secrets.QA_LABEL }}
-      #     TF_VAR_cloudflare_email: ${{ secrets.CLOUDFLARE_EMAIL }}
-      #     TF_VAR_cloudflare_api_key: ${{ secrets.CLOUDFLARE_API_KEY }}
-      #   run: |
-      #     cd infrastructure/qa
-      #     terraform plan -no-color
-      #   continue-on-error: true
-      # - name: Terraform QA Apply
-      #   env:
-      #     TF_VAR_linode_api_token: ${{ secrets.LINODE_API_TOKEN }}
-      #     TF_VAR_linode_password: ${{ secrets.QA_SERVER_PASSWORD }}
-      #     TF_VAR_small_linode_instance: ${{ secrets.QA_SMALL_LINODE_INSTANCE }}
-      #     TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
-      #     TF_VAR_cloudflare_domain_name: echo "${{ github.event.pull_request.base.ref }}.pubsub-api.dev | tr -d ' '"
-      #     TF_VAR_qa_label: ${{ secrets.QA_LABEL }}
-      #     TF_VAR_qa_group: ${{ secrets.QA_LABEL }}
-      #     TF_VAR_cloudflare_email: ${{ secrets.CLOUDFLARE_EMAIL }}
-      #     TF_VAR_cloudflare_api_key: ${{ secrets.CLOUDFLARE_API_KEY }}
-      #   run: |
-      #     cd infrastructure/qa
-      #     terraform apply -auto-approve
-      #     echo "SERVER_IP=$(terraform output server_ip)" >> $GITHUB_ENV
-      # - uses: actions/github-script@0.9.0
-      #   if: github.event_name == 'pull_request'
-      #   env:
-      #     PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      #     script: |
-      #       const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-      #       #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-      #       #### Terraform Validation 🤖\`${{ steps.validate.outputs.stdout }}\`
-      #       #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+      - name: Terraform Plan
+        id: plan
+        env:
+          TF_VAR_linode_api_token: ${{ secrets.LINODE_API_TOKEN }}
+          TF_VAR_linode_password: ${{ secrets.QA_SERVER_PASSWORD }}
+          TF_VAR_small_linode_instance: ${{ secrets.QA_SMALL_LINODE_INSTANCE }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          TF_VAR_cloudflare_domain_name: ${{ secrets.QA_SERVER_IP }}
+          TF_VAR_qa_label: ${{ secrets.QA_LABEL }}
+          TF_VAR_qa_group: ${{ secrets.QA_LABEL }}
+          TF_VAR_cloudflare_email: ${{ secrets.CLOUDFLARE_EMAIL }}
+          TF_VAR_cloudflare_api_key: ${{ secrets.CLOUDFLARE_API_KEY }}
+        run: |
+          cd infrastructure/qa
+          terraform plan -no-color
+        continue-on-error: true
+      - name: Terraform QA Apply
+        env:
+          TF_VAR_linode_api_token: ${{ secrets.LINODE_API_TOKEN }}
+          TF_VAR_linode_password: ${{ secrets.QA_SERVER_PASSWORD }}
+          TF_VAR_small_linode_instance: ${{ secrets.QA_SMALL_LINODE_INSTANCE }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          TF_VAR_cloudflare_domain_name: echo ${{ github.head_ref }}.pubsub-api.dev" | tr -d ' '
+          TF_VAR_qa_label: ${{ secrets.QA_LABEL }}
+          TF_VAR_qa_group: ${{ secrets.QA_LABEL }}
+          TF_VAR_cloudflare_email: ${{ secrets.CLOUDFLARE_EMAIL }}
+          TF_VAR_cloudflare_api_key: ${{ secrets.CLOUDFLARE_API_KEY }}
+        run: |
+          cd infrastructure/qa
+          terraform apply -auto-approve
+          echo "SERVER_IP=$(terraform output server_ip)" >> $GITHUB_ENV
+      - uses: actions/github-script@0.9.0
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outputs.stdout }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
 
-      #       <details><summary>Show Plan</summary>
+            <details><summary>Show Plan</summary>
 
-      #       \`\`\`\n
-      #       ${process.env.PLAN}
-      #       \`\`\`
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
 
-      #       </details>
+            </details>
 
-      #       *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
 
-      #       github.issues.createComment({
-      #         issue_number: context.issue.number,
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         body: output
-      #       })
-      # - name: Push to server
-      #   env:
-      #     DOCKER_USER: "${{ secrets.DOCKER_USER }}"
-      #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: echo "${{ github.event.pull_request.base.ref }}.pubsub-api.dev | tr -d ' '"
-      #     username: ${{ secrets.QA_SERVER_USER }}
-      #     password: ${{ secrets.QA_SERVER_PASSWORD }}
-      #     script: |
-      #       sudo curl -L "https://github.com/docker/compose/releases/download/2.2.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-      #       wget https://raw.githubusercontent.com/zenith110/pubsub_api/master/qa.yml
-      #       echo "SENDER=${{ secrets.SENDER}}" > .env
-      #       echo "DOMAIN=${{ secrets.DOMAIN}}" >> .env
-      #       echo "API_KEY=${{ secrets.MAILGUN_API_KEY}}" >> .env
-      #       echo "OVERALL_MAILING_LIST=${{ secrets.OVERALL_MAILING_LIST}}" >> .env
-      #       echo "BOT_TOKEN=${{ secrets.BOT_TOKEN}}" >> .env
-      #       echo "USERNAME_DB=${{ secrets.USERNAME_DB }}" >> .env
-      #       echo "PASSWORD=${{ secrets.PASSWORD }}" >> .env
-      #       echo "DBHOST=${{ secrets.HOST }}" >> .env
-      #       echo "PORT=${{ secrets.PORT }}" >> .env
-      #       echo "DATABASE=${{ secrets.DATABASE }}" >> .env
-      #       echo "TABLE=${{ secrets.TABLE }}" >> .env
-      #       echo "GRAPHQLPORT=${{ secrets.GRAPHQLPORT }}" >> .env
-      #       echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-      #       docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-      #       sudo docker-compose -f qa.yml up -d --build
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+      - name: Push to server
+        env:
+          DOCKER_USER: "${{ secrets.DOCKER_USER }}"
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        uses: appleboy/ssh-action@master
+        with:
+          host: echo ${{ github.head_ref }}.pubsub-api.dev" | tr -d ' '
+          username: ${{ secrets.QA_SERVER_USER }}
+          password: ${{ secrets.QA_SERVER_PASSWORD }}
+          script: |
+            sudo curl -L "https://github.com/docker/compose/releases/download/2.2.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            wget https://raw.githubusercontent.com/zenith110/pubsub_api/master/qa.yml
+            echo "SENDER=${{ secrets.SENDER}}" > .env
+            echo "DOMAIN=${{ secrets.DOMAIN}}" >> .env
+            echo "API_KEY=${{ secrets.MAILGUN_API_KEY}}" >> .env
+            echo "OVERALL_MAILING_LIST=${{ secrets.OVERALL_MAILING_LIST}}" >> .env
+            echo "BOT_TOKEN=${{ secrets.BOT_TOKEN}}" >> .env
+            echo "USERNAME_DB=${{ secrets.USERNAME_DB }}" >> .env
+            echo "PASSWORD=${{ secrets.PASSWORD }}" >> .env
+            echo "DBHOST=${{ secrets.HOST }}" >> .env
+            echo "PORT=${{ secrets.PORT }}" >> .env
+            echo "DATABASE=${{ secrets.DATABASE }}" >> .env
+            echo "TABLE=${{ secrets.TABLE }}" >> .env
+            echo "GRAPHQLPORT=${{ secrets.GRAPHQLPORT }}" >> .env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+            docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+            sudo docker-compose -f qa.yml up -d --build
