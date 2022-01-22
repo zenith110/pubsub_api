@@ -154,6 +154,7 @@ jobs:
             })
       - name: Terraform output
         run: |
+          terraform refresh
           output=$(terraform output server_ip)
           echo $output
       - name: Push to server
