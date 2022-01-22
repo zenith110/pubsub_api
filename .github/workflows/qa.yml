@@ -53,7 +53,7 @@ jobs:
           docker build --tag pubsub-backend -f ./Dockerfile.prod ./
       - name: Docker push backend-python
         env:
-          BACKEND: ${{ secrets.BACKEND }}
+          BACKEND: ${{ secrets.QA_BACKEND }}
         run: |
           docker tag pubsub-backend $BACKEND
           docker push $BACKEND
@@ -63,13 +63,13 @@ jobs:
           docker build --tag pubsub-backend-graphql -f dev.dockerfile ./
       - name: Docker push graphql
         env:
-          BACKEND_GRAPHQL: ${{ secrets.BACKEND_GRAPHQL }}
+          BACKEND_GRAPHQL: ${{ secrets.QA_BACKEND_GRAPHQL }}
         run: |
           docker tag pubsub-backend-graphql $BACKEND_GRAPHQL
           docker push $BACKEND_GRAPHQL
       - name: Docker push bot
         env:
-          BOT: ${{ secrets.BOT }}
+          BOT: ${{ secrets.QA_BOT }}
         run: |
           docker tag pubsub-bot $BOT
           docker push $BOT
