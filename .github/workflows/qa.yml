@@ -153,8 +153,6 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
-      - name: IP check
-        run: $SERVER_IP
       - name: Push to server
         env:
           DOCKER_USER: "${{ secrets.DOCKER_USER }}"
