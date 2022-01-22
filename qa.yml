@@ -1,100 +1,185 @@
-version: "3.3"
-services:
-  pubsub-api-backend-v1:
-    image: pubsub-api/backend
-    build:
-      context: ./backend/python
-      dockerfile: dev.dockerfile
-    container_name: pubsub-api-backend-v1
-    environment:
-      CHOKIDAR_USEPOLLING: "true"
-    restart: unless-stopped
-    volumes:
-      - ./backend/python/src:/home/backend/app
-    ports:
-      - "8080:8080"
-    env_file:
-      - .env
-  pubsub-api-grapqhl:
-    image: pubsub-api/backend-v2
-    build:
-      context: ./backend/go/src
-      dockerfile: dev.dockerfile
-    container_name: grapqhl
-    environment:
-      CHOKIDAR_USEPOLLING: "true"
-    restart: unless-stopped
-    ports:
-      - "8443:8443"
-    env_file:
-      - .env
-    volumes:
-      - ./backend/go/src:/home/backend/graphql/
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    restart: unless-stopped
-    volumes:
-      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./prom-storage:/etc/prometheus
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--storage.tsdb.path=/etc/prometheus"
-      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
-      - "--web.console.templates=/usr/share/prometheus/consoles"
-    ports:
-      - 9090:9090
-  traefik:
-    image: traefik/whoami
-    ports:
-      - "7080:8080"
-    container_name: "traefik"
-    restart: "unless-stopped"
-  loki:
-    image: grafana/loki
-    container_name: loki
-    command: "-config.file=/etc/loki/config/loki-config.yml"
-    ports:
-      - "3100:3100"
-    volumes:
-      - ./config:/etc/loki/config
-      - ./loki-data:/etc/loki
-      - ./loki-data/data:/data/loki
-      - ./loki-data/index:/opt/loki/index
-      - ./loki-data/chunks:/opt/loki/chunks
-    restart: "unless-stopped"
-  tempo:
-    image: grafana/tempo
-    container_name: tempo
-  promtail:
-    image: grafana/promtail
-    container_name: promtail
-    volumes:
-      - /promtail_storage/logs:/var/logs
-      - ./config:/etc/promtail/config
-      - /var/log:/var/log
-    ports:
-      - "9080:9080"
-    restart: "unless-stopped"
-    command: "-config.file=/etc/promtail/config/promtail-config.yml"
-  node_exporter:
-    image: quay.io/prometheus/node-exporter:latest
-    container_name: node_exporter
-    command:
-      - "--path.rootfs=/host"
-    pid: host
-    restart: unless-stopped
-    volumes:
-      - "/:/host:ro,rslave"
-  cadvisor:
-    image: google/cadvisor:latest
-    container_name: cadvisor
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-      - /dev/disk/:/dev/disk:ro
-    devices:
-      - /dev/kmsg
-    restart: unless-stopped
+# Deploys a payload to the server to get the latest data
+name: Deploy to Docker QA
+# Deploys data based off master branch
+on:
+  pull_request:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+jobs:
+  Deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
+      - name: Set up Python 3.7.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.9
+      - name: Install dependencies
+        run: |
+          cd backend/python
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Lint with flake8
+        run: |
+          cd backend/python
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Docker Login
+        env:
+          DOCKER_USER: "${{ secrets.DOCKER_USER }}"
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+      # Dockerizes the bot to be sent to the repo
+      - name: Dockerize Bot
+        env:
+          TOKEN: "${{ secrets.BOT_TOKEN}}"
+        run: |
+          cd bot/src/
+          echo "BOT_TOKEN = $TOKEN" > .env
+          cd ../
+          docker build --tag pubsub-bot .
+      - name: Dockerize Backend
+        env:
+          MAILGUN: ${{ secrets.MAILGUN }}
+          DB: ${{ secrets.DB }}
+        run: |
+          cd backend/python
+          docker build --tag pubsub-backend -f ./Dockerfile.prod ./
+      - name: Docker push backend-python
+        env:
+          BACKEND: ${{ secrets.QA_BACKEND }}
+        run: |
+          docker tag pubsub-backend $BACKEND
+          docker push $BACKEND
+      - name: Docker build graphql
+        run: |
+          cd backend/go/src
+          docker build --tag pubsub-backend-graphql -f dev.dockerfile ./
+      - name: Docker push graphql
+        env:
+          BACKEND_GRAPHQL: ${{ secrets.QA_BACKEND_GRAPHQL }}
+        run: |
+          docker tag pubsub-backend-graphql $BACKEND_GRAPHQL
+          docker push $BACKEND_GRAPHQL
+      - name: Docker push bot
+        env:
+          BOT: ${{ secrets.QA_BOT }}
+        run: |
+          docker tag pubsub-bot $BOT
+          docker push $BOT
+      - name: Terraform fmt
+        id: fmt
+        run: |
+          cd infrastructure/qa
+          terraform fmt -check
+        continue-on-error: true
+
+      - name: Terraform Init
+        id: init
+        run: |
+          cd infrastructure/qa
+          terraform init
+
+      - name: Terraform Validate
+        id: validate
+        run: |
+          cd infrastructure/qa
+          terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        env:
+          TF_VAR_linode_api_token: ${{ secrets.LINODE_API_TOKEN }}
+          TF_VAR_linode_password: ${{ secrets.QA_SERVER_PASSWORD }}
+          TF_VAR_small_linode_instance: ${{ secrets.QA_SMALL_LINODE_INSTANCE }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          TF_VAR_cloudflare_domain_name: ${{ secrets.QA_SERVER_IP }}
+          TF_VAR_qa_label: ${{ secrets.QA_LABEL }}
+          TF_VAR_qa_group: ${{ secrets.QA_LABEL }}
+          TF_VAR_cloudflare_email: ${{ secrets.CLOUDFLARE_EMAIL }}
+          TF_VAR_cloudflare_api_key: ${{ secrets.CLOUDFLARE_API_KEY }}
+        run: |
+          cd infrastructure/qa
+          terraform plan -no-color
+        continue-on-error: true
+      - name: Terraform QA Apply
+        env:
+          TF_VAR_linode_api_token: ${{ secrets.LINODE_API_TOKEN }}
+          TF_VAR_linode_password: ${{ secrets.QA_SERVER_PASSWORD }}
+          TF_VAR_small_linode_instance: ${{ secrets.QA_SMALL_LINODE_INSTANCE }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          TF_VAR_cloudflare_domain_name: ${{ secrets.QA_SERVER_IP }}
+          TF_VAR_qa_label: ${{ secrets.QA_LABEL }}
+          TF_VAR_qa_group: ${{ secrets.QA_LABEL }}
+          TF_VAR_cloudflare_email: ${{ secrets.CLOUDFLARE_EMAIL }}
+          TF_VAR_cloudflare_api_key: ${{ secrets.CLOUDFLARE_API_KEY }}
+        run: |
+          cd infrastructure/qa
+          terraform apply -auto-approve
+
+      - uses: actions/github-script@0.9.0
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            output=$(terraform output server_ip)
+            echo $output
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outputs.stdout }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+
+            </details>
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+      - name: Push to server
+        env:
+          DOCKER_USER: "${{ secrets.DOCKER_USER }}"
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          SERVER_IP: $(terraform output server_ip)
+        uses: appleboy/ssh-action@master
+        with:
+          host: $SERVER_IP
+          username: ${{ secrets.QA_SERVER_USER }}
+          password: ${{ secrets.QA_SERVER_PASSWORD }}
+          script: |
+            sudo curl -L "https://github.com/docker/compose/releases/download/2.2.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            wget https://raw.githubusercontent.com/zenith110/pubsub_api/master/qa.yml
+            echo "SENDER=${{ secrets.SENDER}}" > .env
+            echo "DOMAIN=${{ secrets.DOMAIN}}" >> .env
+            echo "API_KEY=${{ secrets.MAILGUN_API_KEY}}" >> .env
+            echo "OVERALL_MAILING_LIST=${{ secrets.OVERALL_MAILING_LIST}}" >> .env
+            echo "BOT_TOKEN=${{ secrets.BOT_TOKEN}}" >> .env
+            echo "USERNAME_DB=${{ secrets.USERNAME_DB }}" >> .env
+            echo "PASSWORD=${{ secrets.PASSWORD }}" >> .env 
+            echo "DBHOST=${{ secrets.HOST }}" >> .env
+            echo "PORT=${{ secrets.PORT }}" >> .env
+            echo "DATABASE=${{ secrets.DATABASE }}" >> .env
+            echo "TABLE=${{ secrets.TABLE }}" >> .env
+            echo "GRAPHQLPORT=${{ secrets.GRAPHQLPORT }}" >> .env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+            docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+            sudo docker-compose -f qa.yml up -d --build
