@@ -130,6 +130,7 @@ jobs:
           username: ${{ secrets.QA_SERVER_USER }}
           password: ${{ secrets.QA_SERVER_PASSWORD }}
           script: |
+            sudo apt-get update
             sudo apt-get install docker-ce docker-ce-cli containerd.io
             apt-cache madison docker-ce
             sudo chmod +x /usr/local/bin/docker-compose
