@@ -18,7 +18,8 @@ jobs:
         with:
           python-version: 3.7.9
       - name: "Test name":
-        run: echo "${{ github.event.pull_request.base.ref }}.pubsub-api.dev | tr -d ' '"
+        run: |
+          echo "${{ github.event.pull_request.base.ref }}.pubsub-api.dev | tr -d ' '"
       # - name: Install dependencies
       #   run: |
       #     cd backend/python
