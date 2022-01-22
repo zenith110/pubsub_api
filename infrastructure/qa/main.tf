@@ -13,6 +13,9 @@ terraform{
 provider "linode" {
     token = var.linode_api_token
 }
+output "server_ip" {
+  value = linode_instance.pubsub-qa.ip_address
+}
 provider "cloudflare"{
     email = var.cloudflare_email
     api_key =  var.cloudflare_api_key

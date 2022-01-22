@@ -13,7 +13,7 @@ jobs:
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_wrapper: false
-      - name: Set up Python 3.7.9 
+      - name: Set up Python 3.7.9
         uses: actions/setup-python@v2
         with:
           python-version: 3.7.9
@@ -32,15 +32,15 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Docker Login
         env:
-          DOCKER_USER: '${{ secrets.DOCKER_USER }}'
+          DOCKER_USER: "${{ secrets.DOCKER_USER }}"
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-          
+
       # Dockerizes the bot to be sent to the repo
       - name: Dockerize Bot
         env:
-          TOKEN: '${{ secrets.BOT_TOKEN}}'
+          TOKEN: "${{ secrets.BOT_TOKEN}}"
         run: |
           cd bot/src/
           echo "BOT_TOKEN = $TOKEN" > .env
@@ -124,7 +124,7 @@ jobs:
         run: |
           cd infrastructure/qa
           terraform apply -auto-approve
-    
+
       - uses: actions/github-script@0.9.0
         if: github.event_name == 'pull_request'
         env:
@@ -136,7 +136,7 @@ jobs:
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outputs.stdout }}\`
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-
+            ip address is:  $(terraform output server_ip)
             <details><summary>Show Plan</summary>
 
             \`\`\`\n
@@ -154,10 +154,10 @@ jobs:
               body: output
             })
       - name: Push to server
-        env: 
-         DOCKER_USER: '${{ secrets.DOCKER_USER }}'
-         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-         SERVER_IP: $(terraform output server_ip)
+        env:
+          DOCKER_USER: "${{ secrets.DOCKER_USER }}"
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          SERVER_IP: $(terraform output server_ip)
         uses: appleboy/ssh-action@master
         with:
           host: $SERVER_IP
