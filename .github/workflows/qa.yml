@@ -116,7 +116,7 @@ jobs:
           TF_VAR_linode_password: ${{ secrets.QA_SERVER_PASSWORD }}
           TF_VAR_small_linode_instance: ${{ secrets.QA_SMALL_LINODE_INSTANCE }}
           TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
-          TF_VAR_cloudflare_domain_name: ${{ secrets.QA_SERVER_IP }}
+          TF_VAR_cloudflare_domain_name: ${{ secrets.QA_SERVER_DOMAIN }}
           TF_VAR_qa_label: ${{ secrets.QA_LABEL }}
           TF_VAR_qa_group: ${{ secrets.QA_LABEL }}
           TF_VAR_cloudflare_email: ${{ secrets.CLOUDFLARE_EMAIL }}
