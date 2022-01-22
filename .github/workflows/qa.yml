@@ -82,16 +82,6 @@ jobs:
 
       - name: Terraform Init
         id: init
-        env:
-          TF_VAR_linode_api_token: ${{ secrets.LINODE_API_TOKEN }}
-          TF_VAR_linode_password: ${{ secrets.QA_SERVER_PASSWORD }}
-          TF_VAR_small_linode_instance: ${{ secrets.QA_SMALL_LINODE_INSTANCE }}
-          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
-          TF_VAR_cloudflare_domain_name: ${{ secrets.QA_SERVER_IP }}
-          TF_VAR_qa_label: ${{ secrets.QA_LABEL }}
-          TF_VAR_qa_group: ${{ secrets.QA_LABEL }}
-          TF_VAR_cloudflare_email: ${{ secrets.CLOUDFLARE_EMAIL }}
-          TF_VAR_cloudflare_api_key: ${{ secrets.CLOUDFLARE_API_KEY }}
         run: |
           cd infrastructure/qa
           terraform init
@@ -104,11 +94,35 @@ jobs:
 
       - name: Terraform Plan
         id: plan
+        env:
+          TF_VAR_linode_api_token: ${{ secrets.LINODE_API_TOKEN }}
+          TF_VAR_linode_password: ${{ secrets.QA_SERVER_PASSWORD }}
+          TF_VAR_small_linode_instance: ${{ secrets.QA_SMALL_LINODE_INSTANCE }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          TF_VAR_cloudflare_domain_name: ${{ secrets.QA_SERVER_IP }}
+          TF_VAR_qa_label: ${{ secrets.QA_LABEL }}
+          TF_VAR_qa_group: ${{ secrets.QA_LABEL }}
+          TF_VAR_cloudflare_email: ${{ secrets.CLOUDFLARE_EMAIL }}
+          TF_VAR_cloudflare_api_key: ${{ secrets.CLOUDFLARE_API_KEY }}
         run: |
           cd infrastructure/qa
           terraform plan -no-color
         continue-on-error: true
-
+      - name: Terraform QA Apply
+        env:
+          TF_VAR_linode_api_token: ${{ secrets.LINODE_API_TOKEN }}
+          TF_VAR_linode_password: ${{ secrets.QA_SERVER_PASSWORD }}
+          TF_VAR_small_linode_instance: ${{ secrets.QA_SMALL_LINODE_INSTANCE }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          TF_VAR_cloudflare_domain_name: ${{ secrets.QA_SERVER_IP }}
+          TF_VAR_qa_label: ${{ secrets.QA_LABEL }}
+          TF_VAR_qa_group: ${{ secrets.QA_LABEL }}
+          TF_VAR_cloudflare_email: ${{ secrets.CLOUDFLARE_EMAIL }}
+          TF_VAR_cloudflare_api_key: ${{ secrets.CLOUDFLARE_API_KEY }}
+        run: |
+          cd infrastructure/qa
+          terraform apply 
+    
       - uses: actions/github-script@0.9.0
         if: github.event_name == 'pull_request'
         env:
