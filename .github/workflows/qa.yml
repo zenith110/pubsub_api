@@ -141,7 +141,7 @@ jobs:
             if test -f qa.yml; then
               sudo rm -r qa.yml
             fi
-            wget https://raw.githubusercontent.com/zenith110/pubsub_api/master/qa.yml
+            wget https://raw.githubusercontent.com/zenith110/pubsub_api/${{ github.head_ref }}/qa.yml
             echo "SENDER=${{ secrets.SENDER}}" > .env
             echo "DOMAIN=${{ secrets.DOMAIN}}" >> .env
             echo "API_KEY=${{ secrets.MAILGUN_API_KEY}}" >> .env
