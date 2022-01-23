@@ -152,5 +152,5 @@ jobs:
             echo "TABLE=${{ secrets.TABLE }}" >> .env
             echo "GRAPHQLPORT=${{ secrets.GRAPHQLPORT }}" >> .env
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-            sudo docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+            cat $DOCKER_PASSWORD | sudo docker login -u $DOCKER_USER --password-stdin
             sudo docker-compose -f qa.yml up -d --build
