@@ -129,7 +129,7 @@ jobs:
           host: ${{ github.head_ref }}.pubsub-api.dev
           username: ${{ secrets.QA_SERVER_USER }}
           password: ${{ secrets.QA_SERVER_PASSWORD }}
-          script: |
+          run: |
             sudo apt-get update
             sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
             curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
