@@ -121,7 +121,7 @@ jobs:
       # - name: Sleep
       #   run: sleep 10
       - name: Push to server
-         env:
+        env:
           DOCKER_USER: "${{ secrets.DOCKER_USER }}"
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         uses: appleboy/ssh-action@master
