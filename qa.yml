@@ -41,7 +41,7 @@ services:
     ports:
       - "3100:3100"
     volumes:
-      - loki-config.yml:/etc/loki/config/loki-config.yml
+      - ./loki-config.yml:/etc/loki/config/loki-config.yml
       - ./loki-data:/etc/loki
       - ./loki-data/data:/data/loki
       - ./loki-data/index:/opt/loki/index
@@ -55,9 +55,9 @@ services:
     container_name: promtail
     user: root
     volumes:
-      - /promtail_storage/logs:/var/logs
-      - promtail-config.yml:/etc/promtail/config/promtail-config.yml
-      - /var/log:/var/log
+      - ./promtail_storage/logs:/var/logs
+      - ./promtail-config.yml:/etc/promtail/config/promtail-config.yml
+      - ./var/log:/var/log
     ports:
       - "9080:9080"
     restart: "unless-stopped"
