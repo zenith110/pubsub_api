@@ -138,6 +138,9 @@ jobs:
             sudo apt-get install docker-ce -y
             sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
             sudo chmod +x /usr/local/bin/docker-compose
+            if test -f qa.yml; then
+              sudo rm -r qa.yml
+            fi
             wget https://raw.githubusercontent.com/zenith110/pubsub_api/master/qa.yml
             echo "SENDER=${{ secrets.SENDER}}" > .env
             echo "DOMAIN=${{ secrets.DOMAIN}}" >> .env
