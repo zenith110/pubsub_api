@@ -121,7 +121,7 @@ jobs:
       # - name: Sleep
       #   run: sleep 10
       - name: Push to server
-        env:
+         env:
           DOCKER_USER: "${{ secrets.DOCKER_USER }}"
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         uses: appleboy/ssh-action@master
@@ -152,5 +152,5 @@ jobs:
             echo "TABLE=${{ secrets.TABLE }}" >> .env
             echo "GRAPHQLPORT=${{ secrets.GRAPHQLPORT }}" >> .env
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-            docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+            sudo docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
             sudo docker-compose -f qa.yml up -d --build
