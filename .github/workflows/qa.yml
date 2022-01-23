@@ -129,7 +129,7 @@ jobs:
           host: ${{ github.head_ref }}.pubsub-api.dev
           username: ${{ secrets.QA_SERVER_USER }}
           password: ${{ secrets.QA_SERVER_PASSWORD }}
-          run: |
+          script: |
             sudo apt-get update
             sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
             curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -152,5 +152,5 @@ jobs:
             echo "TABLE=${{ secrets.TABLE }}" >> .env
             echo "GRAPHQLPORT=${{ secrets.GRAPHQLPORT }}" >> .env
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-            echo $DOCKER_PASSWORD | sudo docker login -u $DOCKER_USER --password-stdin
+            sudo docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
             sudo docker-compose -f qa.yml up -d --build
