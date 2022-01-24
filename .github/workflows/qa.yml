@@ -83,7 +83,7 @@ jobs:
           docker tag pubsub-backend-graphql $BACKEND_GRAPHQL
           docker push $BACKEND_GRAPHQL
   Terraform_Creation:
-    needs: Graphql_Deployment
+    needs: [Backend_And_Bot_Deployment, Graphql_Deployment]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
