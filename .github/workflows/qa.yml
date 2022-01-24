@@ -56,24 +56,24 @@ jobs:
         run: |
           docker tag pubsub-backend $BACKEND
           docker push $BACKEND
-  # Graphql_Deployment:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Docker Login
-  #       env:
-  #         DOCKER_USER: "${{ secrets.DOCKER_USER }}"
-  #         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  #     - name: Docker build graphql
-  #       run: |
-  #         cd backend/go/src
-  #         docker build --tag pubsub-backend-graphql -f dev.dockerfile ./
-  #     - name: Docker push graphql
-  #       env:
-  #         BACKEND_GRAPHQL: ${{ secrets.QA_BACKEND_GRAPHQL }}
-  #       run: |
-  #         docker tag pubsub-backend-graphql $BACKEND_GRAPHQL
-  #         docker push $BACKEND_GRAPHQL
+  Graphql_Deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Docker Login
+        env:
+          DOCKER_USER: "${{ secrets.DOCKER_USER }}"
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Docker build graphql
+        run: |
+          cd backend/go/src
+          docker build --tag pubsub-backend-graphql -f dev.dockerfile ./
+      - name: Docker push graphql
+        env:
+          BACKEND_GRAPHQL: ${{ secrets.QA_BACKEND_GRAPHQL }}
+        run: |
+          docker tag pubsub-backend-graphql $BACKEND_GRAPHQL
+          docker push $BACKEND_GRAPHQL
   # Terraform_Creation:
   #   needs: Graphql_Deployment
   #   runs-on: ubuntu-latest
