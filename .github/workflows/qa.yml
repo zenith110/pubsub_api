@@ -133,6 +133,7 @@ jobs:
     needs: Terraform_Creation
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Push to server
         env:
           DOCKER_USER: "${{ secrets.DOCKER_USER }}"
