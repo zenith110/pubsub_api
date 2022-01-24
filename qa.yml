@@ -3,7 +3,11 @@ services:
   backend:
     image: zenith110/pubsub-python-backend-qa
     ports:
-      - 6080:8080
+      - "6080:8080"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.backend.rule=Host(`qa-grapqhl.pubsub-api.dev`)
+      - traefik.http.routers.backend.entrypoints=web
     container_name: backend
   discord-bot:
     image: zenith110/pubsub-bot-qa
@@ -17,6 +21,10 @@ services:
       - "8443:8443"
     env_file:
       - .env
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.pubsub-api-graphql.rule=Host(`qa-grapqhl.pubsub-api.dev`)
+      - traefik.http.routers.pubsub-api-graphql.entrypoints=web
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -58,9 +66,8 @@ services:
       - ./dynamic.yml:/dynamic.yml # <== Volume for dynamic conf file, **ref: line 27
     labels:
       - "traefik.enable=true" # <== Enable traefik on itself to view dashboard and assign subdomain to$
-      - "traefik.http.routers.api.rule=Host(`monitor.yourdomain.com`)" # <== Setting the domain for the d$
+      - "traefik.http.routers.api.rule=Host(`qa.pubsub-api.dev`)" # <== Setting the domain for the d$
       - "traefik.http.routers.api.service=api@internal" # <== Enabling the api to be a service to acce$
-
   loki:
     image: grafana/loki
     container_name: loki
