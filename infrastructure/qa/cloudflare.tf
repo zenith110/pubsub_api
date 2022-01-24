@@ -6,7 +6,7 @@ resource "cloudflare_record" "server"{
     proxied = true
 }
 
-resource "cloudflare_record" "server"{
+resource "cloudflare_record" "qa-graphql"{
     zone_id = var.cloudflare_zone_id
     name  = qa-grapqhl.pubsub-api.dev
     value = linode_instance.pubsub-qa.ip_address
@@ -14,7 +14,7 @@ resource "cloudflare_record" "server"{
     proxied = true
 }
 
-resource "cloudflare_record" "server"{
+resource "cloudflare_record" "qa-backend"{
     zone_id = var.cloudflare_zone_id
     name  = qa-backend.pubsub-api.dev
     value = linode_instance.pubsub-qa.ip_address

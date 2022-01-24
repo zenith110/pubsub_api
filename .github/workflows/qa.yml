@@ -6,7 +6,7 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 jobs:
-  Deployment:
+  Backend And Bot Deployment:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -30,13 +30,7 @@ jobs:
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-      - name: Docker Login
-        env:
-          DOCKER_USER: "${{ secrets.DOCKER_USER }}"
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: |
-          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-
+  
       # Dockerizes the bot to be sent to the repo
       - name: Dockerize Bot
         env:
@@ -46,6 +40,12 @@ jobs:
           echo "BOT_TOKEN = $TOKEN" > .env
           cd ../
           docker build --tag pubsub-bot .
+      - name: Docker push bot
+      env:
+        BOT: ${{ secrets.QA_BOT }}
+      run: |
+        docker tag pubsub-bot $BOT
+        docker push $BOT
       - name: Dockerize Backend
         env:
           MAILGUN: ${{ secrets.MAILGUN }}
@@ -59,6 +59,16 @@ jobs:
         run: |
           docker tag pubsub-backend $BACKEND
           docker push $BACKEND
+  Graphql Deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Docker Login
+      env:
+        DOCKER_USER: "${{ secrets.DOCKER_USER }}"
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
       - name: Docker build graphql
         run: |
           cd backend/go/src
@@ -69,19 +79,16 @@ jobs:
         run: |
           docker tag pubsub-backend-graphql $BACKEND_GRAPHQL
           docker push $BACKEND_GRAPHQL
-      - name: Docker push bot
-        env:
-          BOT: ${{ secrets.QA_BOT }}
-        run: |
-          docker tag pubsub-bot $BOT
-          docker push $BOT
-
+  Terraform Creation:
+    needs: Graphql Deployment
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
       - name: Terraform Init
         id: init
         run: |
           cd infrastructure/qa
           terraform init
-
       - name: Terraform Plan
         id: plan
         env:
@@ -124,6 +131,11 @@ jobs:
         run: |
           cd infrastructure/qa
           terraform apply -auto-approve
+  Server Deployment:
+    needs: Terraform Creation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
       - name: Push to server
         env:
           DOCKER_USER: "${{ secrets.DOCKER_USER }}"
