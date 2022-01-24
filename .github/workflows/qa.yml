@@ -61,10 +61,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Docker Login
-      - name: Docker build graphql
         env:
           DOCKER_USER: "${{ secrets.DOCKER_USER }}"
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Docker build graphql
         run: |
           cd backend/go/src
           docker build --tag pubsub-backend-graphql -f dev.dockerfile ./
