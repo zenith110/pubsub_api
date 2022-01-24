@@ -6,7 +6,7 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 jobs:
-  Backend And Bot Deployment:
+  Backend_And_Bot_Deployment:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -59,7 +59,7 @@ jobs:
         run: |
           docker tag pubsub-backend $BACKEND
           docker push $BACKEND
-  Graphql Deployment:
+  Graphql_Deployment:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -79,8 +79,8 @@ jobs:
         run: |
           docker tag pubsub-backend-graphql $BACKEND_GRAPHQL
           docker push $BACKEND_GRAPHQL
-  Terraform Creation:
-    needs: Graphql Deployment
+  Terraform_Creation:
+    needs: Graphql_Deployment
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -131,8 +131,8 @@ jobs:
         run: |
           cd infrastructure/qa
           terraform apply -auto-approve
-  Server Deployment:
-    needs: Terraform Creation
+  Server_Deployment:
+    needs: Terraform_Creation
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
