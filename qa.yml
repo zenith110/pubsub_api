@@ -3,11 +3,13 @@ services:
   backend:
     image: zenith110/pubsub-python-backend-qa
     ports:
-      - 8080:8080
+      - 6080:8080
     container_name: backend
   discord-bot:
     image: zenith110/pubsub-bot-qa
     container_name: bot
+    env_file:
+      - .env
   pubsub-api-grapqhl:
     image: zenith110/pubsub-graphql-qa
     container_name: grapqhl
@@ -31,9 +33,34 @@ services:
       - 9090:9090
   traefik:
     image: traefik/whoami
-    ports:
-      - "7080:8080"
+    restart: always
     container_name: "traefik"
+    ports:
+      - "8080:8080"
+      - "80:80"
+      - "443:443"
+    command:
+      - --api.insecure=true # <== Enabling insecure api, NOT RECOMMENDED FOR PRODUCTION
+      - --api.dashboard=true # <== Enabling the dashboard to view services, middlewares, routers, etc.
+      - --api.debug=true # <== Enabling additional endpoints for debugging and profiling
+      - --log.level=DEBUG # <== Setting the level of the logs from traefik
+      - --providers.docker=true # <== Enabling docker as the provider for traefik
+      - --providers.docker.exposedbydefault=false # <== Don't expose every container to traefik
+      - --providers.file.filename=/dynamic.yaml # <== Referring to a dynamic configuration file
+      - --providers.docker.network=web # <== Operate on the docker network named web
+      - --entrypoints.web.address=:80 # <== Defining an entrypoint for port :80 named web
+    #- --certificatesresolvers.mytlschallenge.acme.tlschallenge=true # <== Enable TLS-ALPN-01 (not really needed)
+    #- --certificatesresolvers.mytlschallenge.acme.email=you@youremail # <== Set your email (not really needed)
+    #- --certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json # <== SSL stuff we don't need.
+    volumes:
+      #- ./letsencrypt:/letsencrypt # <== Volume for certs (TLS) (not really needed)
+      - /var/run/docker.sock:/var/run/docker.sock # <== Volume for docker admin
+      - ./dynamic.yml:/dynamic.yml # <== Volume for dynamic conf file, **ref: line 27
+    labels:
+      - "traefik.enable=true" # <== Enable traefik on itself to view dashboard and assign subdomain to$
+      - "traefik.http.routers.api.rule=Host(`monitor.yourdomain.com`)" # <== Setting the domain for the d$
+      - "traefik.http.routers.api.service=api@internal" # <== Enabling the api to be a service to acce$
+
   loki:
     image: grafana/loki
     container_name: loki

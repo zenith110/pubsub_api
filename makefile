@@ -27,6 +27,9 @@ prod-detached:
 qa-build:
 	@echo "Now running in QA"
 	@$(QA_DOCKER_COMPOSE) up --build
+qa-clean: # Removes all orphans processes
+	@echo "Cleaning up processes for docker-compose"
+	@$(QA_DOCKER_COMPOSE) down -v
 #===============================================#
 #     Application specific commands #
 #===============================================#
