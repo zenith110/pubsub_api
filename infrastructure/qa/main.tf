@@ -13,16 +13,14 @@ terraform{
             version = "~> 3.0"
         }
     }
-    backend "s3"{
-        # Bucket config
-        bucket = var.aws_s3_bucket_name
-        key = var.aws_s3_key
-        region = var.aws_region
-
-        # DynamoDB table name
-        dynamodb_table = var.dynamob_table
-        encrypt = true
-    }
+   backend "s3" {
+#    bucket         = "qa-bucket"
+   key            = "state/terraform.tfstate"
+   region         = "us-east-1"
+   encrypt        = true
+   kms_key_id     = "alias/terraform-bucket-key"
+   dynamodb_table = "terraform-state"
+ }
 }
 
 provider "linode" {

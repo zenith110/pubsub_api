@@ -6,7 +6,7 @@ services:
       - "6080:8080"
     labels:
       - traefik.enable=true
-      - traefik.http.routers.backend.rule=Host(`qa-grapqhl.pubsub-api.dev`)
+      - traefik.http.routers.backend.rule=Host(`qa-backend.pubsub-api.dev`)
       - traefik.http.routers.backend.entrypoints=web
     container_name: backend
   discord-bot:
