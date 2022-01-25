@@ -110,7 +110,7 @@ jobs:
           TF_var_dynamob_table: ${{ github.head_ref }}-test-locks
         run: |
           cd infrastructure/qa
-          terraform init
+          terraform init -backend-config="bucket=${{ github.head_ref }}-terraform"
       - name: Terraform Plan
         id: plan
         run: |
