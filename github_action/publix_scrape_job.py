@@ -226,6 +226,8 @@ def parse_publix_deli_page(zipCode):
                 sub_name = sub_name.replace("Boar&#39;s Head&reg;", "")
             elif("Chicken Tender" in sub_name):
                 sub_name = sub_name.replace("Chicken Tender", "Chicken Tenders")
+            elif("&amp;" in sub_name):
+                sub_name = sub_name.replace("&amp;", "&")
             pubsub.pubsub_name.append(sub_name[1:-1])
             pubsub.price.append(str(price))
             temp_image_holder = str(product["productimages"]).split("-")

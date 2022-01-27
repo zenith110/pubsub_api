@@ -17,12 +17,13 @@ def delete_sub(sub_name):
     db_object = DatabaseObject()
     db_object.user = os.getenv("USERNAME_DB")
     db_object.password = os.getenv("PASSWORD")
-    db_object.host = os.getenv("HOST")
+    db_object.host = os.getenv("DBHOST")
     db_object.port = os.getenv("PORT")
     db_object.database = os.getenv("DATABASE")
     db_object.table = os.getenv("TABLE")
     connection = db_utils.connect(db_object)
     cur = connection.cursor()
+    
     db_utils.remove_sub(cur, sub_name, db_utils.get_table(db_object), db_object, connection)
 def update_sub(sub_name, dates):
     db_object = DatabaseObject()
