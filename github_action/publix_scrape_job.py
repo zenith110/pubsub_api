@@ -224,7 +224,7 @@ def parse_publix_deli_page(zipCode):
             if("Boar&#39;s" in sub_name):
                 sub_name = sub_name.replace("Boar&#39;s Head&reg;", "")
                 if("&amp;" in sub_name):
-                    sub_name = sub_name.replace("&amp;", "&")
+                    sub_name = sub_name.replace("&amp;", "and")
             elif("Chicken Tender" in sub_name):
                 sub_name = sub_name.replace("Chicken Tender", "Chicken Tenders")
             pubsub.pubsub_name.append(sub_name[1:-1])

@@ -71,6 +71,11 @@ def update_sale_date(cur, sub_name, table, db_object, connection, dates):
     update_query = cur.execute(update_string.format(table=get_table(db_object), sub=sub_name, dates=dates))
     close(connection)
 
+def update_state(cur, sub_name, table, db_object, connection, on_sale):
+    update_string = "Update {table} SET on_sale = '{on_sale}' WHERE pubsub_name = '{sub}'"
+    update_query = cur.execute(update_string.format(table=get_table(db_object), sub=sub_name, on_sale=on_sale))
+    close(connection)
+
 def sub_check(pubsub_name, pubsub_date, pubsub_price, pubsub_image, cur, db_obj, webhook, mailgun_obj):
     exist_query = "select exists(select 1 from {table} where pubsub_name ='{sub}' limit 1)"
     exist_check = cur.execute(
