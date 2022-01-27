@@ -89,7 +89,6 @@ def convert_month_to_numerical(month: str):
 
 def scrape_publix_job():
     sub_sale_list = parse_publix_deli_page(os.getenv("ZIPCODE"))
-    print(vars(sub_sale_list))
     connection = db_utils.connect(db_object)
     cur = connection.cursor()
     """
@@ -220,14 +219,14 @@ def parse_publix_deli_page(zipCode):
             # Todo: Use a list comprehension to remove these from the name
             sub_name = product["title"].replace(
                 "Publix", "").replace("Sub", "")
-
+        
             # Encountered a boar head's sub sale
-            if("oar" in sub_name):
+            if("Boar&#39;s" in sub_name):
                 sub_name = sub_name.replace("Boar&#39;s Head&reg;", "")
+                if("&amp;" in sub_name):
+                    sub_name = sub_name.replace("&amp;", "&")
             elif("Chicken Tender" in sub_name):
                 sub_name = sub_name.replace("Chicken Tender", "Chicken Tenders")
-            elif("&amp;" in sub_name):
-                sub_name = sub_name.replace("&amp;", "&")
             pubsub.pubsub_name.append(sub_name[1:-1])
             pubsub.price.append(str(price))
             temp_image_holder = str(product["productimages"]).split("-")
