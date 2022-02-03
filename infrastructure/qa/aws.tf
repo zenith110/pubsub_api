@@ -37,7 +37,7 @@ resource "aws_s3_bucket_public_access_block" "block" {
 }
 
 resource "aws_dynamodb_table" "terraform-state" {
- name           = var.aws_s3_bucket + "-state"
+ name           = var.dynamob_table
  read_capacity  = 20
  write_capacity = 20
  hash_key       = "LockID"

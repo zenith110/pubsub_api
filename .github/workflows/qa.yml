@@ -126,10 +126,9 @@ jobs:
           TF_VAR_cloudflare_api_key: ${{ secrets.CLOUDFLARE_API_KEY }}
           TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          TF_VAR_aws_s3_bucket_Name: ${{ github.head_ref }}-terraform
+          TF_VAR_aws_s3_bucket_name: ${{ github.head_ref }}-terraform
           TF_VAR_aws_region: us-east-1
           TF_VAR_aws_s3_key: ${{ github.head_ref }}/s3/terraform.tfstate
-          TF_var_dynamob_table: ${{ github.head_ref }}-test-locks
         run: |
           cd infrastructure/qa
           terraform init -backend-config="bucket=${{ github.head_ref }}-terraform" -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
@@ -152,10 +151,9 @@ jobs:
           TF_VAR_cloudflare_api_key: ${{ secrets.CLOUDFLARE_API_KEY }}
           TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          TF_VAR_aws_s3_bucket_Name: ${{ github.head_ref }}-terraform
+          TF_VAR_aws_s3_bucket_name: ${{ github.head_ref }}-terraform
           TF_VAR_aws_region: us-east-1
           TF_VAR_aws_s3_key: ${{ github.head_ref }}/s3/terraform.tfstate
-          TF_var_dynamob_table: ${{ github.head_ref }}-test-locks
         run: |
           cd infrastructure/qa
           terraform apply -auto-approve
