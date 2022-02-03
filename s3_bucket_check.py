@@ -12,3 +12,34 @@ s3 = boto3.resource(
     aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
 )
 my_bucket = s3.create_bucket(Bucket=os.getenv("BUCKET_NAME"), CreateBucketConfiguration={"LocationConstraint": "us-east-2"})
+# db = boto3.resource(
+#     "dynamodb", endpoint_url="http://localhost:8000"
+# )
+# table = db.create_table(
+#         TableName='Movies',
+#         KeySchema=[
+#             {
+#                 'AttributeName': 'year',
+#                 'KeyType': 'HASH'  # Partition key
+#             },
+#             {
+#                 'AttributeName': 'title',
+#                 'KeyType': 'RANGE'  # Sort key
+#             }
+#         ],
+#         AttributeDefinitions=[
+#             {
+#                 'AttributeName': 'year',
+#                 'AttributeType': 'N'
+#             },
+#             {
+#                 'AttributeName': 'title',
+#                 'AttributeType': 'S'
+#             },
+
+#         ],
+#         ProvisionedThroughput={
+#             'ReadCapacityUnits': 10,
+#             'WriteCapacityUnits': 10
+#         }
+#     )
