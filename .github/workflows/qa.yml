@@ -201,4 +201,5 @@ jobs:
             echo "GRAPHQLPORT=${{ secrets.GRAPHQLPORT }}" >> .env
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
             echo ${{ secrets.DOCKER_PASSWORD }} | sudo docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+            echo "BRANCHNAME=${{ github.head_ref }}" >> .env
             sudo docker-compose -f qa.yml up -d --build

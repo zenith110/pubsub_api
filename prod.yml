@@ -44,7 +44,7 @@ services:
     image: bitnami/grafana-tempo
     container_name: tempo
     volumes:
-      - ./tempo.yaml:/bitnami/grafana-tempo/conf/tempo.yaml
+      - ./tempo.yml:/bitnami/grafana-tempo/conf/tempo.yaml
 
 volumes:
   prometheus_data:
