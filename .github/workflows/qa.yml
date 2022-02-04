@@ -218,7 +218,7 @@ jobs:
   Server_Deployment_First_Time:
     needs: [First_Time_Creation]
     runs-on: ubuntu-latest
-    if: success("First_Time_Creation")
+    if: success('First_Time_Creation')
     steps:
       - uses: actions/checkout@v2
       - name: Push to server
@@ -263,7 +263,7 @@ jobs:
   Server_Deployment:
     needs: [Terraform_Syncing]
     runs-on: ubuntu-latest
-    if: success("Terraform_Syncing")
+    if: success('Terraform_Syncing')
     steps:
       - uses: actions/checkout@v2
       - name: Push to server
