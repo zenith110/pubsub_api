@@ -191,7 +191,7 @@ jobs:
   Server_Deployment_First_Time:
     needs: [First_Time_Creation]
     runs-on: ubuntu-latest
-    if: always() && (needs.First_Time_Creation.result == "true")
+    if: always() && (needs.First_Time_Creation.result == 'true')
     steps:
       - uses: actions/checkout@v2
       - name: Push to server
