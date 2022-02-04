@@ -6,7 +6,47 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 jobs:
-  Backend_And_Bot_Deployment:
+  Backend_Deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.9
+      - name: Install dependencies
+        run: |
+          cd backend/python
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Lint with flake8
+        run: |
+          cd backend/python
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Docker Login
+        env:
+          DOCKER_USER: "${{ secrets.DOCKER_USER }}"
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      - name: Dockerize Backend
+        env:
+          MAILGUN: ${{ secrets.MAILGUN }}
+          DB: ${{ secrets.DB }}
+        run: |
+          cd backend/python
+          docker build --tag pubsub-backend -f ./Dockerfile.prod ./
+      - name: Docker push backend-python
+        env:
+          BACKEND: ${{ secrets.QA_BACKEND }}
+        run: |
+          docker tag pubsub-backend $BACKEND
+          docker push $BACKEND
+  Bot_Deployment:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -48,19 +88,6 @@ jobs:
         run: |
           docker tag pubsub-bot $BOT
           docker push $BOT
-      - name: Dockerize Backend
-        env:
-          MAILGUN: ${{ secrets.MAILGUN }}
-          DB: ${{ secrets.DB }}
-        run: |
-          cd backend/python
-          docker build --tag pubsub-backend -f ./Dockerfile.prod ./
-      - name: Docker push backend-python
-        env:
-          BACKEND: ${{ secrets.QA_BACKEND }}
-        run: |
-          docker tag pubsub-backend $BACKEND
-          docker push $BACKEND
   Graphql_Deployment:
     runs-on: ubuntu-latest
     steps:
@@ -83,7 +110,7 @@ jobs:
           docker tag pubsub-backend-graphql $BACKEND_GRAPHQL
           docker push $BACKEND_GRAPHQL
   Checking_Bucket:
-    needs: [Backend_And_Bot_Deployment, Graphql_Deployment]
+    needs: [Backend_Deployment, Bot_Deployment, Graphql_Deployment]
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
