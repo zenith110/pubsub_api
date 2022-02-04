@@ -106,7 +106,7 @@ jobs:
           BUCKET_NAME: ${{ github.head_ref }}-terraform
   First_Time_Creation:
     needs: [Checking_Bucket]
-    if: always() && (needs.Checking_Bucket.result == 'false')
+    if: failure() && (needs.Checking_Bucket.result == 'false')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -166,7 +166,7 @@ jobs:
           terraform apply -auto-approve
   Terraform_Syncing:
     needs: [Checking_Bucket]
-    if: always() && (needs.Checking_Bucket.result == 'true')
+    if: success() && (needs.Checking_Bucket.result == 'true')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
