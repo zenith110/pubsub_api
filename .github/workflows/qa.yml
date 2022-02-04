@@ -82,30 +82,30 @@ jobs:
         run: |
           docker tag pubsub-backend-graphql $BACKEND_GRAPHQL
           docker push $BACKEND_GRAPHQL
-  # Checking_Bucket:
-  #   needs: [Backend_And_Bot_Deployment, Graphql_Deployment]
-  #   runs-on: ubuntu-latest
-  #   continue-on-error: true
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Set up Python 3.7.9
-  #       uses: actions/setup-python@v2
-  #       with:
-  #         python-version: 3.7.9
-  #     - name: Install dependencies
-  #       run: |
-  #         cd github_action/
-  #         python -m pip install --upgrade pip
-  #         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-  #         cd ../
-  #     - name: Run check_bucket
-  #       run: python s3_bucket_check.py
-  #       env:
-  #         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         BUCKET_NAME: ${{ github.head_ref }}-terraform
-  Terraform_Creation:
+  Checking_Bucket:
     needs: [Backend_And_Bot_Deployment, Graphql_Deployment]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.9
+      - name: Install dependencies
+        run: |
+          cd github_action/
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          cd ../
+      - name: Run check_bucket
+        run: python s3_bucket_check.py
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BUCKET_NAME: ${{ github.head_ref }}-terraform
+  Terraform_Creation:
+    needs: [Checking_Bucket]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

@@ -17,7 +17,6 @@ terraform{
    key            = "state/terraform.tfstate"
    region         = "us-east-2"
    encrypt        = true
-   kms_key_id     = "alias/terraform-bucket-key"
  }
 }
 
