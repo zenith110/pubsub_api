@@ -12,7 +12,7 @@ s3 = boto3.resource(
     aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
 )
 
-my_bucket = s3.create_bucket(Bucket=os.getenv("BUCKET_NAME"), CreateBucketConfiguration={"LocationConstraint": "us-east-2"} ACL="private")
+my_bucket = s3.create_bucket(Bucket=os.getenv("BUCKET_NAME"), CreateBucketConfiguration={"LocationConstraint": "us-east-2"}, ACL="private")
 bucket = s3.BucketVersioning(os.getenv("BUCKET_NAME")).enable()
 db = boto3.resource(
     "dynamodb"
