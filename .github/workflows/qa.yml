@@ -159,6 +159,7 @@ jobs:
           TF_VAR_dynamob_table: ${{ github.head_ref }}-test-locks
           TF_VAR_qa-graphql: ${{ github.head_ref }}-graphql.pubsub-api.dev
           TF_VAR_qa-backend: ${{ github.head_ref }}-backend.pubsub-api.dev
+          TF_VAR_kms_alias: alias/${{ github.head_ref }}-bucket-key
         run: |
           cd infrastructure/qa_first_time
           terraform init
@@ -187,6 +188,7 @@ jobs:
           TF_VAR_dynamob_table: ${{ github.head_ref }}-test-locks
           TF_VAR_qa-graphql: ${{ github.head_ref }}-graphql.pubsub-api.dev
           TF_VAR_qa-backend: ${{ github.head_ref }}-backend.pubsub-api.dev
+          TF_VAR_kms_alias: alias/${{ github.head_ref }}-bucket-key
         run: |
           cd infrastructure/qa_first_time
           terraform apply -auto-approve
