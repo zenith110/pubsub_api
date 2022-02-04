@@ -112,7 +112,6 @@ jobs:
   Checking_Bucket:
     needs: [Backend_Deployment, Bot_Deployment, Graphql_Deployment]
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.7.9
