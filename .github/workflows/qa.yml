@@ -104,8 +104,9 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           BUCKET_NAME: ${{ github.head_ref }}-terraform
-  Terraform_Creation:
+  First_Time_Creation:
     needs: [Checking_Bucket]
+    if: always() && (needs.Checking_Bucket.result == "true")
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -133,12 +134,12 @@ jobs:
           TF_VAR_qa-graphql: ${{ github.head_ref }}-graphql.pubsub-api.dev
           TF_VAR_qa-backend: ${{ github.head_ref }}-backend.pubsub-api.dev
         run: |
-          cd infrastructure/qa
-          terraform init -backend-config="bucket=${{ github.head_ref }}-terraform" -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+          cd infrastructure/qa_first_time
+          terraform init
       - name: Terraform Plan
         id: plan
         run: |
-          cd infrastructure/qa
+          cd infrastructure/qa_first_time
           terraform plan -no-color
         continue-on-error: true
       - name: Terraform QA Apply
@@ -161,11 +162,36 @@ jobs:
           TF_VAR_qa-graphql: ${{ github.head_ref }}-graphql.pubsub-api.dev
           TF_VAR_qa-backend: ${{ github.head_ref }}-backend.pubsub-api.dev
         run: |
+          cd infrastructure/qa_first_time
+          terraform apply -auto-approve
+  Terraform_Syncing:
+    needs: [Checking_Bucket]
+    if: always() && (needs.Checking_Bucket.result == "false")
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
+      - name: Terraform Init
+        id: init
+        run: |
+          cd infrastructure/qa
+          terraform init -backend-config="bucket=${{ github.head_ref }}-terraform" -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -backend-config="dynamodb_table=${{ github.head_ref }}-test-locks"
+      - name: Terraform Plan
+        id: plan
+        run: |
+          cd infrastructure/qa
+          terraform plan -no-color
+        continue-on-error: true
+      - name: Terraform QA Apply
+        run: |
           cd infrastructure/qa
           terraform apply -auto-approve
-  Server_Deployment:
-    needs: Terraform_Creation
+  Server_Deployment_First_Time:
+    needs: [First_Time_Creation]
     runs-on: ubuntu-latest
+    if: always() && (needs.First_Time_Creation.result == "true")
     steps:
       - uses: actions/checkout@v2
       - name: Push to server

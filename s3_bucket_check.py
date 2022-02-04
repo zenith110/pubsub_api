@@ -11,25 +11,4 @@ s3 = boto3.resource(
     aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
     aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
 )
-
-my_bucket = s3.create_bucket(Bucket=os.getenv("BUCKET_NAME"), CreateBucketConfiguration={"LocationConstraint": "us-east-2"}, ACL="private")
-bucket = s3.BucketVersioning(os.getenv("BUCKET_NAME")).enable()
-db = boto3.resource(
-    "dynamodb"
-)
-
-table = db.create_table(
-        TableName=os.getenv("DYNAMODB_TABLE_NAME"),
-       
-        AttributeDefinitions=[
-            {
-                'AttributeName': 'LockID',
-                'AttributeType': 'S'
-            },
-
-        ],
-        ProvisionedThroughput={
-            'ReadCapacityUnits': 20,
-            'WriteCapacityUnits': 20
-        }
-    )
+my_bucket = s3.Bucket(os.getenv("BUCKET_NAME"))
