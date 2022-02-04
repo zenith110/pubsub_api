@@ -15,7 +15,8 @@ def bucket_exist():
     )
 
     try:
-        s3.meta.client.head_bucket(Bucket=os.getenv("BUCKET_NAME"))
+        bucket = s3.meta.client.head_bucket(Bucket=os.getenv("BUCKET_NAME"))
+        print(bucket)
     except ClientError:
         return ClientError
 if __name__ == "__main__":
