@@ -18,3 +18,4 @@ variable "aws_secret_key" {}
 variable "dynamob_table" {}
 variable "qa-graphql" {}
 variable "qa-backend" {}
+variable "kms_alias" {}
