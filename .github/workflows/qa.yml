@@ -6,8 +6,35 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 jobs:
+  Python_Unit_Tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.9
+      - name: Install dependencies
+        run: |
+          cd backend/python
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Lint with flake8
+        run: |
+          cd backend/python
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Run Python Tests
+        run: |
+          cd backend/python/src/
+          python -m unittest
   Backend_Deployment:
     runs-on: ubuntu-latest
+    needs: [Python_Unit_Tests]
+    if: success('Python_Unit_Tests')
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.7.9
@@ -48,6 +75,8 @@ jobs:
           docker push $BACKEND
   Bot_Deployment:
     runs-on: ubuntu-latest
+    needs: [Python_Unit_Tests]
+    if: success('Python_Unit_Tests')
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.7.9
@@ -90,6 +119,8 @@ jobs:
           docker push $BOT
   Graphql_Deployment:
     runs-on: ubuntu-latest
+    needs: [Python_Unit_Tests]
+    if: success('Python_Unit_Tests')
     steps:
       - uses: actions/checkout@v2
       - name: Docker Login
@@ -139,6 +170,7 @@ jobs:
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_wrapper: false
+      - name: Set up Python 3.7.9
       - name: Terraform Init
         id: init
         env:
@@ -194,6 +226,19 @@ jobs:
           terraform apply -auto-approve
           ip_address=$(terraform output ip_address)
           'echo "$ip_address" > key'
+    - name: Install dependencies
+        run: |
+          cd github_action/
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          cd ../
+    - name: Item creation
+      run: |
+        python terraform_init.py
+      env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BUCKET_NAME: ${{ github.head_ref }}-terraform
   Terraform_Syncing:
     needs: [Checking_Bucket]
     if: success('Checking_Bucket')
@@ -265,6 +310,35 @@ jobs:
             echo ${{ secrets.DOCKER_PASSWORD }} | sudo docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
             echo "BRANCHNAME=${{ github.head_ref }}" >> .env
             sudo docker-compose -f qa.yml up -d --build
+  Launch_Frontend_First_Time:
+    needs: [Server_Deployment_First_Time]
+    if: success('Server_Deployment_First_Time')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install Node
+        run: |
+        cd frontend
+        npm ci
+      - name: Run vercel
+        env: 
+          VERCEL_ORG_ID: ${{secrets.VERCEL_ORG_ID}}
+          VERCEL_TOKEN: ${{secrets.VERCEL_TOKEN}}
+        run: |
+          cd frontend
+          vercel --token $VERCEL_TOKEN --confirm
+      - name: Export deployment url
+        env:
+          VERCEL_PREVIEW_URL: ${{steps.run-vercel.outputs.preview-url}}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          cd frontend/
+          vercel --token $VERCEL_TOKEN alias set $VERCEL_PREVIEW_URL ${{ github.head_ref }}.pubsub-api.dev --build-env REACT_APP_PUBSUB_API_URL=${{ github.head_ref }}-backend.pubsub-api.dev
+          const output = `Preview url is $VERCEL_PREVIEW_URL`
   Server_Deployment:
     needs: [Terraform_Syncing]
     runs-on: ubuntu-latest
@@ -302,3 +376,25 @@ jobs:
             echo ${{ secrets.DOCKER_PASSWORD }} | sudo docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
             echo "BRANCHNAME=${{ github.head_ref }}" >> .env
             sudo docker-compose -f qa.yml up -d --build
+  Deploy_QA_Frontend:
+    needs: [Server_Deployment]
+    if: success('Server_Deployment')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install Node
+        run: |
+        cd frontend
+        npm ci
+      - name: Export deployment url
+        env:
+          VERCEL_PREVIEW_URL: ${{steps.run-vercel.outputs.preview-url}}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          cd frontend/
+          vercel --token $VERCEL_TOKEN alias set $VERCEL_PREVIEW_URL ${{ github.head_ref }}-pubsub-api.dev --build-env REACT_APP_PUBSUB_API_URL=${{ github.head_ref }}-backend.pubsub-api.dev
+          const output = `Preview url is $VERCEL_PREVIEW_URL`

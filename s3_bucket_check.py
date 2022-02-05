@@ -13,5 +13,5 @@ s3 = boto3.resource(
 )
 
 
-s3.Object(os.getenv("BUCKET_NAME"), "terraform.tfstate").load()
+s3.Object(os.getenv("BUCKET_NAME"), "first.txt").load()
 

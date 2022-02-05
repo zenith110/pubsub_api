@@ -3,3 +3,4 @@ __pycache__/
 webhook.json
 dblogin.json
 .env
+node_modules/
