@@ -320,7 +320,7 @@ jobs:
           VERCEL_PREVIEW_URL: ${{steps.run-vercel.outputs.preview-url}}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
+        run: |
           cd frontend/
           vercel --token $VERCEL_TOKEN alias set $VERCEL_PREVIEW_URL ${{ github.head_ref }}.pubsub-api.dev --build-env REACT_APP_PUBSUB_API_URL=${{ github.head_ref }}-backend.pubsub-api.dev
           const output = `Preview url is $VERCEL_PREVIEW_URL`
@@ -379,7 +379,7 @@ jobs:
           VERCEL_PREVIEW_URL: ${{steps.run-vercel.outputs.preview-url}}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
+        run: |
           cd frontend/
           vercel --token $VERCEL_TOKEN alias set $VERCEL_PREVIEW_URL ${{ github.head_ref }}-pubsub-api.dev --build-env REACT_APP_PUBSUB_API_URL=${{ github.head_ref }}-backend.pubsub-api.dev
           const output = `Preview url is $VERCEL_PREVIEW_URL`
