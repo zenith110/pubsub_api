@@ -173,18 +173,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.7.9
-      - name: Install dependencies
-        run: |
-          cd github_action/
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          cd ../
-      - name: Create temp state txt
-        run: python terraform_init.py
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          BUCKET_NAME: ${{ github.head_ref }}-terraform
       - name: Terraform Init
         id: init
         env:
@@ -240,6 +228,18 @@ jobs:
           terraform apply -auto-approve
           ip_address=$(terraform output ip_address)
           'echo "$ip_address" > key'
+      - name: Install dependencies
+        run: |
+          cd github_action/
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          cd ../
+      - name: Create temp state txt
+        run: python terraform_init.py
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BUCKET_NAME: ${{ github.head_ref }}-terraform
   Terraform_Syncing:
     needs: [Checking_Bucket]
     if: success('Checking_Bucket')
