@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
 jobs:
   Cleaning_up_Terraform:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
     steps:
       - uses: actions/checkout@v2
       - name: terraform_cleanup
