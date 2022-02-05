@@ -6,12 +6,38 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 jobs:
-  Deployment:
+  Python_Unit_Tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: hashicorp/setup-terraform@v1
-      - name: Set up Python 3.7.9 
+      - name: Set up Python 3.7.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.9
+      - name: Install dependencies
+        run: |
+          cd backend/python
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Lint with flake8
+        run: |
+          cd backend/python
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Run Python Tests
+        run: |
+          cd backend/python/src/
+          python -m unittest
+  Backend_Deployment:
+    needs: [Python_Unit_Tests]
+    if: success('Python_Unit_Tests')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7.9
         uses: actions/setup-python@v2
         with:
           python-version: 3.7.9
@@ -30,20 +56,10 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Docker Login
         env:
-          DOCKER_USER: '${{ secrets.DOCKER_USER }}'
+          DOCKER_USER: "${{ secrets.DOCKER_USER }}"
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-          
-      # Dockerizes the bot to be sent to the repo
-      - name: Dockerize Bot
-        env:
-          TOKEN: '${{ secrets.BOT_TOKEN}}'
-        run: |
-          cd bot/src/
-          echo "BOT_TOKEN = $TOKEN" > .env
-          cd ../
-          docker build --tag pubsub-bot .
       - name: Dockerize Backend
         env:
           MAILGUN: ${{ secrets.MAILGUN }}
@@ -57,6 +73,62 @@ jobs:
         run: |
           docker tag pubsub-backend $BACKEND
           docker push $BACKEND
+  Bot_Deployment:
+    needs: [Python_Unit_Tests]
+    if: success('Python_Unit_Tests')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.9
+      - name: Install dependencies
+        run: |
+          cd backend/python
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Lint with flake8
+        run: |
+          cd backend/python
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Docker Login
+        env:
+          DOCKER_USER: "${{ secrets.DOCKER_USER }}"
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      # Dockerizes the bot to be sent to the repo
+      - name: Dockerize Bot
+        env:
+          TOKEN: "${{ secrets.BOT_TOKEN}}"
+        run: |
+          cd bot/src/
+          echo "BOT_TOKEN = $TOKEN" > .env
+          cd ../
+          docker build --tag pubsub-bot .
+      - name: Docker push bot
+        env:
+          BOT: ${{ secrets.QA_BOT }}
+        run: |
+          docker tag pubsub-bot $BOT
+          docker push $BOT
+  Graphql_Deployment:
+    needs: [Python_Unit_Tests]
+    if: success('Python_Unit_Tests')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Docker Login
+        env:
+          DOCKER_USER: "${{ secrets.DOCKER_USER }}"
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
       - name: Docker build graphql
         run: |
           cd backend/go/src
@@ -67,19 +139,40 @@ jobs:
         run: |
           docker tag pubsub-backend-graphql $BACKEND_GRAPHQL
           docker push $BACKEND_GRAPHQL
-      - name: Docker push bot
+  Checking_Bucket:
+    needs: [Backend_Deployment, Bot_Deployment, Graphql_Deployment]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.9
+      - name: Install dependencies
+        run: |
+          cd github_action/
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          cd ../
+      - name: Run check_bucket
+        run: python s3_bucket_check.py
         env:
-          BOT: ${{ secrets.QA_BOT }}
-        run: |
-          docker tag pubsub-bot $BOT
-          docker push $BOT
-      - name: Terraform fmt
-        id: fmt
-        run: |
-          cd infrastructure/qa
-          terraform fmt -check
-        continue-on-error: true
-
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BUCKET_NAME: ${{ github.head_ref }}-terraform
+  First_Time_Creation:
+    needs: [Checking_Bucket]
+    if: failure('Checking_Bucket')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
+      - name: Set up Python 3.7.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.9
       - name: Terraform Init
         id: init
         env:
@@ -87,80 +180,231 @@ jobs:
           TF_VAR_linode_password: ${{ secrets.QA_SERVER_PASSWORD }}
           TF_VAR_small_linode_instance: ${{ secrets.QA_SMALL_LINODE_INSTANCE }}
           TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
-          TF_VAR_cloudflare_domain_name: ${{ secrets.QA_SERVER_IP }}
-          TF_VAR_qa_label: ${{ secrets.QA_LABEL }}
-          TF_VAR_qa_group: ${{ secrets.QA_LABEL }}
+          TF_VAR_cloudflare_domain_name: ${{ github.head_ref }}.pubsub-api.dev
+          TF_VAR_qa_label: ${{ github.head_ref }}
+          TF_VAR_qa_group: ${{ github.head_ref }}
           TF_VAR_cloudflare_email: ${{ secrets.CLOUDFLARE_EMAIL }}
           TF_VAR_cloudflare_api_key: ${{ secrets.CLOUDFLARE_API_KEY }}
+          TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_VAR_aws_s3_bucket_name: ${{ github.head_ref }}-terraform
+          TF_VAR_aws_region: us-east-1
+          TF_VAR_aws_s3_key: ${{ github.head_ref }}/s3/terraform.tfstate
+          TF_VAR_dynamob_table: ${{ github.head_ref }}-test-locks
+          TF_VAR_qa-graphql: ${{ github.head_ref }}-graphql.pubsub-api.dev
+          TF_VAR_qa-backend: ${{ github.head_ref }}-backend.pubsub-api.dev
+          TF_VAR_kms_alias: alias/${{ github.head_ref }}-bucket-key
         run: |
-          cd infrastructure/qa
+          cd infrastructure/qa_first_time
           terraform init
-
-      - name: Terraform Validate
-        id: validate
+      - name: Terraform Plan
+        id: plan
+        run: |
+          cd infrastructure/qa_first_time
+          terraform plan -no-color
+        continue-on-error: true
+      - name: Terraform QA Apply
+        env:
+          TF_VAR_linode_api_token: ${{ secrets.LINODE_API_TOKEN }}
+          TF_VAR_linode_password: ${{ secrets.QA_SERVER_PASSWORD }}
+          TF_VAR_small_linode_instance: ${{ secrets.QA_SMALL_LINODE_INSTANCE }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          TF_VAR_cloudflare_domain_name: ${{ github.head_ref }}.pubsub-api.dev
+          TF_VAR_qa_label: ${{ github.head_ref }}
+          TF_VAR_qa_group: ${{ github.head_ref }}
+          TF_VAR_cloudflare_email: ${{ secrets.CLOUDFLARE_EMAIL }}
+          TF_VAR_cloudflare_api_key: ${{ secrets.CLOUDFLARE_API_KEY }}
+          TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_VAR_aws_s3_bucket_name: ${{ github.head_ref }}-terraform
+          TF_VAR_aws_region: us-east-1
+          TF_VAR_aws_s3_key: ${{ github.head_ref }}/s3/terraform.tfstate
+          TF_VAR_dynamob_table: ${{ github.head_ref }}-test-locks
+          TF_VAR_qa-graphql: ${{ github.head_ref }}-graphql.pubsub-api.dev
+          TF_VAR_qa-backend: ${{ github.head_ref }}-backend.pubsub-api.dev
+          TF_VAR_kms_alias: alias/${{ github.head_ref }}-bucket-key
+        run: |
+          cd infrastructure/qa_first_time
+          terraform apply -auto-approve
+          ip_address=$(terraform output ip_address)
+          'echo "$ip_address" > key'
+      - name: Install dependencies
+        run: |
+          cd github_action/
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          cd ../
+      - name: Create temp state txt
+        run: python terraform_init.py
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BUCKET_NAME: ${{ github.head_ref }}-terraform
+  Terraform_Syncing:
+    needs: [Checking_Bucket]
+    if: success('Checking_Bucket')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
+      - name: Terraform Init
+        id: init
         run: |
           cd infrastructure/qa
-          terraform validate -no-color
-
+          terraform init -backend-config="bucket=${{ github.head_ref }}-terraform" -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -backend-config="dynamodb_table=${{ github.head_ref }}-test-locks"
       - name: Terraform Plan
         id: plan
         run: |
           cd infrastructure/qa
           terraform plan -no-color
         continue-on-error: true
-
-      - uses: actions/github-script@0.9.0
-        if: github.event_name == 'pull_request'
-        env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-            #### Terraform Validation 🤖\`${{ steps.validate.outputs.stdout }}\`
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-
-            <details><summary>Show Plan</summary>
-
-            \`\`\`\n
-            ${process.env.PLAN}
-            \`\`\`
-
-            </details>
-
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
-
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
-            })
+      - name: Terraform QA Apply
+        run: |
+          cd infrastructure/qa
+          terraform apply -auto-approve
+          ip_address=$(terraform output ip_address)
+          'echo "$ip_address" > key'
+  Server_Deployment_First_Time:
+    needs: [First_Time_Creation]
+    runs-on: ubuntu-latest
+    if: success('First_Time_Creation')
+    steps:
+      - uses: actions/checkout@v2
+      - name: Sleep
+        run: sleep 300
       - name: Push to server
-        env: 
-         DOCKER_USER: '${{ secrets.DOCKER_USER }}'
-         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        env:
+          DOCKER_USER: "${{ secrets.DOCKER_USER }}"
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.QA_SERVER_IP }}
+          host: ${{secrets.ip_address}}
           username: ${{ secrets.QA_SERVER_USER }}
           password: ${{ secrets.QA_SERVER_PASSWORD }}
           script: |
-            sudo curl -L "https://github.com/docker/compose/releases/download/2.2.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-            wget https://raw.githubusercontent.com/zenith110/pubsub_api/master/qa.yml
+            sudo apt-get update
+            sudo apt-get install apt-transport-https ca-certificates curl software-properties-common -y
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+            sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+            apt-cache policy docker-ce
+            sudo apt-get install docker-ce -y
+            sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+            wget -O qa.yml https://raw.githubusercontent.com/zenith110/pubsub_api/${{ github.head_ref }}/qa.yml
+            wget -O dynamic.yml https://raw.githubusercontent.com/zenith110/pubsub_api/${{ github.head_ref }}/config/dynamic.yml
+            wget -O prometheus.yml https://raw.githubusercontent.com/zenith110/pubsub_api/${{ github.head_ref }}/config/prometheus.yml
+            wget -O loki-config.yml https://raw.githubusercontent.com/zenith110/pubsub_api/${{ github.head_ref }}/config/loki-config.yml
+            wget -O promtail-config.yml https://raw.githubusercontent.com/zenith110/pubsub_api/${{ github.head_ref }}/config/promtail-config.yml
             echo "SENDER=${{ secrets.SENDER}}" > .env
             echo "DOMAIN=${{ secrets.DOMAIN}}" >> .env
             echo "API_KEY=${{ secrets.MAILGUN_API_KEY}}" >> .env
             echo "OVERALL_MAILING_LIST=${{ secrets.OVERALL_MAILING_LIST}}" >> .env
             echo "BOT_TOKEN=${{ secrets.BOT_TOKEN}}" >> .env
             echo "USERNAME_DB=${{ secrets.USERNAME_DB }}" >> .env
-            echo "PASSWORD=${{ secrets.PASSWORD }}" >> .env 
+            echo "PASSWORD=${{ secrets.PASSWORD }}" >> .env
             echo "DBHOST=${{ secrets.HOST }}" >> .env
             echo "PORT=${{ secrets.PORT }}" >> .env
             echo "DATABASE=${{ secrets.DATABASE }}" >> .env
             echo "TABLE=${{ secrets.TABLE }}" >> .env
             echo "GRAPHQLPORT=${{ secrets.GRAPHQLPORT }}" >> .env
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-            docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+            echo ${{ secrets.DOCKER_PASSWORD }} | sudo docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+            echo "BRANCHNAME=${{ github.head_ref }}" >> .env
             sudo docker-compose -f qa.yml up -d --build
+  Launch_Frontend_First_Time:
+    needs: [Server_Deployment_First_Time]
+    if: success('Server_Deployment_First_Time')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+      - name: Install Node
+        run: |
+          cd frontend
+          npm ci
+      - name: Run vercel
+        env:
+          VERCEL_ORG_ID: ${{secrets.VERCEL_ORG_ID}}
+          VERCEL_TOKEN: ${{secrets.VERCEL_TOKEN}}
+        run: |
+          cd frontend
+          vercel --token $VERCEL_TOKEN --confirm
+      # Sleeps so the site can be deployed
+      - name: Sleep
+        run: sleep 300
+      - uses: actions/github-script@0.9.0
+        if: github.event_name == 'pull_request'
+        env:
+          VERCEL_PREVIEW_URL: ${{steps.run-vercel.outputs.preview-url}}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            cd frontend/
+            vercel --token $VERCEL_TOKEN alias set $VERCEL_PREVIEW_URL ${{ github.head_ref }}.pubsub-api.dev --build-env REACT_APP_PUBSUB_API_URL=${{ github.head_ref }}-backend.pubsub-api.dev
+            const output = `Preview url is $VERCEL_PREVIEW_URL`
+  Server_Deployment:
+    needs: [Terraform_Syncing]
+    runs-on: ubuntu-latest
+    if: success('Terraform_Syncing')
+    steps:
+      - uses: actions/checkout@v2
+      - name: Push to server
+        env:
+          DOCKER_USER: "${{ secrets.DOCKER_USER }}"
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.ip_address}}
+          username: ${{ secrets.QA_SERVER_USER }}
+          password: ${{ secrets.QA_SERVER_PASSWORD }}
+          script: |
+            wget -O qa.yml https://raw.githubusercontent.com/zenith110/pubsub_api/${{ github.head_ref }}/qa.yml
+            wget -O dynamic.yml https://raw.githubusercontent.com/zenith110/pubsub_api/${{ github.head_ref }}/config/dynamic.yml
+            wget -O prometheus.yml https://raw.githubusercontent.com/zenith110/pubsub_api/${{ github.head_ref }}/config/prometheus.yml
+            wget -O loki-config.yml https://raw.githubusercontent.com/zenith110/pubsub_api/${{ github.head_ref }}/config/loki-config.yml
+            wget -O promtail-config.yml https://raw.githubusercontent.com/zenith110/pubsub_api/${{ github.head_ref }}/config/promtail-config.yml
+            echo "SENDER=${{ secrets.SENDER}}" > .env
+            echo "DOMAIN=${{ secrets.DOMAIN}}" >> .env
+            echo "API_KEY=${{ secrets.MAILGUN_API_KEY}}" >> .env
+            echo "OVERALL_MAILING_LIST=${{ secrets.OVERALL_MAILING_LIST}}" >> .env
+            echo "BOT_TOKEN=${{ secrets.BOT_TOKEN}}" >> .env
+            echo "USERNAME_DB=${{ secrets.USERNAME_DB }}" >> .env
+            echo "PASSWORD=${{ secrets.PASSWORD }}" >> .env
+            echo "DBHOST=${{ secrets.HOST }}" >> .env
+            echo "PORT=${{ secrets.PORT }}" >> .env
+            echo "DATABASE=${{ secrets.DATABASE }}" >> .env
+            echo "TABLE=${{ secrets.TABLE }}" >> .env
+            echo "GRAPHQLPORT=${{ secrets.GRAPHQLPORT }}" >> .env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+            echo ${{ secrets.DOCKER_PASSWORD }} | sudo docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+            echo "BRANCHNAME=${{ github.head_ref }}" >> .env
+            sudo docker-compose -f qa.yml up -d --build
+  Deploy_QA_Frontend:
+    needs: [Server_Deployment]
+    if: success('Server_Deployment')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+      - name: Install Node
+        run: |
+          cd frontend
+          npm ci
+      - name: Run Vercel Preview
+        run: |
+          cd frontend/
+          vercel --token $VERCEL_TOKEN alias set $VERCEL_PREVIEW_URL ${{ github.head_ref }}-pubsub-api.dev --build-env REACT_APP_PUBSUB_API_URL=${{ github.head_ref }}-backend.pubsub-api.dev
+      - uses: actions/github-script@0.9.0
+        if: github.event_name == 'pull_request'
+        env:
+          VERCEL_PREVIEW_URL: ${{steps.run-vercel-preview.outputs.preview-url}}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `Preview url is $VERCEL_PREVIEW_URL`

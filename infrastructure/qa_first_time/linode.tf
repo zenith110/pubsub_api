@@ -7,3 +7,5 @@ resource "linode_instance" "pubsub-qa" {
     root_pass = var.linode_password
     type = var.small_linode_instance
 }
+
+

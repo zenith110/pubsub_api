@@ -1,7 +1,9 @@
 DEV_FILE = dev.yml
 PROD_FILE = prod.yml
+QA_FILE = qa.yml
 DEV_DOCKER_COMPOSE=docker-compose -f $(DEV_FILE)
 PROD_DOCKER_COMPOSE=docker-compose -f $(PROD_FILE)
+QA_DOCKER_COMPOSE=docker-compose -f $(QA_FILE)
 default: build
 
 #==================================================#
@@ -22,6 +24,12 @@ prod-build:
 prod-detached:
 	@echo "Now running in prod enviroment"
 	@$(PROD_DOCKER_COMPOSE) up -d --build
+qa-build:
+	@echo "Now running in QA"
+	@$(QA_DOCKER_COMPOSE) up --build
+qa-clean: # Removes all orphans processes
+	@echo "Cleaning up processes for docker-compose"
+	@$(QA_DOCKER_COMPOSE) down -v
 #===============================================#
 #     Application specific commands #
 #===============================================#
