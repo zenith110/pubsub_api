@@ -256,6 +256,8 @@ jobs:
     if: success('First_Time_Creation')
     steps:
       - uses: actions/checkout@v2
+      - name: Sleep
+        run: sleep 300
       - name: Push to server
         env:
           DOCKER_USER: "${{ secrets.DOCKER_USER }}"
@@ -315,7 +317,9 @@ jobs:
         run: |
           cd frontend
           vercel --token $VERCEL_TOKEN --confirm
-
+      # Sleeps so the site can be deployed
+      - name: Sleep
+        run: sleep 300
       - uses: actions/github-script@0.9.0
         if: github.event_name == 'pull_request'
         env:
@@ -376,13 +380,15 @@ jobs:
         run: |
           cd frontend
           npm ci
+      - name: Run Vercel Preview
+        run: |
+          cd frontend/
+          vercel --token $VERCEL_TOKEN alias set $VERCEL_PREVIEW_URL ${{ github.head_ref }}-pubsub-api.dev --build-env REACT_APP_PUBSUB_API_URL=${{ github.head_ref }}-backend.pubsub-api.dev
       - uses: actions/github-script@0.9.0
         if: github.event_name == 'pull_request'
         env:
-          VERCEL_PREVIEW_URL: ${{steps.run-vercel.outputs.preview-url}}
+          VERCEL_PREVIEW_URL: ${{steps.run-vercel-preview.outputs.preview-url}}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            cd frontend/
-            vercel --token $VERCEL_TOKEN alias set $VERCEL_PREVIEW_URL ${{ github.head_ref }}-pubsub-api.dev --build-env REACT_APP_PUBSUB_API_URL=${{ github.head_ref }}-backend.pubsub-api.dev
             const output = `Preview url is $VERCEL_PREVIEW_URL`
