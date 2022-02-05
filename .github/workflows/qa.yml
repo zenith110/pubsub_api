@@ -192,6 +192,8 @@ jobs:
         run: |
           cd infrastructure/qa_first_time
           terraform apply -auto-approve
+          ip_address=$(terraform output ip_address)
+          'echo "$ip_address" > key'
   Terraform_Syncing:
     needs: [Checking_Bucket]
     if: success('Checking_Bucket')
@@ -216,6 +218,8 @@ jobs:
         run: |
           cd infrastructure/qa
           terraform apply -auto-approve
+          ip_address=$(terraform output ip_address)
+          'echo "$ip_address" > key'
   Server_Deployment_First_Time:
     needs: [First_Time_Creation]
     runs-on: ubuntu-latest
@@ -228,7 +232,7 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ github.head_ref }}.pubsub-api.dev
+          host: ${{secrets.ip_address}}
           username: ${{ secrets.QA_SERVER_USER }}
           password: ${{ secrets.QA_SERVER_PASSWORD }}
           script: |
@@ -273,7 +277,7 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ github.head_ref }}.pubsub-api.dev
+          host: ${{secrets.ip_address}}
           username: ${{ secrets.QA_SERVER_USER }}
           password: ${{ secrets.QA_SERVER_PASSWORD }}
           script: |

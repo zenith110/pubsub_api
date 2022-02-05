@@ -14,7 +14,9 @@ terraform{
         }
     }
 }
-
+output ip_address{
+    value = linode_instance.pubsub-qa.ip_address
+}
 provider "linode" {
     token = var.linode_api_token
 }
