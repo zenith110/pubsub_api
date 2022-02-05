@@ -315,12 +315,13 @@ jobs:
         run: |
           cd frontend
           vercel --token $VERCEL_TOKEN --confirm
-      - name: Export deployment url
+      - uses: actions/github-script@0.9.0
+        if: github.event_name == 'pull_request'
         env:
           VERCEL_PREVIEW_URL: ${{steps.run-vercel.outputs.preview-url}}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-        run: |
+        script: |
           cd frontend/
           vercel --token $VERCEL_TOKEN alias set $VERCEL_PREVIEW_URL ${{ github.head_ref }}.pubsub-api.dev --build-env REACT_APP_PUBSUB_API_URL=${{ github.head_ref }}-backend.pubsub-api.dev
           const output = `Preview url is $VERCEL_PREVIEW_URL`
@@ -374,7 +375,8 @@ jobs:
         run: |
           cd frontend
           npm ci
-      - name: Export deployment url
+      - uses: actions/github-script@0.9.0
+        if: github.event_name == 'pull_request'
         env:
           VERCEL_PREVIEW_URL: ${{steps.run-vercel.outputs.preview-url}}
         with:
