@@ -32,9 +32,9 @@ jobs:
           cd backend/python/src/
           python -m unittest
   Backend_Deployment:
-    runs-on: ubuntu-latest
     needs: [Python_Unit_Tests]
     if: success('Python_Unit_Tests')
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.7.9
@@ -74,9 +74,9 @@ jobs:
           docker tag pubsub-backend $BACKEND
           docker push $BACKEND
   Bot_Deployment:
-    runs-on: ubuntu-latest
     needs: [Python_Unit_Tests]
     if: success('Python_Unit_Tests')
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.7.9
@@ -118,9 +118,9 @@ jobs:
           docker tag pubsub-bot $BOT
           docker push $BOT
   Graphql_Deployment:
-    runs-on: ubuntu-latest
     needs: [Python_Unit_Tests]
     if: success('Python_Unit_Tests')
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Docker Login
@@ -129,7 +129,6 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-
       - name: Docker build graphql
         run: |
           cd backend/go/src
@@ -170,7 +169,6 @@ jobs:
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_wrapper: false
-      - name: Set up Python 3.7.9
       - name: Terraform Init
         id: init
         env:
@@ -226,19 +224,6 @@ jobs:
           terraform apply -auto-approve
           ip_address=$(terraform output ip_address)
           'echo "$ip_address" > key'
-    - name: Install dependencies
-        run: |
-          cd github_action/
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          cd ../
-    - name: Item creation
-      run: |
-        python terraform_init.py
-      env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          BUCKET_NAME: ${{ github.head_ref }}-terraform
   Terraform_Syncing:
     needs: [Checking_Bucket]
     if: success('Checking_Bucket')
@@ -318,13 +303,13 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: "14"
       - name: Install Node
         run: |
-        cd frontend
-        npm ci
+          cd frontend
+          npm ci
       - name: Run vercel
-        env: 
+        env:
           VERCEL_ORG_ID: ${{secrets.VERCEL_ORG_ID}}
           VERCEL_TOKEN: ${{secrets.VERCEL_TOKEN}}
         run: |
@@ -384,11 +369,11 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: "14"
       - name: Install Node
         run: |
-        cd frontend
-        npm ci
+          cd frontend
+          npm ci
       - name: Export deployment url
         env:
           VERCEL_PREVIEW_URL: ${{steps.run-vercel.outputs.preview-url}}
