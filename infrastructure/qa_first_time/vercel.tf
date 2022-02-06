@@ -1,10 +1,10 @@
 
 data "vercel_project_directory" "example" {
-  path = "frontend"
+  path = "../frontend"
 }
 
 data "vercel_project" "example" {
-  name = var.github_branch
+  name = "zenith110/pubsub-api"
 }
 
 resource "vercel_deployment" "example" {
@@ -16,7 +16,7 @@ resource "vercel_deployment" "example" {
     output_directory = "/build"
     build_command    = "npm run build"
     framework        = "create-react-app"
-    root_directory   = "frontend"
+    root_directory   = "../frontend"
   }
 
   environment = {

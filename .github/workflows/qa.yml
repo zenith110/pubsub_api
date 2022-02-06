@@ -161,8 +161,8 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           BUCKET_NAME: ${{ github.head_ref }}-terraform
   First_Time_Creation:
-    needs: [Checking_Bucket]
-    if: failure('Checking_Bucket')
+    needs: [Vercel_Creation]
+    if: success('Vercel_Creation')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -374,7 +374,7 @@ jobs:
             echo ${{ secrets.DOCKER_PASSWORD }} | sudo docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
             echo "BRANCHNAME=${{ github.head_ref }}" >> .env
             sudo docker-compose -f qa.yml up -d --build
-  Deploy_QA_Frontend:
+  Export preview url:
     needs: [Server_Deployment]
     if: success('Server_Deployment')
     runs-on: ubuntu-latest
