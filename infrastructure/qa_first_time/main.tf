@@ -18,12 +18,7 @@ terraform{
         }
     }
 }
-output ip_address{
-    value = linode_instance.pubsub-qa.ip_address
-}
-output vercel_deployment_url{
-    value = vercel_deployment.example.url
-}
+
 provider "linode" {
     token = var.linode_api_token
 }
@@ -38,4 +33,11 @@ provider "cloudflare"{
 }
 provider "vercel"{
     api_token = var.vercel_api_token
+}
+
+output ip_address{
+    value = linode_instance.pubsub-qa.ip_address
+}
+output vercel_deployment_url{
+    value = vercel_deployment.example.url
 }
