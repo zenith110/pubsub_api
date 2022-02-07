@@ -1,6 +1,6 @@
 
 data "vercel_project_directory" "example" {
-  path = ""
+  path = "../../frontend/"
 }
 
 data "vercel_project" "example" {
