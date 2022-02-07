@@ -4,7 +4,7 @@ data "vercel_project_directory" "example" {
 }
 
 data "vercel_project" "example" {
-  name = "zenith110/pubsub-api"
+  name = "pubsub-api"
 }
 
 resource "vercel_deployment" "example" {
