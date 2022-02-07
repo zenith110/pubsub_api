@@ -161,8 +161,8 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           BUCKET_NAME: ${{ github.head_ref }}-terraform
   First_Time_Creation:
-    needs: [Vercel_Creation]
-    if: success('Vercel_Creation')
+    needs: [Checking_Bucket]
+    if: success('Checking_Bucket')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
