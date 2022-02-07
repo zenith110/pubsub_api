@@ -374,7 +374,7 @@ jobs:
             echo ${{ secrets.DOCKER_PASSWORD }} | sudo docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
             echo "BRANCHNAME=${{ github.head_ref }}" >> .env
             sudo docker-compose -f qa.yml up -d --build
-  Export preview url:
+  Export_preview_url:
     needs: [Server_Deployment]
     if: success('Server_Deployment')
     runs-on: ubuntu-latest
