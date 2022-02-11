@@ -229,6 +229,7 @@ jobs:
           TF_VAR_vercel_api_token: ${{secrets.VERCEL_BRANCH_API_TOKEN}}
           TF_VAR_github_branch: ${{ github.head_ref }}
           TF_VAR_qa-frontend: ${{ github.head_ref }}.pubsub-api.dev
+          TF_VAR_vercel_project_name: pubsub-api
         run: |
           cd infrastructure/qa_first_time
           terraform apply -auto-approve
@@ -295,6 +296,9 @@ jobs:
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
             echo ${{ secrets.DOCKER_PASSWORD }} | sudo docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
             echo "BRANCHNAME=${{ github.head_ref }}" >> .env
+            echo "BACKEND_URL=${{ github.head_ref }}" >> .env
+            set -a
+            source .env
             sudo docker-compose -f qa.yml up -d --build
   Print_Out_Links_First_Time:
     needs: [Server_Deployment_First_Time]
@@ -333,10 +337,7 @@ jobs:
         run: |
           cd infrastructure/qa
           terraform apply -auto-approve
-          ip_address=$(terraform output ip_address)
-          'echo "$ip_address" > key'
-          vercel_preview_url=$(terraform output vercel_deployment_url)
-          'echo "$vercel_preview_url" > key'
+          
   Server_Deployment:
     needs: [Terraform_Syncing]
     runs-on: ubuntu-latest
@@ -373,6 +374,8 @@ jobs:
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
             echo ${{ secrets.DOCKER_PASSWORD }} | sudo docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
             echo "BRANCHNAME=${{ github.head_ref }}" >> .env
+            set -a
+            source .env
             sudo docker-compose -f qa.yml up -d --build
   Export_preview_url:
     needs: [Server_Deployment]

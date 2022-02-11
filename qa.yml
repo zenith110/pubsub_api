@@ -6,7 +6,7 @@ services:
       - "6080:8080"
     labels:
       - traefik.enable=true
-      - traefik.http.routers.backend.rule=Host(`{{ env "BRANCHNAME" | trimAll "\"" }}`-backend.pubsub-api.dev)
+      - traefik.http.routers.backend.rule=Host(${BACKEND_URL})
       - traefik.http.routers.backend.entrypoints=web
     container_name: backend
   discord-bot:
@@ -23,7 +23,7 @@ services:
       - .env
     labels:
       - traefik.enable=true
-      - traefik.http.routers.pubsub-api-graphql.rule=Host(`{{ env "BRANCHNAME" | trimAll "\"" }}`-graphql.pubsub-api.dev)
+      - traefik.http.routers.pubsub-api-graphql.rule=Host(${GRAPHQL_URL})
       - traefik.http.routers.pubsub-api-graphql.entrypoints=web
   prometheus:
     image: prom/prometheus:latest
@@ -105,20 +105,6 @@ services:
     restart: unless-stopped
     volumes:
       - "/:/host:ro,rslave"
-  cadvisor:
-    image: google/cadvisor:latest
-    container_name: cadvisor
-    # ports:
-    #   - "8080:8080"
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-      - /dev/disk/:/dev/disk:ro
-    devices:
-      - /dev/kmsg
-    restart: unless-stopped
 
 volumes:
   prometheus_data:

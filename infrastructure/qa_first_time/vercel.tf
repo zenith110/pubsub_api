@@ -4,7 +4,7 @@ data "vercel_project_directory" "example" {
 }
 
 data "vercel_project" "example" {
-  name = "pubsub-api"
+  name = var.vercel_project_name
 }
 
 resource "vercel_deployment" "example" {
@@ -16,7 +16,7 @@ resource "vercel_deployment" "example" {
     output_directory = "/build"
     build_command    = "npm run build"
     framework        = "create-react-app"
-    root_directory   = ""
+    root_directory   = "frontend/"
   }
 
   environment = {
