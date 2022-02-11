@@ -16,7 +16,7 @@ resource "vercel_deployment" "example" {
     output_directory = "/build"
     build_command    = "npm run build"
     framework        = "create-react-app"
-    root_directory   = "frontend/"
+    root_directory   = ""
   }
 
   environment = {
