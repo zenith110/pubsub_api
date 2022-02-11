@@ -19,3 +19,7 @@ variable "dynamob_table" {}
 variable "qa-graphql" {}
 variable "qa-backend" {}
 variable "kms_alias" {}
+variable "vercel_api_token" {}
+variable "github_branch" {}
+variable "qa-frontend" {}
+variable "vercel_project_name" {}

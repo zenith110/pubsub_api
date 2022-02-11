@@ -13,3 +13,11 @@ resource "cloudflare_record" "qa-backend"{
     type = "A"
     proxied = true
 }
+
+resource "cloudflare_record" "qa-frontend"{
+    zone_id = var.cloudflare_zone_id
+    name  = var.qa-frontend
+    value = vercel_deployment.example.url
+    type = "CNAME"
+    proxied = true
+}

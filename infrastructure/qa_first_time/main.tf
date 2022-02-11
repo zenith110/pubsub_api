@@ -12,11 +12,13 @@ terraform{
             source = "hashicorp/aws"
             version = "~> 3.0"
         }
+        vercel = {
+            source = "vercel/vercel"
+            version = "~> 0.1"
+        }
     }
 }
-output ip_address{
-    value = linode_instance.pubsub-qa.ip_address
-}
+
 provider "linode" {
     token = var.linode_api_token
 }
@@ -29,4 +31,13 @@ provider "cloudflare"{
     email = var.cloudflare_email
     api_key = var.cloudflare_api_key
 }
+provider "vercel"{
+    api_token = var.vercel_api_token
+}
 
+output ip_address{
+    value = linode_instance.pubsub-qa.ip_address
+}
+output vercel_deployment_url{
+    value = vercel_deployment.example.url
+}

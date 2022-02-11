@@ -10,6 +10,7 @@
     "bootstrap": "^4.5.3",
     "framer-motion": "^3.2.2-rc.1",
     "node-fetch": "^2.6.1",
+    "npm": "^8.4.1",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
     "react-dom": "^17.0.1",
