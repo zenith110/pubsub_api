@@ -235,9 +235,7 @@ jobs:
           cd infrastructure/qa_first_time
           terraform apply -auto-approve
           ip_address=$(terraform output ip_address)
-          'echo "$ip_address" > key'
           vercel_preview_url=$(terraform output vercel_deployment_url)
-          'echo "$vercel_preview_url" > key'
       - name: Install dependencies
         run: |
           cd github_action/
@@ -265,7 +263,7 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         uses: appleboy/ssh-action@master
         with:
-          host: ${{secrets.ip_address}}
+          host: $ip_address
           username: ${{ secrets.QA_SERVER_USER }}
           password: ${{ secrets.QA_SERVER_PASSWORD }}
           script: |
@@ -314,7 +312,7 @@ jobs:
       - uses: actions/github-script@0.9.0
         if: github.event_name == 'pull_request'
         env:
-          VERCEL_PREVIEW_URL: ${{secrets.vercel_preview_url}}
+          VERCEL_PREVIEW_URL: $vercel_preview_url
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
