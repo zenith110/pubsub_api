@@ -11,7 +11,6 @@ resource "aws_kms_alias" "key-alias" {
 
 resource "aws_s3_bucket" "terraform-state" {
  bucket = var.aws_s3_bucket_name
- acl    = "private"
 
  versioning {
    enabled = true
@@ -46,4 +45,11 @@ resource "aws_dynamodb_table" "terraform-state" {
    name = "LockID"
    type = "S"
  }
+}
+
+resource "aws_s3_bucket_object" "upload-test-file"{
+  key                    = "s3-creation-text.txt"
+  bucket = var.aws_s3_bucket_name
+  source = "s3-creation-text.txt"
+  server_side_encryption = "aws:kms"
 }
