@@ -166,13 +166,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_wrapper: false
-      - name: Set up Python 3.7.9
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7.9
+      # - uses: hashicorp/setup-terraform@v1
+      #   with:
+      #     terraform_wrapper: false
+      # - name: Set up Python 3.7.9
+      #   uses: actions/setup-python@v2
+      #   with:
+      #     python-version: 3.7.9
       # - name: Terraform Init
       #   id: init
       #   env:
@@ -238,6 +238,12 @@ jobs:
       #     terraform apply -auto-approve
       #     ip_address=$(terraform output ip_address)
       #     vercel_preview_url=$(terraform output vercel_deployment_url)
+      - name: Install dependencies
+        run: |
+          cd github_action/
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          cd ../
       - name: Create temp state txt
         run: python terraform_init.py
         env:
