@@ -351,7 +351,7 @@ jobs:
           TF_VAR_vercel_project_name: pubsub-api
         run: |
           cd infrastructure/qa
-          terraform init -backend-config "bucket=$TF_VAR_aws_s3_bucket_name" -backend-config "dynamodb_table=$TF_VAR_dynamob_table"
+          terraform init -backend-config "bucket=$TF_VAR_aws_s3_bucket_name" -backend-config "dynamodb_table=$TF_VAR_dynamob_table" -backend-config "access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -backend-config "secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
       - name: Terraform Plan
         id: plan
         run: |
