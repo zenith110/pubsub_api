@@ -362,6 +362,7 @@ jobs:
         run: |
           cd infrastructure/qa
           terraform apply -auto-approve
+          ip_address=$(terraform output ip_address)
           echo $ip_address
   Server_Deployment:
     needs: [Terraform_Syncing]
