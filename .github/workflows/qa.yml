@@ -238,18 +238,6 @@ jobs:
           terraform apply -auto-approve
           ip_address=$(terraform output ip_address)
           vercel_preview_url=$(terraform output vercel_deployment_url)
-      - name: Install dependencies
-        run: |
-          cd github_action/
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          cd ../
-      - name: Create temp state txt
-        run: python terraform_init.py
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          BUCKET_NAME: ${{ github.head_ref }}-terraform
 
   Server_Deployment_First_Time:
     needs: [First_Time_Creation]
