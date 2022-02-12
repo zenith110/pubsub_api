@@ -11,7 +11,11 @@ resource "aws_kms_alias" "key-alias" {
 
 resource "aws_s3_bucket" "terraform-state" {
  bucket = var.aws_s3_bucket_name
- acl    = "private"
+ grant {
+   id = var.aws_iam_user_id
+   type = "CanonicalUser"
+   permissions = ["FULL_CONTROL"]
+ }
 
  versioning {
    enabled = true
