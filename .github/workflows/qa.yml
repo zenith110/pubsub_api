@@ -263,7 +263,7 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ github.head_ref }}-backend.pubsub-api.dev
+          host: $ip_address
           username: ${{ secrets.QA_SERVER_USER }}
           password: ${{ secrets.QA_SERVER_PASSWORD }}
           script: |
@@ -348,7 +348,7 @@ jobs:
           TF_VAR_vercel_api_token: ${{secrets.VERCEL_BRANCH_API_TOKEN}}
           TF_VAR_github_branch: ${{ github.head_ref }}
           TF_VAR_qa-frontend: ${{ github.head_ref }}.pubsub-api.dev
-          TF_VAR_vercel_project_name: pubsub-api
+          TF_VAR_vercel_project_name: ${{secrets.vercel_project_name}}
         run: |
           cd infrastructure/qa
           terraform init -backend-config "bucket=$TF_VAR_aws_s3_bucket_name" -backend-config "dynamodb_table=$TF_VAR_dynamob_table" -backend-config "access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -backend-config "secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
@@ -362,6 +362,7 @@ jobs:
         run: |
           cd infrastructure/qa
           terraform apply -auto-approve
+          ip_address=$(terraform output ip_address)
   Server_Deployment:
     needs: [Terraform_Syncing]
     runs-on: ubuntu-latest
