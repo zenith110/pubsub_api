@@ -11,7 +11,7 @@ resource "aws_kms_alias" "key-alias" {
 
 resource "aws_s3_bucket" "terraform-state" {
  bucket = var.aws_s3_bucket_name
-
+ force_destroy = true
  versioning {
    enabled = true
  }

@@ -8,7 +8,7 @@ terraform{
 }
 data "terraform_remote_state" "sync"{
    backend = "s3"
-   config {
+   config = {
    key            = "state/terraform.tfstate"
    region         = "us-east-2"
    encrypt        = true
