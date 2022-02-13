@@ -5,10 +5,16 @@ terraform{
             version = "~> 3.0"
         }
     }
+   backend "s3" {
+   key            = "state/terraform.tfstate"
+   region         = "us-east-2"
+   encrypt        = true
+ }
 }
 data "terraform_remote_state" "sync"{
    backend = "s3"
    config = {
+   bucket = var.aws_s3_bucket_name
    key            = "state/terraform.tfstate"
    region         = "us-east-2"
    encrypt        = true
