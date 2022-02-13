@@ -13,5 +13,28 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: terraform_cleanup
+        env:
+          TF_VAR_linode_api_token: ${{ secrets.LINODE_API_TOKEN }}
+          TF_VAR_linode_password: ${{ secrets.QA_SERVER_PASSWORD }}
+          TF_VAR_small_linode_instance: ${{ secrets.QA_SMALL_LINODE_INSTANCE }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          TF_VAR_cloudflare_domain_name: ${{ github.head_ref }}.pubsub-api.dev
+          TF_VAR_qa_label: ${{ github.head_ref }}
+          TF_VAR_qa_group: ${{ github.head_ref }}
+          TF_VAR_cloudflare_email: ${{ secrets.CLOUDFLARE_EMAIL }}
+          TF_VAR_cloudflare_api_key: ${{ secrets.CLOUDFLARE_API_KEY }}
+          TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_VAR_aws_s3_bucket_name: ${{ github.head_ref }}-terraform
+          TF_VAR_aws_region: us-east-1
+          TF_VAR_aws_s3_key: ${{ github.head_ref }}/s3/terraform.tfstate
+          TF_VAR_dynamob_table: ${{ github.head_ref }}-test-locks
+          TF_VAR_qa-graphql: ${{ github.head_ref }}-graphql.pubsub-api.dev
+          TF_VAR_qa-backend: ${{ github.head_ref }}-backend.pubsub-api.dev
+          TF_VAR_kms_alias: alias/${{ github.head_ref }}-bucket-key
+          TF_VAR_vercel_api_token: ${{secrets.VERCEL_BRANCH_API_TOKEN}}
+          TF_VAR_github_branch: ${{ github.head_ref }}
+          TF_VAR_qa-frontend: ${{ github.head_ref }}.pubsub-api.dev
+          TF_VAR_vercel_project_name: pubsub-api
         run: |
           terraform destroy
