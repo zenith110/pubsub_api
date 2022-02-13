@@ -10,7 +10,7 @@ const CheckBox = (props) =>
     const [sub, setSub] = useState([])
     //const [checkedSubs, setCheckedSubs] = useState([])
 
-    const url = "https://api.pubsub-api.dev"
+    const url = process.env.REACT_APP_PUBSUB_API_URL;
     
     useEffect(()=>{
         fetch(url + '/onsale/')

@@ -1,12 +1,8 @@
-terraform{
+data "terraform_remote_state" "sync"{
     required_providers{
         aws = {
             source = "hashicorp/aws"
             version = "~> 3.0"
-        }
-        linode = {
-            source = "linode/linode"
-            version = "1.16.0"
         }
     }
    backend "s3" {
@@ -16,11 +12,8 @@ terraform{
  }
 }
 
-provider "linode" {
-    token = var.linode_api_token
-}
-output ip_address{
-    value = linode_instance.pubsub-qa.ip_address
+output backend_ip_address{
+    value = data.terraform_remote_state.sync.ip_address
 }
 
 
