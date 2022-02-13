@@ -16,7 +16,7 @@ data "terraform_remote_state" "sync"{
 }
 
 output backend_ip_address{
-    value = data.terraform_remote_state.sync.ip_address
+    value = data.terraform_remote_state.sync..outputs.ip_address
 }
 
 
