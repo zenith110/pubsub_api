@@ -362,8 +362,6 @@ jobs:
         run: |
           cd infrastructure/qa
           terraform apply -auto-approve
-      - name: ping
-        run: ping ${{ github.head_ref }}-backend.pubsub-api.dev
   Server_Deployment:
     needs: [Terraform_Syncing]
     runs-on: ubuntu-latest
