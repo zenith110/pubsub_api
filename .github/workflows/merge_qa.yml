@@ -35,7 +35,8 @@ jobs:
           TF_VAR_vercel_api_token: ${{secrets.VERCEL_BRANCH_API_TOKEN}}
           TF_VAR_github_branch: ${{ github.head_ref }}
           TF_VAR_qa-frontend: ${{ github.head_ref }}.pubsub-api.dev
-          TF_VAR_vercel_project_name: pubsub-api
+          TF_VAR_vercel_project_name: ${{secrets.vercel_project_name}}
+          TF_VAR_aws_iam_user_id: ${{secrets.IAM_USER_ID}}
         run: |
           cd infrastructure/qa 
           terraform destroy
