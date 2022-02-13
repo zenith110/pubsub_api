@@ -37,4 +37,5 @@ jobs:
           TF_VAR_qa-frontend: ${{ github.head_ref }}.pubsub-api.dev
           TF_VAR_vercel_project_name: pubsub-api
         run: |
+          cd infrastructure/qa 
           terraform destroy
