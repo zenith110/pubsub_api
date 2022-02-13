@@ -1,10 +1,12 @@
-data "terraform_remote_state" "sync"{
+terraform{
     required_providers{
         aws = {
             source = "hashicorp/aws"
             version = "~> 3.0"
         }
     }
+}
+data "terraform_remote_state" "sync"{
    backend "s3" {
    key            = "state/terraform.tfstate"
    region         = "us-east-2"
