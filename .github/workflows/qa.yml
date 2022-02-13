@@ -263,7 +263,7 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         uses: appleboy/ssh-action@master
         with:
-          host: $ip_address
+          host: ${{ github.head_ref }}-backend.pubsub-api.dev
           username: ${{ secrets.QA_SERVER_USER }}
           password: ${{ secrets.QA_SERVER_PASSWORD }}
           script: |
@@ -362,6 +362,8 @@ jobs:
         run: |
           cd infrastructure/qa
           terraform apply -auto-approve
+      - name: ping
+        run: ping ${{ github.head_ref }}-backend.pubsub-api.dev
   Server_Deployment:
     needs: [Terraform_Syncing]
     runs-on: ubuntu-latest
