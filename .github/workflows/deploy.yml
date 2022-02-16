@@ -36,7 +36,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [Python_Unit_Tests]
     if: success('Python_Unit_Tests')
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.7.9
