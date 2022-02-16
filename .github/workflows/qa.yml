@@ -299,6 +299,7 @@ jobs:
             echo "GRAPHQL_URL=${{ github.head_ref }}-grapqhl.pubsub-api.dev" >> .env
             set -a
             source .env
+            sudo docker-compose -f qa.yml pull
             sudo docker-compose -f qa.yml up -d --build
   Print_Out_Links_First_Time:
     needs: [Server_Deployment_First_Time]

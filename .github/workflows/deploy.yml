@@ -32,7 +32,10 @@ jobs:
         run: |
           cd backend/python/src/
           python -m unittest
-  Deployment:
+  Dockerizing:
+    runs-on: ubuntu-latest
+    needs: [Python_Unit_Tests]
+    if: success('Python_Unit_Tests')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -72,3 +75,31 @@ jobs:
         run: |
           docker tag pubsub-backend $BACKEND
           docker push $BACKEND
+  Deploying_To_Server:
+    runs-on: ubuntu-latest
+    needs: [Dockerizing]
+    if: success('Dockerizing')
+    steps:
+      - uses: actions/checkout@v2
+      - name: Push to server
+          uses: appleboy/ssh-action@master
+          with:
+            host: ${{ secrets.SERVER_IP }}
+            username: ${{ secrets.SERVER_USER }}
+            password: ${{ secrets.SERVER_PASSWORD }}
+            script: |
+              sudo rm -r .env
+              echo "SENDER=${{ secrets.SENDER}}" > .env
+              echo "DOMAIN=${{ secrets.DOMAIN}}" >> .env
+              echo "API_KEY=${{ secrets.MAILGUN_API_KEY}}" >> .env
+              echo "OVERALL_MAILING_LIST=${{ secrets.OVERALL_MAILING_LIST}}" >> .env
+              echo "BOT_TOKEN=${{ secrets.BOT_TOKEN}}" >> .env
+              echo "USERNAME_DB=${{ secrets.USERNAME_DB }}" >> .env
+              echo "PASSWORD=${{ secrets.PASSWORD }}" >> .env 
+              echo "DBHOST=${{ secrets.HOST }}" >> .env
+              echo "PORT=${{ secrets.PORT }}" >> .env
+              echo "DATABASE=${{ secrets.DATABASE }}" >> .env
+              echo "TABLE=${{ secrets.TABLE }}" >> .env
+              echo "GRAPHQLPORT=${{ secrets.GRAPHQLPORT }}" >> .env
+              echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+              ./deploy.sh
