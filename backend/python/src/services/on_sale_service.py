@@ -5,7 +5,6 @@ from flask import Flask, jsonify
 
 
 def on_sale_check(db_object):
-    print(db_object.__repr__())
     connection = connect_db.connect(db_object)
     cur = connection.cursor()
     """

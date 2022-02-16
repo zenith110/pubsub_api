@@ -27,7 +27,6 @@ def sub_runner_checker(subname, db_object):
             on_sale = row[2]
             price = row[3]
             image = row[4]
-        print(records)
         # Creates a dictionary
         data = {}
 

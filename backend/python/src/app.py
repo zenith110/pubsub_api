@@ -147,7 +147,7 @@ def sub():
             sub = random_sub(db)
             return sub
         else:
-            sub = sub_runner_path(sub_name, db)
+            sub = sub_runner.sub_runner_checker(sub_name, db)
             return sub
 
 
