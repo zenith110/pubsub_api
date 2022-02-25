@@ -20,6 +20,7 @@ db_object.host = os.getenv("DBHOST")
 db_object.port = os.getenv("PORT")
 db_object.database = os.getenv("DATABASE")
 db_object.table = os.getenv("TABLE")
+
 def delete_sub(sub_name):
     connection = db_utils.connect(db_object)
     cur = connection.cursor()
@@ -34,8 +35,8 @@ def update_state(sub_name, state):
     cur = connection.cursor()
     db_utils.update_state(cur, sub_name, db_utils.get_table(db_object), db_object, connection, state)
 if __name__ == "__main__":
-    sub_name = argv[2]
     operation = argv[1]
+    sub_name = argv[2]
     if(operation == "delete"):
         delete_sub(sub_name)
     elif(operation == "update"):

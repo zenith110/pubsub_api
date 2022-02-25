@@ -38,7 +38,7 @@ def new_sub(cur, pubsub_name, pubsub_date, pubsub_price, pubsub_image, db_obj, w
         (
             pubsub_name.replace(" ", "-").lower(),
             pubsub_date,
-            True,
+            "True",
             pubsub_price,
             pubsub_image,
         ),
