@@ -216,12 +216,14 @@ def parse_publix_deli_page(zipCode):
             except:
                 print(
                     "an unexpected exception occured grabbing the price of sub: " + product["title"])
-            # Todo: Use a list comprehension to remove these from the name
+            
             sub_name = product["title"].replace(
                 "Publix", "").replace("Sub", "")
-        
+            
             # Encountered a boar head's sub sale
-            if("Boar&#39;s" in sub_name):
+            if("Boar&#39;s Head" in sub_name):
+                sub_name =  sub_name.replace("Boar&#39;s Head", "")
+            elif("Boar&#39;s" in sub_name):
                 sub_name = sub_name.replace("Boar&#39;s Head&reg;", "")
                 if("&amp;" in sub_name):
                     sub_name = sub_name.replace("&amp;", "and")
@@ -238,7 +240,7 @@ def parse_publix_deli_page(zipCode):
                 print(
                     "an unexpected exception occured appending the valid through (end date) to: " + product["title"])
     remove_space_pubsub_name(pubsub)
-
+    
     for sub in range(0, len(pubsub.pubsub_name)):
         s3_utils.check_image(
             pubsub.pubsub_name[sub], pubsub.image_original[sub], my_bucket, pubsub)
