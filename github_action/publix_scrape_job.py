@@ -223,6 +223,8 @@ def parse_publix_deli_page(zipCode):
             # Encountered a boar head's sub sale
             if("Boar&#39;s Head" in sub_name):
                 sub_name =  sub_name.replace("Boar&#39;s Head", "")
+            elif("Reg;" in sub_name):
+                sub_name =  sub_name.replace("Reg;", "")
             elif("Boar&#39;s" in sub_name):
                 sub_name = sub_name.replace("Boar&#39;s Head&reg;", "")
                 if("&amp;" in sub_name):
