@@ -221,10 +221,10 @@ def parse_publix_deli_page(zipCode):
                 "Publix", "").replace("Sub", "")
             
             # Encountered a boar head's sub sale
-            if("Boar&#39;s Head" in sub_name):
+            if("Boar&#39;s Head&reg;" in sub_name):
+                sub_name =  sub_name.replace("Boar&#39;s Head&reg;", "")
+            elif("Boar&#39;s Head" in sub_name):
                 sub_name =  sub_name.replace("Boar&#39;s Head", "")
-            elif("Reg;" in sub_name):
-                sub_name =  sub_name.replace("Reg;", "")
             elif("Boar&#39;s" in sub_name):
                 sub_name = sub_name.replace("Boar&#39;s Head&reg;", "")
                 if("&amp;" in sub_name):
@@ -242,7 +242,7 @@ def parse_publix_deli_page(zipCode):
                 print(
                     "an unexpected exception occured appending the valid through (end date) to: " + product["title"])
     remove_space_pubsub_name(pubsub)
-    
+
     for sub in range(0, len(pubsub.pubsub_name)):
         s3_utils.check_image(
             pubsub.pubsub_name[sub], pubsub.image_original[sub], my_bucket, pubsub)
