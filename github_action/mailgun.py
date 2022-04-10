@@ -27,7 +27,9 @@ def send_email(original_sub: str, dates: str, mailgun_obj):
     print(response.json())
 
 
-def send_email_and_webhook(pubsub_name, pubsub_date, pubsub_price, pubsub_image, webhook, mailgun_obj):
+def send_email_and_webhook(
+    pubsub_name, pubsub_date, pubsub_price, pubsub_image, webhook, mailgun_obj
+):
     send_email(pubsub_name, pubsub_date, mailgun_obj)
     webhook = DiscordWebhook(url=webhook)
     embed = DiscordEmbed(

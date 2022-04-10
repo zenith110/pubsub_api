@@ -80,10 +80,10 @@ def convert_month_to_numerical(month: str):
         "September": 9,
         "October": 10,
         "November": 11,
-        "December": 12
+        "December": 12,
     }
     for month_name, month_number_representation in month_to_num.items():
-        if(month in month_name):
+        if month in month_name:
             return month_number_representation
 
 
@@ -104,19 +104,43 @@ def scrape_publix_job():
     )
     for i in range(0, len(sub_sale_list.pubsub_name)):
         db_utils.sub_check(
-            sub_sale_list.pubsub_name[i], sub_sale_list.date[i], sub_sale_list.price[i], sub_sale_list.image[i], cur, db_object, os.getenv("WEBHOOK"), mailgun_instance)
+            sub_sale_list.pubsub_name[i],
+            sub_sale_list.date[i],
+            sub_sale_list.price[i],
+            sub_sale_list.image[i],
+            cur,
+            db_object,
+            os.getenv("WEBHOOK"),
+            mailgun_instance,
+        )
     db_utils.close(connection)
 
 
 def find_closest_publix(zipCode):
     # Make a request to the publix servics endpoint to get the closest location
-    response = requests.request("GET", "https://services.publix.com/api/v1/storelocation", data="", headers={}, params={
-                                "types": "R,G,H,N,S", "option": "", "count": "15", "includeOpenAndCloseDates": "true", "isWebsite": "true", "zipCode": zipCode})
+    response = requests.request(
+        "GET",
+        "https://services.publix.com/api/v1/storelocation",
+        data="",
+        headers={},
+        params={
+            "types": "R,G,H,N,S",
+            "option": "",
+            "count": "15",
+            "includeOpenAndCloseDates": "true",
+            "isWebsite": "true",
+            "zipCode": zipCode,
+        },
+    )
 
     # check status code
     if response.status_code != 200:
-        raise ValueError('excepted 200 status for finding closest publix, was given ' +
-                         str(response.status_code) + ' for zip: ' + zipCode)
+        raise ValueError(
+            "excepted 200 status for finding closest publix, was given "
+            + str(response.status_code)
+            + " for zip: "
+            + zipCode
+        )
 
     # range over response if successful
     for store_value in response.json()["Stores"]:
@@ -127,24 +151,35 @@ def find_closest_publix(zipCode):
 def grab_price(product_id, publix_collection):
     store_cookie = store_to_cookie(publix_collection[1])
     headers = {
-        'Cookie': 'Store={%22StoreName%22:%22' + store_cookie + '%22%2C%22StoreNumber%22:' + str(publix_collection[0]) + '%2C%22Option%22:%22ACDFJNORTUV%22%2C%22ShortStoreName%22:%22' + store_cookie + '%22}'
+        "Cookie": "Store={%22StoreName%22:%22"
+        + store_cookie
+        + "%22%2C%22StoreNumber%22:"
+        + str(publix_collection[0])
+        + "%2C%22Option%22:%22ACDFJNORTUV%22%2C%22ShortStoreName%22:%22"
+        + store_cookie
+        + "%22}"
     }
-    sub_url = "https://www.publix.com/shop-online/in-store-pickup/builder?baseProductID=" + \
-        str(product_id)
+    sub_url = (
+        "https://www.publix.com/shop-online/in-store-pickup/builder?baseProductID="
+        + str(product_id)
+    )
 
-    response = requests.request(
-        "GET", f"{sub_url}", headers=headers, data={})
+    response = requests.request("GET", f"{sub_url}", headers=headers, data={})
 
     # check status code
     if response.status_code != 200:
-        raise ValueError('excepted 200 status for grabbing product page, was given ' +
-                         str(response.status_code) + ' for product id: ' + product_id)
+        raise ValueError(
+            "excepted 200 status for grabbing product page, was given "
+            + str(response.status_code)
+            + " for product id: "
+            + product_id
+        )
 
     regex = r"&quot;Priceline1&quot;:&quot;[\$\d+\.]+"
     matches = re.finditer(regex, response.text, re.MULTILINE)
     # range over the match groups
     for matchNum, match in enumerate(matches, start=1):
-        if(matchNum == 2):
+        if matchNum == 2:
             break
     sub_price = match.group().split(";")[3]
     return sub_price
@@ -155,28 +190,43 @@ def grab_end_date(product_id, publix_collection):
     store_cookie = store_to_cookie(publix_collection[1])
 
     headers = {
-        'Cookie': 'Store={%22StoreName%22:%22' + store_cookie + '%22%2C%22StoreNumber%22:' + str(publix_collection[0]) + '%2C%22Option%22:%22ACDFJNORTUV%22%2C%22ShortStoreName%22:%22' + store_cookie + '%22}'
+        "Cookie": "Store={%22StoreName%22:%22"
+        + store_cookie
+        + "%22%2C%22StoreNumber%22:"
+        + str(publix_collection[0])
+        + "%2C%22Option%22:%22ACDFJNORTUV%22%2C%22ShortStoreName%22:%22"
+        + store_cookie
+        + "%22}"
     }
     sub_url = "https://www.publix.com/pd/" + str(product_id)
-    response = requests.request(
-        "GET", f"{sub_url}", headers=headers, data={})
+    response = requests.request("GET", f"{sub_url}", headers=headers, data={})
 
     # check status code
     if response.status_code != 200:
-        raise ValueError('excepted 200 status for grabbing product page, was given ' +
-                         str(response.status_code) + ' for product id: ' + product_id)
+        raise ValueError(
+            "excepted 200 status for grabbing product page, was given "
+            + str(response.status_code)
+            + " for product id: "
+            + product_id
+        )
 
     # prepare regex
     regex = r":&amp;quot;Valid Through [\w\s]+"
 
     # range over the match groups
-    for matchNum, match in enumerate(re.finditer(r":&amp;quot;Valid Through [\w\s]+", response.text, re.MULTILINE), start=0):
+    for matchNum, match in enumerate(
+        re.finditer(r":&amp;quot;Valid Through [\w\s]+", response.text, re.MULTILINE),
+        start=0,
+    ):
         return match.group()
+
+
 def remove_space_pubsub_name(pubsub):
     for i in range(0, len(pubsub.pubsub_name)):
-        if(pubsub.pubsub_name[i][-1] == " "):
+        if pubsub.pubsub_name[i][-1] == " ":
             pubsub.pubsub_name[i] = pubsub.pubsub_name[i][:-1]
     return pubsub
+
 
 def parse_publix_deli_page(zipCode):
 
@@ -184,68 +234,100 @@ def parse_publix_deli_page(zipCode):
         closest_publix = find_closest_publix(zipCode)
         # print("Store found: " + closest_publix[1])  # debug
     except:
-        print("an unexpected exception occured grabbing the closest publix at: " + zipCode)
+        print(
+            "an unexpected exception occured grabbing the closest publix at: " + zipCode
+        )
 
-    response = requests.request("GET", "https://services.publix.com/api/v3/product/SearchMultiCategory?" +
-                                "storeNumber=" + closest_publix[0] + "&sort=popularityrank+asc,+titlecopy+asc&rowCount=60&orderAheadOnly=true&facet=onsalemsg::On+Sale&categoryIdList=d3a5f2da-3002-4c6d-949c-db5304577efb", data="", headers={}, params={})
+    response = requests.request(
+        "GET",
+        "https://services.publix.com/api/v3/product/SearchMultiCategory?"
+        + "storeNumber="
+        + closest_publix[0]
+        + "&sort=popularityrank+asc,+titlecopy+asc&rowCount=60&orderAheadOnly=true&facet=onsalemsg::On+Sale&categoryIdList=d3a5f2da-3002-4c6d-949c-db5304577efb",
+        data="",
+        headers={},
+        params={},
+    )
 
     if response.status_code != 200:
         raise ValueError(
-            'excepted 200 status for grabbing on sale page, was given ' + str(response.status_code))
+            "excepted 200 status for grabbing on sale page, was given "
+            + str(response.status_code)
+        )
     pubsub = Pubsub()
     # find product valid thru date
     for product in response.json()[0]:
         if "Sub" in product["title"]:  # find subs only
             try:
-                end_date = str(grab_end_date(product["Productid"], closest_publix)).split(
-                    "&amp;quot;Valid Through")[1].strip()
+                end_date = (
+                    str(grab_end_date(product["Productid"], closest_publix))
+                    .split("&amp;quot;Valid Through")[1]
+                    .strip()
+                )
                 month_name = end_date.split(" ")[0]
                 month_day = end_date.split(" ")[1]
                 converted_month_number = convert_month_to_numerical(month_name)
                 now = datetime.date.today()
-                whole_sub_sale_date = str(now.month) + \
-                    "/" + str(now.day) + "/" + str(now.year) + "-" + str(converted_month_number) + \
-                    "/" + month_day + "/" + \
-                    str(now.year)
+                whole_sub_sale_date = (
+                    str(now.month)
+                    + "/"
+                    + str(now.day)
+                    + "/"
+                    + str(now.year)
+                    + "-"
+                    + str(converted_month_number)
+                    + "/"
+                    + month_day
+                    + "/"
+                    + str(now.year)
+                )
             except:
                 print(
-                    "an unexpected exception occured grabbing the end date of sub: " + product["title"])
+                    "an unexpected exception occured grabbing the end date of sub: "
+                    + product["title"]
+                )
             try:
-                price = grab_price(
-                    product["Productid"], closest_publix).split("$")[1]
+                price = grab_price(product["Productid"], closest_publix).split("$")[1]
             except:
                 print(
-                    "an unexpected exception occured grabbing the price of sub: " + product["title"])
-            
-            sub_name = product["title"].replace(
-                "Publix", "").replace("Sub", "")
-            
-            # Encountered a boar head's sub sale
-            if("Boar&#39;s Head&reg;" in sub_name):
-                sub_name =  sub_name.replace("Boar&#39;s Head&reg;", "")
-            elif("Boar&#39;s Head" in sub_name):
-                sub_name =  sub_name.replace("Boar&#39;s Head", "")
-            elif("Boar&#39;s" in sub_name):
-                sub_name = sub_name.replace("Boar&#39;s Head&reg;", "")
-                if("&amp;" in sub_name):
-                    sub_name = sub_name.replace("&amp;", "and")
-            elif("Chicken Tender" in sub_name):
-                sub_name = sub_name.replace("Chicken Tender", "Chicken Tenders")
+                    "an unexpected exception occured grabbing the price of sub: "
+                    + product["title"]
+                )
+
+            sub_name = product["title"].replace("Publix", "").replace("Sub", "")
+
+            filter_list = {
+                "Boar&#39;s Head&reg;": "",
+                "Boar&#39;s Head": "",
+                "Boar&#39;s": "",
+                "&amp": "&",
+                "Chicken Tender": "Chicken Tenders",
+            }
+
+            # Go through the filtered list and replace the words with their values
+            for filtered_words, replacements in filter_list.items():
+                if filtered_words in sub_name:
+                    sub_name = sub_name.replace(filtered_words, replacements)
+
             pubsub.pubsub_name.append(sub_name[1:-1])
             pubsub.price.append(str(price))
             temp_image_holder = str(product["productimages"]).split("-")
             pubsub.image_original.append(
-                temp_image_holder[0] + "-600x600-" + temp_image_holder[2])
+                temp_image_holder[0] + "-600x600-" + temp_image_holder[2]
+            )
             try:
                 pubsub.date.append(whole_sub_sale_date)
             except:
                 print(
-                    "an unexpected exception occured appending the valid through (end date) to: " + product["title"])
+                    "an unexpected exception occured appending the valid through (end date) to: "
+                    + product["title"]
+                )
     remove_space_pubsub_name(pubsub)
 
     for sub in range(0, len(pubsub.pubsub_name)):
         s3_utils.check_image(
-            pubsub.pubsub_name[sub], pubsub.image_original[sub], my_bucket, pubsub)
+            pubsub.pubsub_name[sub], pubsub.image_original[sub], my_bucket, pubsub
+        )
     return pubsub
 
 
