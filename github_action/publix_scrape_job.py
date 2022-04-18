@@ -11,7 +11,7 @@ import s3_utils
 from dotenv import load_dotenv
 from os.path import join, dirname
 import csv_scraper
-
+import threading
 
 class Pubsubs:
     def __init__(self) -> None:
@@ -27,6 +27,7 @@ class Pubsub:
         self.prices = []
         self.image_original = ""
         self.image = ""
+        self.images = []
         self.zipcodes = []
         self.cities = []
         self.states = []
@@ -238,10 +239,11 @@ def remove_space_pubsub_name(pubsub):
     return pubsub
 
 
-def parse_publix_deli_page():
+def parse_publix_deli_page(zipcode):
     data = csv_scraper.parse_data()
     subs = {}
     subs_storage = []
+    images = []
     for zipcode in range(1, len(data)):
         try:
             closest_publix = find_closest_publix(data[zipcode].zipcode)
@@ -302,6 +304,7 @@ def parse_publix_deli_page():
                         "an unexpected exception occured grabbing the end date of sub: "
                         + product["title"]
                     )
+                    continue
                 try:
                     price = grab_price(product["Productid"], closest_publix).split("$")[
                         1
@@ -311,7 +314,7 @@ def parse_publix_deli_page():
                         "an unexpected exception occured grabbing the price of sub: "
                         + product["title"]
                     )
-
+                    continue
                 sub_name = product["title"].replace("Publix", "").replace("Sub", "")
 
                 filter_list = {
@@ -334,6 +337,9 @@ def parse_publix_deli_page():
                 pubsub.image_original = (
                     temp_image_holder[0] + "-600x600-" + temp_image_holder[2]
                 )
+                if(pubsub.image_original == ""):
+                    continue
+                images.append(pubsub.image_original)
                 try:
 
                     pubsub.date = whole_sub_sale_date
@@ -350,6 +356,7 @@ def parse_publix_deli_page():
             subs["dates"] = [pubsub.date]
             subs["prices"] = [pubsub.price]
             subs["closest_stores"] = [closest_publix[1]]
+            subs["images"] = [pubsub.image_original]
         else:
             subs[pubsub.pubsub_name].append(str(data[zipcode].zipcode))
             subs["cities"].append(data[zipcode].city)
@@ -366,9 +373,10 @@ def parse_publix_deli_page():
             pubsub.closest_stores = storage["closest_stores"]
             pubsub.dates = storage["dates"]
             pubsub.prices = storage["prices"]
+            pubsub.images = storage["images"]
         pubsubs.pubsubs.append(pubsub)
         s3_utils.check_image(
-            pubsub.pubsub_name, pubsub.image_original, my_bucket, pubsub
+            pubsub.pubsub_name, pubsub.images[0], my_bucket, pubsub
         )
     return pubsubs.pubsubs
 
