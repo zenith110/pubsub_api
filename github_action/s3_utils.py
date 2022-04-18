@@ -11,25 +11,28 @@ def resize_image(sub_image):
 
 
 def upload_image(sub_download_link, my_bucket, sub_name):
-    sub_image_request = requests.get(sub_download_link)
-    image = Image.open(BytesIO(sub_image_request.content))
-    if image.size == (360, 360):
-        img_byte_arr = BytesIO()
-        image.save(img_byte_arr, format="JPEG")
-        my_bucket.put_object(
-            Key=sub_name + ".jpg",
-            Body=img_byte_arr.getvalue(),
-            ContentType="image/jpeg",
-            ACL="public-read",
-        )
-    else:
-        resized_pubsub_image = resize_image(image)
-        my_bucket.put_object(
-            Key=sub_name + ".jpg",
-            Body=resized_pubsub_image,
-            ContentType="image/jpeg",
-            ACL="public-read",
-        )
+    try:
+        sub_image_request = requests.get(sub_download_link)
+        image = Image.open(BytesIO(sub_image_request.content))
+        if image.size == (360, 360):
+            img_byte_arr = BytesIO()
+            image.save(img_byte_arr, format="JPEG")
+            my_bucket.put_object(
+                Key=sub_name + ".jpg",
+                Body=img_byte_arr.getvalue(),
+                ContentType="image/jpeg",
+                ACL="public-read",
+            )
+        else:
+            resized_pubsub_image = resize_image(image)
+            my_bucket.put_object(
+                Key=sub_name + ".jpg",
+                Body=resized_pubsub_image,
+                ContentType="image/jpeg",
+                ACL="public-read",
+            )
+    except:
+        print("skipping!")
 
 
 def check_image(sub_name, original_image, my_bucket, pubsub):

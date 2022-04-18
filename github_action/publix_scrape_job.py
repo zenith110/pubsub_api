@@ -332,12 +332,13 @@ def parse_publix_deli_page(zipcode):
 
                 pubsub.pubsub_name = sub_name[1:-1]
                 pubsub.price = str(price)
-
-                temp_image_holder = str(product["productimages"]).split("-")
-                pubsub.image_original = (
-                    temp_image_holder[0] + "-600x600-" + temp_image_holder[2]
-                )
-                if(pubsub.image_original == ""):
+                try:
+                    temp_image_holder = str(product["productimages"]).split("-")
+                    pubsub.image_original = (
+                        temp_image_holder[0] + "-600x600-" + temp_image_holder[2]
+                    )
+                except:
+                    print("Could not find image from this store!")
                     continue
                 images.append(pubsub.image_original)
                 try:
