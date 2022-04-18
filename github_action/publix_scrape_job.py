@@ -10,7 +10,6 @@ import boto3
 import s3_utils
 from dotenv import load_dotenv
 from os.path import join, dirname
-from uszipcode import SearchEngine
 import csv_scraper
 
 
