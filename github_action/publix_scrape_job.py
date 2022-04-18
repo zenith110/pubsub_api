@@ -10,15 +10,28 @@ import boto3
 import s3_utils
 from dotenv import load_dotenv
 from os.path import join, dirname
+from uszipcode import SearchEngine
+import csv_scraper
+
+
+class Pubsubs:
+    def __init__(self) -> None:
+        self.pubsubs = []
 
 
 class Pubsub:
     def __init__(self) -> None:
-        self.pubsub_name = []
-        self.date = []
-        self.price = []
-        self.image_original = []
-        self.image = []
+        self.pubsub_name = ""
+        self.price = ""
+        self.date = ""
+        self.dates = []
+        self.prices = []
+        self.image_original = ""
+        self.image = ""
+        self.zipcodes = []
+        self.cities = []
+        self.states = []
+        self.closest_store = []
 
 
 class DatabaseObject:
@@ -53,7 +66,7 @@ my_bucket = s3.Bucket(os.getenv("BUCKET_NAME"))
 db_object = DatabaseObject()
 db_object.user = os.getenv("USERNAME_DB")
 db_object.password = os.getenv("PASSWORD")
-db_object.host = os.getenv("HOST")
+db_object.host = os.getenv("DBHOST")
 db_object.port = os.getenv("PORT")
 db_object.database = os.getenv("DATABASE")
 db_object.table = os.getenv("TABLE")
@@ -88,7 +101,8 @@ def convert_month_to_numerical(month: str):
 
 
 def scrape_publix_job():
-    sub_sale_list = parse_publix_deli_page(os.getenv("ZIPCODE"))
+
+    sub_sale_list = parse_publix_deli_page()
     connection = db_utils.connect(db_object)
     cur = connection.cursor()
     """
@@ -102,16 +116,13 @@ def scrape_publix_job():
             on_sale=on_sale,
         )
     )
-    for i in range(0, len(sub_sale_list.pubsub_name)):
+    for sub in sub_sale_list:
         db_utils.sub_check(
-            sub_sale_list.pubsub_name[i],
-            sub_sale_list.date[i],
-            sub_sale_list.price[i],
-            sub_sale_list.image[i],
+            sub,
             cur,
             db_object,
             os.getenv("WEBHOOK"),
-            mailgun_instance,
+            "",
         )
     db_utils.close(connection)
 
@@ -223,112 +234,144 @@ def grab_end_date(product_id, publix_collection):
 
 def remove_space_pubsub_name(pubsub):
     for i in range(0, len(pubsub.pubsub_name)):
-        if pubsub.pubsub_name[i][-1] == " ":
-            pubsub.pubsub_name[i] = pubsub.pubsub_name[i][:-1]
+        if pubsub.pubsub_name[-1] == " ":
+            pubsub.pubsub_name = pubsub.pubsub_name[:-1]
     return pubsub
 
 
-def parse_publix_deli_page(zipCode):
-
-    try:
-        closest_publix = find_closest_publix(zipCode)
-        # print("Store found: " + closest_publix[1])  # debug
-    except:
-        print(
-            "an unexpected exception occured grabbing the closest publix at: " + zipCode
-        )
-
-    response = requests.request(
-        "GET",
-        "https://services.publix.com/api/v3/product/SearchMultiCategory?"
-        + "storeNumber="
-        + closest_publix[0]
-        + "&sort=popularityrank+asc,+titlecopy+asc&rowCount=60&orderAheadOnly=true&facet=onsalemsg::On+Sale&categoryIdList=d3a5f2da-3002-4c6d-949c-db5304577efb",
-        data="",
-        headers={},
-        params={},
-    )
-
-    if response.status_code != 200:
-        raise ValueError(
-            "excepted 200 status for grabbing on sale page, was given "
-            + str(response.status_code)
-        )
-    pubsub = Pubsub()
-    # find product valid thru date
-    for product in response.json()[0]:
-        if "Sub" in product["title"]:  # find subs only
-            try:
-                end_date = (
-                    str(grab_end_date(product["Productid"], closest_publix))
-                    .split("&amp;quot;Valid Through")[1]
-                    .strip()
-                )
-                month_name = end_date.split(" ")[0]
-                month_day = end_date.split(" ")[1]
-                converted_month_number = convert_month_to_numerical(month_name)
-                now = datetime.date.today()
-                whole_sub_sale_date = (
-                    str(now.month)
-                    + "/"
-                    + str(now.day)
-                    + "/"
-                    + str(now.year)
-                    + "-"
-                    + str(converted_month_number)
-                    + "/"
-                    + month_day
-                    + "/"
-                    + str(now.year)
-                )
-            except:
-                print(
-                    "an unexpected exception occured grabbing the end date of sub: "
-                    + product["title"]
-                )
-            try:
-                price = grab_price(product["Productid"], closest_publix).split("$")[1]
-            except:
-                print(
-                    "an unexpected exception occured grabbing the price of sub: "
-                    + product["title"]
-                )
-
-            sub_name = product["title"].replace("Publix", "").replace("Sub", "")
-
-            filter_list = {
-                "Boar&#39;s Head&reg;": "",
-                "Boar&#39;s Head": "",
-                "Boar&#39;s": "",
-                "&amp": "&",
-                "Chicken Tender": "Chicken Tenders",
-            }
-
-            # Go through the filtered list and replace the words with their values
-            for filtered_words, replacements in filter_list.items():
-                if filtered_words in sub_name:
-                    sub_name = sub_name.replace(filtered_words, replacements)
-
-            pubsub.pubsub_name.append(sub_name[1:-1])
-            pubsub.price.append(str(price))
-            temp_image_holder = str(product["productimages"]).split("-")
-            pubsub.image_original.append(
-                temp_image_holder[0] + "-600x600-" + temp_image_holder[2]
+def parse_publix_deli_page():
+    data = csv_scraper.parse_data()
+    subs = {}
+    subs_storage = []
+    for zipcode in range(1, len(data)):
+        try:
+            closest_publix = find_closest_publix(data[zipcode].zipcode)
+            print("Store found: " + closest_publix[1])  # debug
+        except:
+            print(
+                "an unexpected exception occured grabbing the closest publix at: "
+                + str(data[zipcode].zipcode)
             )
-            try:
-                pubsub.date.append(whole_sub_sale_date)
-            except:
-                print(
-                    "an unexpected exception occured appending the valid through (end date) to: "
-                    + product["title"]
-                )
-    remove_space_pubsub_name(pubsub)
 
-    for sub in range(0, len(pubsub.pubsub_name)):
-        s3_utils.check_image(
-            pubsub.pubsub_name[sub], pubsub.image_original[sub], my_bucket, pubsub
+        response = requests.request(
+            "GET",
+            "https://services.publix.com/api/v3/product/SearchMultiCategory?"
+            + "storeNumber="
+            + closest_publix[0]
+            + "&sort=popularityrank+asc,+titlecopy+asc&rowCount=60&orderAheadOnly=true&facet=onsalemsg::On+Sale&categoryIdList=d3a5f2da-3002-4c6d-949c-db5304577efb",
+            data="",
+            headers={},
+            params={},
         )
-    return pubsub
+
+        if response.status_code != 200:
+            print(
+                "excepted 200 status for grabbing on sale page, was given "
+                + str(response.status_code)
+            )
+            continue
+        pubsubs = Pubsubs()
+        pubsub = Pubsub()
+        # find product valid thru date
+        for product in response.json()[0]:
+            if "Sub" in product["title"]:  # find subs only
+                try:
+                    end_date = (
+                        str(grab_end_date(product["Productid"], closest_publix))
+                        .split("&amp;quot;Valid Through")[1]
+                        .strip()
+                    )
+                    month_name = end_date.split(" ")[0]
+                    month_day = end_date.split(" ")[1]
+                    converted_month_number = convert_month_to_numerical(month_name)
+                    now = datetime.date.today()
+                    whole_sub_sale_date = (
+                        str(now.month)
+                        + "/"
+                        + str(now.day)
+                        + "/"
+                        + str(now.year)
+                        + "-"
+                        + str(converted_month_number)
+                        + "/"
+                        + month_day
+                        + "/"
+                        + str(now.year)
+                    )
+                except:
+                    print(
+                        "an unexpected exception occured grabbing the end date of sub: "
+                        + product["title"]
+                    )
+                try:
+                    price = grab_price(product["Productid"], closest_publix).split("$")[
+                        1
+                    ]
+                except:
+                    print(
+                        "an unexpected exception occured grabbing the price of sub: "
+                        + product["title"]
+                    )
+
+                sub_name = product["title"].replace("Publix", "").replace("Sub", "")
+
+                filter_list = {
+                    "Boar&#39;s Head&reg;": "",
+                    "Boar&#39;s Head": "",
+                    "Boar&#39;s": "",
+                    "&amp": "&",
+                    "Chicken Tender": "Chicken Tenders",
+                }
+
+                # Go through the filtered list and replace the words with their values
+                for filtered_words, replacements in filter_list.items():
+                    if filtered_words in sub_name:
+                        sub_name = sub_name.replace(filtered_words, replacements)
+
+                pubsub.pubsub_name = sub_name[1:-1]
+                pubsub.price = str(price)
+
+                temp_image_holder = str(product["productimages"]).split("-")
+                pubsub.image_original = (
+                    temp_image_holder[0] + "-600x600-" + temp_image_holder[2]
+                )
+                try:
+
+                    pubsub.date = whole_sub_sale_date
+                except:
+                    print(
+                        "an unexpected exception occured appending the valid through (end date) to: "
+                        + product["title"]
+                    )
+        remove_space_pubsub_name(pubsub)
+        if pubsub.pubsub_name not in subs:
+            subs[pubsub.pubsub_name] = [str(data[zipcode].zipcode)]
+            subs["cities"] = [data[zipcode].city]
+            subs["states"] = [data[zipcode].state]
+            subs["dates"] = [pubsub.date]
+            subs["prices"] = [pubsub.price]
+            subs["closest_stores"] = [closest_publix[1]]
+        else:
+            subs[pubsub.pubsub_name].append(str(data[zipcode].zipcode))
+            subs["cities"].append(data[zipcode].city)
+            subs["prices"].append(pubsub.price)
+            subs["dates"].append(pubsub.date)
+            subs["states"].append(data[zipcode].state)
+            subs["closest_stores"].append(closest_publix[1])
+        subs_storage.append(subs)
+
+        for storage in subs_storage:
+            pubsub.zipcodes = storage[pubsub.pubsub_name]
+            pubsub.cities = storage["cities"]
+            pubsub.states = storage["states"]
+            pubsub.closest_stores = storage["closest_stores"]
+            pubsub.dates = storage["dates"]
+            pubsub.prices = storage["prices"]
+        pubsubs.pubsubs.append(pubsub)
+        s3_utils.check_image(
+            pubsub.pubsub_name, pubsub.image_original, my_bucket, pubsub
+        )
+    return pubsubs.pubsubs
 
 
 def shave_zeros(raw_store):

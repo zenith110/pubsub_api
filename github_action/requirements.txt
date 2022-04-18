@@ -6,3 +6,4 @@ python-dotenv
 pillow
 requests
 discord_webhook
+jinja2

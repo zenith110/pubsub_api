@@ -1,0 +1,41 @@
+<p>Greetings from pubsub-api.dev! Below you will find a table of Publix grocery stores, cities, and zipcodes where {{pubsub_name}} is on sale!</p>
+<table>
+<tr>
+    <th>Zipcode</th>
+    <th>City</th>
+    <th>Publix location</th>
+    <th>Date</th>
+    <th>Price</th>
+    <th>State</th>
+</tr>
+<tr>
+    {% for zipcode in zipcodes %}
+    <td>{{zipcode}}</td>
+    {% endfor %}
+</tr>
+<tr>
+    {% for city in cities %}
+    <td>{{city}}</td>
+    {% endfor %}
+</tr>
+<tr>
+    {% for store in closest_stores %}
+    <td>{{store}}</td>
+    {% endfor %}
+</tr>
+<tr>
+    {% for date in dates %}
+    <td>{{date}}</td>
+    {% endfor %}
+</tr>
+<tr>
+    {% for price in prices %}
+    <td>{{price}}</td>
+    {% endfor %}
+</tr>
+<tr>
+    {% for state in states %}
+    <td>{{state}}</td>
+    {% endfor %}
+</tr>
+</table>

@@ -33,29 +33,33 @@ def connect(db_object):
 
 def new_sub(
     cur,
-    pubsub_name,
-    pubsub_date,
-    pubsub_price,
-    pubsub_image,
+    pubsub,
     db_obj,
     webhook,
     mailgun_obj,
 ):
+    print(pubsub.zipcodes)
     cur.execute(
         "INSERT INTO "
         + get_table(db_obj)
-        + "(pubsub_name, dates, on_sale, price, image) VALUES (%s, %s, %s, %s, %s)",
+        + "(pubsub_name, dates, on_sale, price, image, zipcodes, cities, states, prices, datesArray, closeststore) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
         (
-            pubsub_name.replace(" ", "-").lower(),
-            pubsub_date,
+            pubsub.pubsub_name.replace(" ", "-").lower(),
+            pubsub.date,
             "True",
-            pubsub_price,
-            pubsub_image,
+            pubsub.price,
+            pubsub.image,
+            ",".join(pubsub.zipcodes),
+            ",".join(pubsub.cities),
+            ",".join(pubsub.states),
+            ",".join(pubsub.dates),
+            ",".join(pubsub.prices),
+            ",".join(pubsub.closest_stores),
         ),
     )
-    mailgun.send_email_and_webhook(
-        pubsub_name, pubsub_date, pubsub_price, pubsub_image, webhook, mailgun_obj
-    )
+    # mailgun.send_email_and_webhook(
+    #     pubsub_name, pubsub_date, pubsub_price, pubsub_image, webhook, mailgun_obj
+    # )
 
 
 def remove_sub(cur, sub_name, table, db_object, connection):
@@ -68,28 +72,29 @@ def remove_sub(cur, sub_name, table, db_object, connection):
 
 def existing_sub(
     cur,
-    pubsub_name,
-    pubsub_date,
-    pubsub_price,
-    pubsub_image,
+    pubsub,
     db_obj,
     webhook,
     mailgun_obj,
 ):
-    update_string = "Update {table} SET on_sale = '{on_sale}', dates = '{dates}', price = '${price}', image = '{image}' WHERE pubsub_name = '{sub}'"
+    update_string = "Update {table} SET on_sale = '{on_sale}', dates = '{dates}', price = '${price}', image = '{image}', zipcodes = '{zipcodes}', cities = '{cities}', states = '{states}', datesArray = '{datesArray}', prices = '{prices}', closeststore = '{closest_store}' WHERE pubsub_name = '{sub}'"
     update_query = cur.execute(
         update_string.format(
             table=get_table(db_obj),
             on_sale="True",
-            dates=pubsub_date,
-            price=pubsub_price,
-            image=pubsub_image,
-            sub=pubsub_name.lower().replace(" ", "-"),
+            dates=pubsub.date,
+            price=pubsub.price,
+            image=pubsub.image,
+            zipcodes=",".join(pubsub.zipcodes),
+            cities=",".join(pubsub.cities),
+            states=",".join(pubsub.states),
+            datesArray=",".join(pubsub.dates),
+            prices=",".join(pubsub.prices),
+            closest_store=",".join(pubsub.closest_stores),
+            sub=pubsub.pubsub_name.lower().replace(" ", "-"),
         )
     )
-    mailgun.send_email_and_webhook(
-        pubsub_name, pubsub_date, pubsub_price, pubsub_image, webhook, mailgun_obj
-    )
+    mailgun.send_email_and_webhook(pubsub, webhook, mailgun_obj)
 
 
 def update_sale_date(cur, sub_name, table, db_object, connection, dates):
@@ -111,10 +116,7 @@ def update_state(cur, sub_name, table, db_object, connection, on_sale):
 
 
 def sub_check(
-    pubsub_name,
-    pubsub_date,
-    pubsub_price,
-    pubsub_image,
+    pubsub,
     cur,
     db_obj,
     webhook,
@@ -126,19 +128,16 @@ def sub_check(
     exist_check = cur.execute(
         exist_query.format(
             table=get_table(db_obj),
-            sub=pubsub_name.lower().replace(" ", "-"),
+            sub=pubsub.pubsub_name.lower().replace(" ", "-"),
         )
     )
     count = cur.fetchone()[0]
     # Sub exist
     if count == True:
-        print(pubsub_name + " is going to be entered into the db!")
+        print(pubsub.pubsub_name + " is going to be modified")
         existing_sub(
             cur,
-            pubsub_name,
-            pubsub_date,
-            pubsub_price,
-            pubsub_image,
+            pubsub,
             db_obj,
             webhook,
             mailgun_obj,
@@ -146,10 +145,7 @@ def sub_check(
     else:
         new_sub(
             cur,
-            pubsub_name,
-            pubsub_date,
-            pubsub_price,
-            pubsub_image,
+            pubsub,
             db_obj,
             webhook,
             mailgun_obj,
