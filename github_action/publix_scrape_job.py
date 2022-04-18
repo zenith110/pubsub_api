@@ -239,7 +239,7 @@ def remove_space_pubsub_name(pubsub):
     return pubsub
 
 
-def parse_publix_deli_page(zipcode):
+def parse_publix_deli_page():
     data = csv_scraper.parse_data()
     subs = {}
     subs_storage = []
